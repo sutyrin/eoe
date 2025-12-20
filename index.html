@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vertical Scroller</title>
+    <style>
+        body { margin: 0; overflow: hidden; background-color: #222; }
+        canvas { display: block; }
+    </style>
+</head>
+<body>
+<script type="module">
+    // Using Kaboom.js for fast, simple 2D game development
+    import kaboom from "https://unpkg.com/kaboom@3000.0.1/dist/kaboom.mjs";
+
+    kaboom({
+        background: [34, 34, 34], // Dark background
+    });
+
+    scene("game", () => {
+        const SPEED = 320;
+        let score = 0;
+
+        // Player
+        const player = add([
+            rect(40, 40),
+            pos(width() / 2, height() - 80),
+            color(0, 100, 255),
+            area(),
+            body(),
+            "player",
+        ]);
+
+        // Ground (invisible, just to stop gravity if we had it, but we are top-down-ish or flying)
+        // Actually, let's make it a flier/dodger style.
+        player.onUpdate(() => {
+            // Movement
+            if (isKeyDown("left")) {
+                player.move(-SPEED, 0);
+            }
+            if (isKeyDown("right")) {
+                player.move(SPEED, 0);
+            }
+
+            // Wrap around screen
+            if (player.pos.x < 0) player.pos.x = width();
+            if (player.pos.x > width()) player.pos.x = 0;
+        });
+
+        // Spawner
+        loop(1, () => {
+            const obsWidth = rand(40, 120);
+            const obsPos = rand(0, width());
+            
+            add([
+                rect(obsWidth, 40),
+                pos(obsPos, -50),
+                color(255, 50, 50),
+                area(),
+                move(DOWN, SPEED),
+                offscreen({ destroy: true }),
+                "enemy",
+            ]);
+        });
+
+        // Score
+        const scoreLabel = add([
+            text(score),
+            pos(24, 24),
+            color(255, 255, 255),
+        ]);
+
+        loop(0.1, () => {
+            score++;
+            scoreLabel.text = score;
+        });
+
+        // Collision
+        player.onCollide("enemy", () => {
+            go("lose", score);
+            shake(10);
+        });
+    });
+
+    scene("lose", (score) => {
+        add([
+            text("Game Over\nScore: " + score, { align: "center" }),
+            pos(width() / 2, height() / 2),
+            anchor("center"),
+            color(255, 255, 255),
+        ]);
+
+        add([
+            text("Press space to restart", { size: 24 }),
+            pos(width() / 2, height() / 2 + 80),
+            anchor("center"),
+            color(200, 200, 200),
+        ]);
+
+        onKeyPress("space", () => go("game"));
+        onClick(() => go("game"));
+    });
+
+    go("game");
+</script>
+</body>
+</html>
