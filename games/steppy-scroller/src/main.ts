@@ -79,6 +79,7 @@ app.innerHTML = `
   </div>
 `;
 
+const shell = document.querySelector<HTMLDivElement>('.shell');
 const controlsEl = document.querySelector<HTMLDivElement>('#controls');
 
 let state = createInitialState();
@@ -169,4 +170,7 @@ registerGame(
   { log: true, tag: '[mcp]' }
 );
 
-void controller.init();
+shell?.classList.add('is-loading');
+void controller.init().then(() => {
+  shell?.classList.remove('is-loading');
+});

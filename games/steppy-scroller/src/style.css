@@ -30,6 +30,11 @@ body {
   overflow: hidden;
 }
 
+.shell.is-loading #game-root,
+.shell.is-loading .controls {
+  opacity: 0;
+}
+
 #game-root {
   position: absolute;
   inset: 0;
@@ -37,6 +42,7 @@ body {
   justify-content: center;
   align-items: center;
   padding-bottom: calc(130px + env(safe-area-inset-bottom));
+  transition: opacity 0.2s ease;
 }
 
 #game-root canvas {
@@ -54,6 +60,7 @@ body {
   transform: translateX(-50%);
   display: flex;
   gap: 16px;
+  transition: opacity 0.2s ease;
 }
 
 .action {
