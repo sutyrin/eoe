@@ -1,6 +1,26 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { createClient, type RedisClientType } from 'redis';
-import { createInitialState, type GameState } from './game-core/steppy';
+const STEPPY_VERSION = '0.1';
+const STEPPY_COLUMNS = 5;
+
+type PlayerState = {
+  x: number;
+  y: number;
+};
+
+type GameState = {
+  version: string;
+  status: 'ready' | 'running' | 'ended';
+  tick: number;
+  player: PlayerState;
+};
+
+const createInitialState = (): GameState => ({
+  version: STEPPY_VERSION,
+  status: 'running',
+  tick: 0,
+  player: { x: Math.floor(STEPPY_COLUMNS / 2), y: 0 },
+});
 
 const getClientId = (req: VercelRequest): string | null => {
   const header = req.headers['x-client-id'];
