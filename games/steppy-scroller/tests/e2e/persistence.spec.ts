@@ -10,8 +10,8 @@ test('Game state persists across reloads', async ({ page }) => {
   const initialTick = await page.evaluate(() => window.__MCP__?.getState().tick);
   expect(initialTick).toBe(0);
 
-  // Делаем ход вправо
-  await page.click('button:has-text("→")');
+  // Делаем ход вправо-вверх
+  await page.click('button:has-text("↗")');
 
   // Проверяем, что состояние обновилось
   await expect.poll(async () => {

@@ -1,56 +1,65 @@
 import { expect, test } from 'playwright/test';
 
-test('Game supports infinite vertical scrolling', async ({ page }) => {
+test('Game supports infinite vertical scrolling with evaluation', async ({ page }) => {
   await page.goto('/');
   await page.waitForSelector('#controls .action');
 
   // Helper to get state
   const getState = () => page.evaluate(() => window.__MCP__?.getState());
 
-  // Climb 15 steps
-  for (let i = 0; i < 15; i++) {
-    // We might hit a block. If blocked, move side then up.
-    // For this test, let's just try to force our way up or side-step if needed.
-    // Since generation is deterministic but hard to predict perfectly without replicating logic,
-    // we'll implement a simple "Climber Bot" logic here.
-    
+  // Check initial state has evaluation
+  const initialState: any = await getState();
+  expect(initialState.evaluation).toBeDefined();
+  expect(initialState.evaluation.resources.water).toBe(20);
+  expect(initialState.evaluation.target).toBeDefined();
+
+  // Climb 10 steps (conserving water)
+  for (let i = 0; i < 10; i++) {
     let climbed = false;
     let attempts = 0;
+    
     while (!climbed && attempts < 10) {
-        const state = await getState();
+        const state: any = await getState();
         const actions = state.actions;
-        const up = actions.find((a: any) => a.id === 'step-up');
         
-        if (up && up.enabled) {
-            await page.evaluate(() => window.__MCP__?.act('step-up'));
-            climbed = true;
+        // Use the Optimal Choice from Evaluation if available!
+        const optimal = state.evaluation?.optimalChoice;
+        
+        // Fallback or use optimal
+        const up = actions.find((a: any) => a.id === 'step-up');
+        const right = actions.find((a: any) => a.id === 'step-right');
+        const left = actions.find((a: any) => a.id === 'step-left');
+        
+        let actionId = '';
+        if (optimal && actions.find((a: any) => a.id === optimal && a.enabled)) {
+             actionId = optimal;
+        } else if (up && up.enabled) {
+             actionId = 'step-up';
+        } else if (right && right.enabled) {
+             actionId = 'step-right';
+        } else if (left && left.enabled) {
+             actionId = 'step-left';
+        }
+
+        if (actionId) {
+             await page.evaluate((id) => window.__MCP__?.act(id), actionId);
+             // Any move increases Y now!
+             climbed = true;
         } else {
-            // Blocked above. Move right or left.
-            const right = actions.find((a: any) => a.id === 'step-right');
-            const left = actions.find((a: any) => a.id === 'step-left');
-            
-            if (right && right.enabled) {
-                 await page.evaluate(() => window.__MCP__?.act('step-right'));
-            } else if (left && left.enabled) {
-                 await page.evaluate(() => window.__MCP__?.act('step-left'));
-            } else {
-                 // Stuck? Should not happen in this simple generator often
-                 // Maybe wait?
-            }
+             // Stuck
         }
         attempts++;
-        await page.waitForTimeout(50); // Small delay for state update
+        await page.waitForTimeout(50);
     }
   }
 
-  const finalState = await getState();
+  const finalState: any = await getState();
   console.log('Final Y:', finalState.player.y);
+  console.log('Final Water:', finalState.water);
   
-  // We should be well above the original limit of 9 if we climbed successfully
-  // Note: Random blocks might slow us down, but we expect to be higher than 0.
   expect(finalState.player.y).toBeGreaterThan(5);
-  
-  // Verify map generation
-  // Check if we have data for the current row
   expect(finalState.map[finalState.player.y]).toBeDefined();
+  
+  // Verify water was consumed
+  expect(finalState.water).toBeLessThan(20);
 });

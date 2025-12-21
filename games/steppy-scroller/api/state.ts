@@ -2,7 +2,7 @@ import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { createClient, type RedisClientType } from 'redis';
 
 // Keep these in sync with src/game-core/steppy.ts
-const STEPPY_VERSION = '0.2-garden';
+const STEPPY_VERSION = '0.3-garden-water';
 const STEPPY_COLUMNS = 5;
 
 type PlayerState = {
@@ -17,6 +17,9 @@ type GameState = {
   player: PlayerState;
   map: Record<string, number[]>;
   seed: number;
+  water: number;
+  maxWater: number;
+  score: number;
 };
 
 const createInitialState = (): GameState => ({
@@ -26,6 +29,9 @@ const createInitialState = (): GameState => ({
   player: { x: Math.floor(STEPPY_COLUMNS / 2), y: 0 },
   map: {},
   seed: Date.now(),
+  water: 20,
+  maxWater: 25,
+  score: 0
 });
 
 const getClientId = (req: VercelRequest): string | null => {

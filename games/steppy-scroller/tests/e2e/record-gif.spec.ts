@@ -53,20 +53,27 @@ test('record gameplay gif', async ({ page }) => {
     let actionToClick = '';
     
     while (!climbed && attempts < 5) {
-        const state = await getState();
+        const state: any = await getState();
         const actions = state.actions;
-        
-        // Strategy: Up > Right > Left > Down
-        const up = actions.find((a: any) => a.id === 'step-up');
-        const right = actions.find((a: any) => a.id === 'step-right');
-        const left = actions.find((a: any) => a.id === 'step-left');
+        const optimal = state.evaluation?.optimalChoice;
 
-        if (up && up.enabled) {
-            actionToClick = 'step-up';
-        } else if (right && right.enabled) {
-            actionToClick = 'step-right';
-        } else if (left && left.enabled) {
-            actionToClick = 'step-left';
+        // Strategy: Use Optimal Choice if available, else Fallback
+        
+        if (optimal && actions.find((a: any) => a.id === optimal && a.enabled)) {
+            actionToClick = optimal;
+        } else {
+             // Fallback: Up > Right > Left
+            const up = actions.find((a: any) => a.id === 'step-up');
+            const right = actions.find((a: any) => a.id === 'step-right');
+            const left = actions.find((a: any) => a.id === 'step-left');
+
+            if (up && up.enabled) {
+                actionToClick = 'step-up';
+            } else if (right && right.enabled) {
+                actionToClick = 'step-right';
+            } else if (left && left.enabled) {
+                actionToClick = 'step-left';
+            }
         }
 
         if (actionToClick) {
@@ -74,8 +81,8 @@ test('record gameplay gif', async ({ page }) => {
             // We use label text to find it usually, but let's map id to label or just search
             const labelMap: Record<string, string> = {
                 'step-up': '↑',
-                'step-left': '←',
-                'step-right': '→'
+                'step-left': '↖',
+                'step-right': '↗'
             };
             const label = labelMap[actionToClick];
             const button = page.getByRole('button', { name: label });
@@ -87,8 +94,7 @@ test('record gameplay gif', async ({ page }) => {
             await takeScreenshot();
 
             // 3. Perform Action
-            await button.click(); // This might trigger re-render, removing class if UI refreshes fully. 
-            // In our case, UI is re-rendered by `renderUi`. So the class will be lost, which is perfect.
+            await button.click(); 
             
             // 4. Wait a tiny bit for animation/update
             await page.waitForTimeout(100); 
@@ -108,11 +114,6 @@ test('record gameplay gif', async ({ page }) => {
   console.log(`Captured ${frameCount} frames. Generating GIF...`);
 
   // Generate GIF using ffmpeg
-  // -framerate 3: 3 frames per second
-  // -i ...: input pattern
-  // -vf ...: scale if needed, or palette gen for better quality
-  // loop -1 or 0? 0 is infinite.
-  
   try {
     // Generate palette for better quality
     const palettePath = path.join(framesDir, 'palette.png');
@@ -126,9 +127,6 @@ test('record gameplay gif', async ({ page }) => {
     console.error('Failed to generate GIF with ffmpeg', error);
   } finally {
     // Clean up frames
-    // fs.rmSync(framesDir, { recursive: true, force: true });
-    // Keep frames for debug if needed, or comment out above line to keep.
-    // For now, let's clean up.
     fs.rmSync(framesDir, { recursive: true, force: true });
   }
 });

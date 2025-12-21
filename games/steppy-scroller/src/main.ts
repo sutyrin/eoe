@@ -6,10 +6,12 @@ import { createStateController } from './game-core/state-controller';
 import {
   computeActions,
   createInitialState,
+  evaluateState,
   getRow,
   STEPPY_COLUMNS,
   STEPPY_VERSION,
   CELL_BLOCK,
+  CELL_WATER,
   type GameState
 } from './game-core/steppy';
 
@@ -43,11 +45,10 @@ class SteppyScene extends Phaser.Scene {
 
     const width = STEPPY_COLUMNS * CELL_SIZE;
     const height = VIEW_ROWS * CELL_SIZE;
+    const gaugeWidth = 16;
+    const padding = 10;
 
-    // Calculate camera offset to keep player in view
-    // We want the player to be FIXED at the bottom row (rowOffset = 0).
-    // So worldY at bottom = player.y
-    // Therefore cameraY = player.y
+    // Camera always follows player at the bottom row
     const cameraY = this.state.player.y;
 
     // Draw Background
@@ -65,45 +66,34 @@ class SteppyScene extends Phaser.Scene {
         this.graphics.lineBetween(0, y, width, y);
     }
 
-    // Draw Cells (Blocks)
-    // We render rows from cameraY to cameraY + VIEW_ROWS
+    // Draw Cells
     for (let rowOffset = 0; rowOffset < VIEW_ROWS; rowOffset++) {
         const worldY = cameraY + rowOffset;
         const rowData = getRow(this.state, worldY);
         const screenY = (VIEW_ROWS - 1 - rowOffset) * CELL_SIZE;
         
         for (let x = 0; x < STEPPY_COLUMNS; x++) {
-            if (rowData[x] === CELL_BLOCK) {
-                const screenX = x * CELL_SIZE;
-                
+            const cell = rowData[x];
+            const screenX = x * CELL_SIZE;
+            
+            if (cell === CELL_BLOCK) {
                 // Deep Green for "Vine/Leaf" blocks
                 this.graphics.fillStyle(0x1a472a, 1); 
-                this.graphics.fillRoundedRect(
-                    screenX + 4,
-                    screenY + 4,
-                    CELL_SIZE - 8,
-                    CELL_SIZE - 8,
-                    8
-                );
-                
-                // Lighter highlight
+                this.graphics.fillRoundedRect(screenX + 4, screenY + 4, CELL_SIZE - 8, CELL_SIZE - 8, 8);
                 this.graphics.lineStyle(2, 0x2d6e42, 1);
-                this.graphics.strokeRoundedRect(
-                    screenX + 4,
-                    screenY + 4,
-                    CELL_SIZE - 8,
-                    CELL_SIZE - 8,
-                    8
-                );
+                this.graphics.strokeRoundedRect(screenX + 4, screenY + 4, CELL_SIZE - 8, CELL_SIZE - 8, 8);
+            } else if (cell === CELL_WATER) {
+                // Blue Droplet
+                this.graphics.fillStyle(0x3498db, 0.8);
+                this.graphics.fillCircle(screenX + CELL_SIZE/2, screenY + CELL_SIZE/2, CELL_SIZE/4);
+                this.graphics.lineStyle(2, 0x2980b9, 1);
+                this.graphics.strokeCircle(screenX + CELL_SIZE/2, screenY + CELL_SIZE/2, CELL_SIZE/4);
             }
         }
     }
 
     // Draw Player
-    const padding = 10;
     const playerRelativeY = this.state.player.y - cameraY;
-    
-    // Only draw if within view (should always be true due to camera logic)
     if (playerRelativeY >= 0 && playerRelativeY < VIEW_ROWS) {
         const playerScreenY = (VIEW_ROWS - 1 - playerRelativeY) * CELL_SIZE;
         
@@ -116,8 +106,6 @@ class SteppyScene extends Phaser.Scene {
             CELL_SIZE - padding * 2,
             16
         );
-        
-        // Inner detail
          this.graphics.fillStyle(0xff8c00, 1);
          this.graphics.fillCircle(
             this.state.player.x * CELL_SIZE + CELL_SIZE/2,
@@ -126,14 +114,49 @@ class SteppyScene extends Phaser.Scene {
          );
     }
     
-    // Depth Indicator (HUD)
-    this.add.text(10, 10, `Height: ${this.state.player.y}m`, { 
+    // Water Gauge (Left Side)
+    // Draw relative to the left of the main grid.
+    // Phaser Graphics is relative to scene 0,0. 
+    // The game width is STEPPY_COLUMNS * CELL_SIZE.
+    // We want it on the left edge.
+    // Actually, let's draw it overlaying on the left, or just left of grid?
+    // Since width is defined, we can just draw at x = 10.
+    
+    const maxBarHeight = height - 40;
+    const currentBarHeight = (this.state.water / this.state.maxWater) * maxBarHeight;
+    const barX = 8;
+    const barY = 20 + (maxBarHeight - currentBarHeight);
+    
+    // Background bar
+    this.graphics.fillStyle(0xbdc3c7, 0.5);
+    this.graphics.fillRoundedRect(barX, 20, gaugeWidth, maxBarHeight, 4);
+    
+    // Fill bar
+    const waterColor = this.state.water < 5 ? 0xe74c3c : 0x3498db;
+    this.graphics.fillStyle(waterColor, 1);
+    this.graphics.fillRoundedRect(barX, barY, gaugeWidth, currentBarHeight, 4);
+    
+    // HUD Text
+    const hudStyle = { 
         fontFamily: 'monospace',
         color: '#2e5c3a',
         fontSize: '16px',
-        backgroundColor: '#e6f0dc88',
+        backgroundColor: '#e6f0dccc',
         padding: { x: 4, y: 4 }
-    }).setDepth(10); // Ensure on top
+    };
+
+    // Top Right: Height
+    this.add.text(width - 120, 10, `Height: ${this.state.player.y}m`, hudStyle).setDepth(10);
+    
+    if (this.state.status === 'ended') {
+        this.add.text(width/2, height/2, 'WITHERED', {
+            fontSize: '48px',
+            color: '#c0392b',
+            fontStyle: 'bold',
+            stroke: '#fff',
+            strokeThickness: 4
+        }).setOrigin(0.5).setDepth(20);
+    }
   }
 }
 
@@ -245,11 +268,19 @@ const controller = createStateController(store, {
 
 registerGame(
   {
-    getState: () => ({ ...state, actions: computeActions(state) }),
+    getState: () => ({ 
+        ...state, 
+        actions: computeActions(state),
+        evaluation: evaluateState(state) 
+    } as any),
     getActions: () => computeActions(state),
     act: (actionId: string) => {
       controller.act(actionId);
-      return { ...state, actions: computeActions(state) };
+      return { 
+          ...state, 
+          actions: computeActions(state),
+          evaluation: evaluateState(state)
+      } as any;
     }
   },
   { log: true, tag: '[mcp]' }
