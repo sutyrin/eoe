@@ -35,11 +35,7 @@ test('Game supports infinite vertical scrolling', async ({ page }) => {
                  await page.evaluate(() => window.__MCP__?.act('step-left'));
             } else {
                  // Stuck? Should not happen in this simple generator often
-                 // Maybe backtrack down?
-                 const down = actions.find((a: any) => a.id === 'step-down');
-                 if (down && down.enabled) {
-                     await page.evaluate(() => window.__MCP__?.act('step-down'));
-                 }
+                 // Maybe wait?
             }
         }
         attempts++;

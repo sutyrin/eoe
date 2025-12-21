@@ -45,10 +45,10 @@ class SteppyScene extends Phaser.Scene {
     const height = VIEW_ROWS * CELL_SIZE;
 
     // Calculate camera offset to keep player in view
-    // We want the player to be roughly at the 3rd row from the bottom
-    // screenRow = VIEW_ROWS - 1 - (worldY - cameraY)
-    // We want screenRow ~ VIEW_ROWS - 3 => worldY - cameraY ~ 2 => cameraY ~ worldY - 2
-    let cameraY = Math.max(0, this.state.player.y - 2);
+    // We want the player to be FIXED at the bottom row (rowOffset = 0).
+    // So worldY at bottom = player.y
+    // Therefore cameraY = player.y
+    const cameraY = this.state.player.y;
 
     // Draw Background
     this.graphics.fillStyle(0xe6f0dc, 0.8);

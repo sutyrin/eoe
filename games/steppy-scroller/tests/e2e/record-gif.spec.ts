@@ -60,7 +60,6 @@ test('record gameplay gif', async ({ page }) => {
         const up = actions.find((a: any) => a.id === 'step-up');
         const right = actions.find((a: any) => a.id === 'step-right');
         const left = actions.find((a: any) => a.id === 'step-left');
-        const down = actions.find((a: any) => a.id === 'step-down');
 
         if (up && up.enabled) {
             actionToClick = 'step-up';
@@ -68,8 +67,6 @@ test('record gameplay gif', async ({ page }) => {
             actionToClick = 'step-right';
         } else if (left && left.enabled) {
             actionToClick = 'step-left';
-        } else if (down && down.enabled) {
-            actionToClick = 'step-down';
         }
 
         if (actionToClick) {
@@ -78,8 +75,7 @@ test('record gameplay gif', async ({ page }) => {
             const labelMap: Record<string, string> = {
                 'step-up': '↑',
                 'step-left': '←',
-                'step-right': '→',
-                'step-down': '↓'
+                'step-right': '→'
             };
             const label = labelMap[actionToClick];
             const button = page.getByRole('button', { name: label });

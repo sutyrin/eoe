@@ -135,9 +135,6 @@ export const computeActions = (state: GameState): Action[] => {
     // Step Up checks y + 1
     { id: 'step-up', label: '↑', enabled: isWalkable(state, x, y + 1) },
     { id: 'step-right', label: '→', enabled: isWalkable(state, x + 1, y) },
-    // Optional: Step Down? For now, let's keep it upward only or allow down for backtracking.
-    // Let's allow Down for "Exploration" feel.
-    { id: 'step-down', label: '↓', enabled: isWalkable(state, x, y - 1) },
   ];
 };
 
@@ -159,7 +156,6 @@ export const applyAction = (state: GameState, actionId: string): GameState => {
   if (actionId === 'step-left') targetX -= 1;
   if (actionId === 'step-right') targetX += 1;
   if (actionId === 'step-up') targetY += 1;
-  if (actionId === 'step-down') targetY -= 1;
 
   if (isWalkable(next, targetX, targetY)) {
       next.player.x = targetX;
