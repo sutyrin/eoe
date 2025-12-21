@@ -127,7 +127,7 @@ state.actions = computeActions(state);
 
 const scene = new SteppyScene(state);
 
-const game = new Phaser.Game({
+new Phaser.Game({
   type: Phaser.AUTO,
   width: COLUMNS * CELL_SIZE,
   height: ROWS * CELL_SIZE,
