@@ -124,15 +124,25 @@ const renderUi = () => {
 
 const store = {
   load: async () => {
-    const clientId = getBrowserId();
-    const response = await fetch('/api/state', {
-      headers: { 'x-client-id': clientId }
-    });
-    if (!response.ok) {
+    try {
+      const clientId = getBrowserId();
+      const response = await fetch('/api/state', {
+        headers: { 'x-client-id': clientId }
+      });
+      if (!response.ok) {
+        return createInitialState();
+      }
+      const contentType = response.headers.get('content-type');
+      if (!contentType || !contentType.includes('application/json')) {
+        console.warn('API returned non-JSON content:', contentType);
+        return createInitialState();
+      }
+      const payload = (await response.json()) as { state: GameState };
+      return payload.state;
+    } catch (err) {
+      console.warn('Failed to load state from API, falling back to local:', err);
       return createInitialState();
     }
-    const payload = (await response.json()) as { state: GameState };
-    return payload.state;
   },
   save: async (nextState: GameState) => {
     const clientId = getBrowserId();
