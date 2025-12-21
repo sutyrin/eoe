@@ -122,7 +122,13 @@ const handleAction = (actionId: string) => {
 
 const init = async () => {
   shell?.classList.add('is-loading');
-  const initialState = await controller.init();
+  let initialState: GameState;
+  try {
+    initialState = await controller.init();
+  } catch (error) {
+    console.error('Init failed', error);
+    initialState = createInitialState();
+  }
 
   const localScene = new SteppyScene(initialState);
   scene = localScene;

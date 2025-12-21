@@ -18,7 +18,6 @@
     "vite": "^7.2.4"
   },
   "dependencies": {
-    "@eoe/game-core": "file:../../packages/game-core",
     "@vercel/kv": "^1.0.0",
     "phaser": "^3.90.0"
   }

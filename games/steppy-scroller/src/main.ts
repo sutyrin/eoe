@@ -1,15 +1,15 @@
 import './style.css';
 import Phaser from 'phaser';
 import { registerGame } from './mcp/game-api';
-import { getBrowserId } from '@eoe/game-core/browser-id';
-import { createStateController } from '@eoe/game-core/state-controller';
+import { getBrowserId } from './game-core/browser-id';
+import { createStateController } from './game-core/state-controller';
 import {
   computeActions,
   createInitialState,
   STEPPY_COLUMNS,
   STEPPY_ROWS,
   type GameState
-} from '@eoe/game-core/steppy';
+} from './game-core/steppy';
 
 const CELL_SIZE = 56;
 
