@@ -66,32 +66,34 @@ class SteppyScene extends Phaser.Scene {
     }
 
     // Draw Cells (Blocks)
-    this.graphics.fillStyle(0x5e4c35, 1); // Brown for obstacles
-    
     // We render rows from cameraY to cameraY + VIEW_ROWS
     for (let rowOffset = 0; rowOffset < VIEW_ROWS; rowOffset++) {
         const worldY = cameraY + rowOffset;
         const rowData = getRow(this.state, worldY);
-        
-        // Screen Y calculation:
-        // World Y increases UP. Screen Y increases DOWN.
-        // If worldY = cameraY, it should be at the bottom? 
-        // No, cameraY is the "bottom-most visible row index".
-        // So worldY=cameraY is at screenY = (VIEW_ROWS - 1) * CELL_SIZE?
-        // Let's verify:
-        // If worldY = cameraY, we want it at the bottom of the screen.
-        // screenY index = VIEW_ROWS - 1 - rowOffset
         const screenY = (VIEW_ROWS - 1 - rowOffset) * CELL_SIZE;
         
         for (let x = 0; x < STEPPY_COLUMNS; x++) {
             if (rowData[x] === CELL_BLOCK) {
                 const screenX = x * CELL_SIZE;
+                
+                // Deep Green for "Vine/Leaf" blocks
+                this.graphics.fillStyle(0x1a472a, 1); 
                 this.graphics.fillRoundedRect(
                     screenX + 4,
                     screenY + 4,
                     CELL_SIZE - 8,
                     CELL_SIZE - 8,
-                    4
+                    8
+                );
+                
+                // Lighter highlight
+                this.graphics.lineStyle(2, 0x2d6e42, 1);
+                this.graphics.strokeRoundedRect(
+                    screenX + 4,
+                    screenY + 4,
+                    CELL_SIZE - 8,
+                    CELL_SIZE - 8,
+                    8
                 );
             }
         }
@@ -105,18 +107,33 @@ class SteppyScene extends Phaser.Scene {
     if (playerRelativeY >= 0 && playerRelativeY < VIEW_ROWS) {
         const playerScreenY = (VIEW_ROWS - 1 - playerRelativeY) * CELL_SIZE;
         
-        this.graphics.fillStyle(0x2e5c3a, 1);
+        // Bright Flower/Sprout color
+        this.graphics.fillStyle(0xffd700, 1);
         this.graphics.fillRoundedRect(
             this.state.player.x * CELL_SIZE + padding,
             playerScreenY + padding,
             CELL_SIZE - padding * 2,
             CELL_SIZE - padding * 2,
-            8
+            16
         );
+        
+        // Inner detail
+         this.graphics.fillStyle(0xff8c00, 1);
+         this.graphics.fillCircle(
+            this.state.player.x * CELL_SIZE + CELL_SIZE/2,
+            playerScreenY + CELL_SIZE/2,
+            8
+         );
     }
     
-    // Debug info
-    // this.add.text(10, 10, `Y: ${this.state.player.y}`, { color: '#000' });
+    // Depth Indicator (HUD)
+    this.add.text(10, 10, `Height: ${this.state.player.y}m`, { 
+        fontFamily: 'monospace',
+        color: '#2e5c3a',
+        fontSize: '16px',
+        backgroundColor: '#e6f0dc88',
+        padding: { x: 4, y: 4 }
+    }).setDepth(10); // Ensure on top
   }
 }
 

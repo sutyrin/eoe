@@ -33,23 +33,68 @@ const random = (seed: number) => {
   return x - Math.floor(x);
 };
 
+// Pure function to generate a row's data based on seed and Y
+// This ensures consistency without side effects
+const generateRowData = (seed: number, y: number): number[] => {
+  const row: number[] = [];
+  const rowSeed = seed + y * 100;
+
+  // Feature: Vertical Vines
+  // A vine is a vertical column of blocks.
+  // We determine if a column C has a vine at row Y based on a slower varying noise.
+  
+  for (let x = 0; x < STEPPY_COLUMNS; x++) {
+    let isBlock = false;
+
+    // Safety Zone at start
+    if (y > 3) {
+      // 1. Scattered Noise (Thorns)
+      // 10% chance of a random block
+      const noise = random(rowSeed + x);
+      if (noise < 0.1) {
+        isBlock = true;
+      }
+
+      // 2. Structural Vines (Branching Paths)
+      // We want vines to last for a segment (e.g. 10-20 rows).
+      // We check a "segment index" for this column.
+      const segmentHeight = 20;
+      const segmentIndex = Math.floor(y / segmentHeight);
+      // Unique seed for this column's segment
+      const segmentSeed = seed + x * 500 + segmentIndex * 1000; 
+      
+      // 30% chance this segment of this column is a Vine
+      if (random(segmentSeed) < 0.3) {
+          // It's a vine segment!
+          // But maybe we have gaps? No, solid vine is better for structure.
+          isBlock = true;
+      }
+    }
+    
+    // Safety check: Don't block ALL columns.
+    // This simple local logic doesn't guarantee a path, but with 5 cols and 0.3 density + 0.1 noise,
+    // full blockage is rare but possible.
+    // Enhancing safety: Ensure Column 2 (Middle) is safer? 
+    // Or just accept dead ends for now (part of the game).
+    
+    row.push(isBlock ? CELL_BLOCK : CELL_EMPTY);
+  }
+  
+  // Emergency Pass: If row is full, clear a random spot (deterministic)
+  if (row.every(c => c === CELL_BLOCK)) {
+     const safeCol = Math.floor(random(rowSeed) * STEPPY_COLUMNS);
+     row[safeCol] = CELL_EMPTY;
+  }
+
+  return row;
+};
+
 // Generate a row if it doesn't exist
 export const getRow = (state: GameState, y: number): number[] => {
   if (state.map[y]) {
     return state.map[y];
   }
-  
-  // Deterministic generation based on Y and initial seed
-  const row: number[] = [];
-  const rowSeed = state.seed + y * 100;
-  
-  for (let x = 0; x < STEPPY_COLUMNS; x++) {
-    // 15% chance of block, but ensure start (y=0) is empty
-    const isBlock = y > 2 && random(rowSeed + x) < 0.15;
-    row.push(isBlock ? CELL_BLOCK : CELL_EMPTY);
-  }
-  
-  return row;
+  return generateRowData(state.seed, y);
 };
 
 // Check if a specific cell is walkable
@@ -60,31 +105,10 @@ const isWalkable = (state: GameState, x: number, y: number): boolean => {
   // For now, y < 0 is not allowed
   if (y < 0) return false;
 
-  // Get (or generate) row data. 
-  // Note: This function doesn't mutate state, it just calculates what *would* be there.
-  // In a real implementation we might want to cache this generation, 
-  // but for purity in `isWalkable` we re-calculate if missing.
-  // However, `computeActions` shouldn't mutate state. 
-  // So we replicate generation logic here locally or rely on `getRow` return.
-  
-  // To avoid mutation issues in "check" functions, we need a way to peek.
-  // Since `getRow` above returns the array but doesn't *save* it to state unless we assign it,
-  // we need to be careful. 
-  // For this version: "Generation on read" is okay if deterministic.
-  
-  // Re-implement generation logic for "Peek" to avoid state mutation side-effects in getters?
-  // Or just accept that `getRow` is a generator.
-  
-  // Let's use the determinstic property:
-  // If it's in the map, use it. If not, generate it temporarily.
+  // Get (or generate) row data using the same pure logic
   let row = state.map[y];
   if (!row) {
-      const rowSeed = state.seed + y * 100;
-      row = [];
-      for (let cx = 0; cx < STEPPY_COLUMNS; cx++) {
-        const isBlock = y > 2 && random(rowSeed + cx) < 0.15;
-        row.push(isBlock ? CELL_BLOCK : CELL_EMPTY);
-      }
+      row = generateRowData(state.seed, y);
   }
   
   return row[x] !== CELL_BLOCK;

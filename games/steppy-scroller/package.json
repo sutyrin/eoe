@@ -10,8 +10,10 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
+    "test:e2e": "playwright test",
     "screenshot": "playwright test tests/e2e/capture-screenshot.spec.ts",
-    "test:e2e": "playwright test"
+    "record": "playwright test tests/e2e/record-gif.spec.ts",
+    "lint": "eslint ."
   },
   "devDependencies": {
     "@vercel/node": "^3.0.0",
