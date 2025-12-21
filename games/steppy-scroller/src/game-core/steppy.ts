@@ -86,7 +86,7 @@ const generateRowData = (seed: number, y: number): number[] => {
   // Emergency Pass: If row is full of blocks, clear a random spot
   if (row.every(c => c === CELL_BLOCK)) {
      const safeCol = Math.floor(random(rowSeed) * STEPPY_COLUMNS);
-     row[safeCol] = CELL_EMPTY;
+     (row as number[])[safeCol] = CELL_EMPTY;
   }
 
   return row;
