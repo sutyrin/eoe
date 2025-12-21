@@ -9,7 +9,7 @@ test('MCP state and UI stay in sync', async ({ page }) => {
   expect(initial?.tick).toBe(0);
   expect(initial?.player.y).toBe(0);
 
-  await page.getByRole('button', { name: 'Up' }).click();
+  await page.getByRole('button', { name: '↑' }).click();
 
   const afterUi = await page.evaluate(() => window.__MCP__?.getState());
   expect(afterUi?.tick).toBe(1);

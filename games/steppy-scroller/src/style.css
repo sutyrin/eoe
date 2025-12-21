@@ -1,9 +1,9 @@
 :root {
   font-family: 'Trebuchet MS', 'Segoe UI', sans-serif;
-  line-height: 1.4;
-  font-weight: 500;
+  line-height: 1.2;
+  font-weight: 600;
   color: #1f2b1f;
-  background-color: #e9f1e2;
+  background-color: #dbe8d3;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -16,7 +16,7 @@
 body {
   margin: 0;
   min-height: 100vh;
-  background: linear-gradient(180deg, #f6efe0 0%, #e4f0d8 45%, #d4ebd7 100%);
+  background: url('./bg.svg') center center / cover no-repeat fixed;
 }
 
 #app {
@@ -24,73 +24,54 @@ body {
 }
 
 .shell {
+  position: relative;
   height: 100dvh;
-  padding: 20px 16px calc(20px + env(safe-area-inset-bottom));
-  display: grid;
-  grid-template-rows: auto minmax(0, 1fr) auto;
-  gap: 16px;
-}
-
-.hud {
-  display: grid;
-  gap: 6px;
-}
-
-.title {
-  font-size: 1.6rem;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: #2a4b2f;
-}
-
-.subtitle {
-  font-size: 1rem;
-  color: #375d3f;
-}
-
-.status {
-  font-size: 0.9rem;
-  color: #5f765f;
+  width: 100vw;
+  overflow: hidden;
 }
 
 #game-root {
+  position: absolute;
+  inset: 0;
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 0;
 }
 
 #game-root canvas {
-  width: min(100%, 420px);
+  width: min(92vw, 420px);
   height: auto;
-  max-height: 60vh;
-  border-radius: 18px;
-  box-shadow: 0 16px 40px rgba(32, 59, 38, 0.2);
+  max-height: calc(100vh - 160px);
+  border-radius: 22px;
+  box-shadow: 0 18px 46px rgba(29, 54, 36, 0.25);
 }
 
 .controls {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
+  position: absolute;
+  left: 50%;
+  bottom: calc(12px + env(safe-area-inset-bottom));
+  transform: translateX(-50%);
+  display: flex;
+  gap: 16px;
 }
 
 .action {
-  background: #325a3c;
-  color: #f8f7ec;
-  border: none;
-  border-radius: 16px;
-  padding: 14px 12px;
-  font-size: 1rem;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
+  width: 88px;
+  height: 88px;
+  background: #2f583a;
+  color: #f4f4e7;
+  border: 3px solid rgba(255, 255, 255, 0.25);
+  border-radius: 22px;
+  font-size: 2rem;
+  letter-spacing: 0.02em;
   cursor: pointer;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
-  box-shadow: 0 8px 0 #203b26;
+  box-shadow: 0 10px 0 #203b26;
 }
 
 .action:disabled {
-  background: #9bb39b;
-  color: #f3f3e5;
+  background: #9caf9c;
+  color: #eef0e3;
   box-shadow: none;
   cursor: not-allowed;
 }
@@ -100,24 +81,14 @@ body {
   box-shadow: 0 4px 0 #203b26;
 }
 
-@media (min-width: 768px) {
-  .shell {
-    max-width: 520px;
-    margin: 0 auto;
-  }
-}
-
 @media (max-height: 720px) {
-  .shell {
-    padding-top: 12px;
-    gap: 12px;
-  }
-
-  .title {
-    font-size: 1.3rem;
-  }
-
   #game-root canvas {
-    max-height: 52vh;
+    max-height: calc(100vh - 140px);
+  }
+
+  .action {
+    width: 76px;
+    height: 76px;
+    font-size: 1.6rem;
   }
 }

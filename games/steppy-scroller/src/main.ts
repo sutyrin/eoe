@@ -20,9 +20,9 @@ const computeActions = (state: GameState): Action[] => {
     return [];
   }
   return [
-    { id: 'step-left', label: 'Left', enabled: state.player.x > 0 },
-    { id: 'step-up', label: 'Up', enabled: state.player.y < ROWS - 1 },
-    { id: 'step-right', label: 'Right', enabled: state.player.x < COLUMNS - 1 }
+    { id: 'step-left', label: '←', enabled: state.player.x > 0 },
+    { id: 'step-up', label: '↑', enabled: state.player.y < ROWS - 1 },
+    { id: 'step-right', label: '→', enabled: state.player.x < COLUMNS - 1 }
   ];
 };
 
@@ -76,10 +76,10 @@ class SteppyScene extends Phaser.Scene {
     const width = COLUMNS * CELL_SIZE;
     const height = ROWS * CELL_SIZE;
 
-    this.graphics.fillStyle(0xe3f0db, 1);
+    this.graphics.fillStyle(0xe6f0dc, 0.8);
     this.graphics.fillRect(0, 0, width, height);
 
-    this.graphics.lineStyle(2, 0x9eb28f, 1);
+    this.graphics.lineStyle(2, 0x9eb28f, 0.8);
     for (let col = 0; col <= COLUMNS; col += 1) {
       const x = col * CELL_SIZE;
       this.graphics.lineBetween(x, 0, x, height);
@@ -91,7 +91,7 @@ class SteppyScene extends Phaser.Scene {
 
     const { x, y } = this.state.player;
     const padding = 10;
-    this.graphics.fillStyle(0x3b6b3b, 1);
+    this.graphics.fillStyle(0x2e5c3a, 1);
     this.graphics.fillRoundedRect(
       x * CELL_SIZE + padding,
       height - (y + 1) * CELL_SIZE + padding,
@@ -109,17 +109,11 @@ if (!app) {
 
 app.innerHTML = `
   <div class="shell">
-    <div class="hud">
-      <div class="title">Steppy Scroller</div>
-      <div class="subtitle">Climb one step at a time. Choose wisely.</div>
-      <div class="status" id="status"></div>
-    </div>
     <div id="game-root"></div>
     <div class="controls" id="controls"></div>
   </div>
 `;
 
-const statusEl = document.querySelector<HTMLDivElement>('#status');
 const controlsEl = document.querySelector<HTMLDivElement>('#controls');
 
 let state = createInitialState();
@@ -131,7 +125,7 @@ new Phaser.Game({
   type: Phaser.CANVAS,
   width: COLUMNS * CELL_SIZE,
   height: ROWS * CELL_SIZE,
-  backgroundColor: '#e3f0db',
+  backgroundColor: 'transparent',
   parent: 'game-root',
   scene: [scene],
   render: {
@@ -145,9 +139,6 @@ new Phaser.Game({
 });
 
 const renderUi = () => {
-  if (statusEl) {
-    statusEl.textContent = state.status === 'ended' ? 'Reached the top.' : 'Ready for your next step.';
-  }
   if (!controlsEl) {
     return;
   }

@@ -1,0 +1,20 @@
+<svg width="390" height="844" viewBox="0 0 390 844" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#f3efd6"/>
+      <stop offset="55%" stop-color="#dce8ce"/>
+      <stop offset="100%" stop-color="#cfe1c7"/>
+    </linearGradient>
+    <linearGradient id="mist" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f8f6e9" stop-opacity="0.8"/>
+      <stop offset="100%" stop-color="#c7dac4" stop-opacity="0.2"/>
+    </linearGradient>
+  </defs>
+  <rect width="390" height="844" fill="url(#sky)"/>
+  <circle cx="310" cy="120" r="110" fill="#f8f3d3" opacity="0.6"/>
+  <circle cx="40" cy="220" r="90" fill="#e8f0d6" opacity="0.7"/>
+  <rect x="0" y="480" width="390" height="364" fill="#c8d9c2" opacity="0.9"/>
+  <path d="M0 520 C80 480 160 560 240 520 C300 490 340 520 390 500 L390 844 L0 844 Z" fill="#b7cbb6" opacity="0.9"/>
+  <path d="M0 600 C90 560 180 620 260 600 C320 580 360 610 390 590 L390 844 L0 844 Z" fill="#a6bfab" opacity="0.75"/>
+  <rect x="0" y="0" width="390" height="844" fill="url(#mist)"/>
+</svg>
