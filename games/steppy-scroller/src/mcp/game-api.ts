@@ -12,7 +12,7 @@ export type GameState = {
     x: number;
     y: number;
   };
-  actions: Action[];
+  actions?: Action[];
   meta?: Record<string, unknown>;
 };
 

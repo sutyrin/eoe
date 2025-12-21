@@ -1,60 +1,14 @@
 import Phaser from 'phaser';
+import { createStateController } from '@eoe/game-core/state-controller';
+import {
+  computeActions,
+  createInitialState,
+  STEPPY_COLUMNS,
+  STEPPY_ROWS,
+  type GameState,
+} from '@eoe/game-core/steppy';
 
-const COLUMNS = 5;
-const ROWS = 9;
 const CELL_SIZE = 56;
-
-type Action = {
-  id: string;
-  label: string;
-  enabled: boolean;
-};
-
-type GameState = {
-  version: string;
-  status: 'ready' | 'running' | 'ended';
-  tick: number;
-  player: {
-    x: number;
-    y: number;
-  };
-};
-
-const computeActions = (state: GameState): Action[] => {
-  if (state.status !== 'running') {
-    return [];
-  }
-  return [
-    { id: 'step-left', label: '←', enabled: state.player.x > 0 },
-    { id: 'step-up', label: '↑', enabled: state.player.y < ROWS - 1 },
-    { id: 'step-right', label: '→', enabled: state.player.x < COLUMNS - 1 },
-  ];
-};
-
-const applyAction = (state: GameState, actionId: string): GameState => {
-  if (state.status !== 'running') {
-    return state;
-  }
-  const next: GameState = {
-    ...state,
-    player: { ...state.player },
-  };
-
-  if (actionId === 'step-left' && next.player.x > 0) {
-    next.player.x -= 1;
-  }
-  if (actionId === 'step-right' && next.player.x < COLUMNS - 1) {
-    next.player.x += 1;
-  }
-  if (actionId === 'step-up' && next.player.y < ROWS - 1) {
-    next.player.y += 1;
-  }
-  next.tick += 1;
-  if (next.player.y >= ROWS - 1) {
-    next.status = 'ended';
-  }
-  return next;
-};
 
 class SteppyScene extends Phaser.Scene {
   private graphics?: Phaser.GameObjects.Graphics;
@@ -81,8 +35,8 @@ class SteppyScene extends Phaser.Scene {
     }
     this.graphics.clear();
 
-    const width = COLUMNS * CELL_SIZE;
-    const height = ROWS * CELL_SIZE;
+    const width = STEPPY_COLUMNS * CELL_SIZE;
+    const height = STEPPY_ROWS * CELL_SIZE;
 
     this.graphics.fillStyle(0xe6f0dc, 0.8);
     this.graphics.fillRect(0, 0, width, height);
@@ -132,49 +86,51 @@ const renderControls = (state: GameState) => {
   });
 };
 
-let state: GameState | null = null;
 let scene: SteppyScene | null = null;
 
-const handleAction = async (actionId: string) => {
-  if (!state) {
-    return;
-  }
-  const optimistic = applyAction(state, actionId);
-  state = optimistic;
-  scene?.updateState(state);
-  renderControls(state);
-
-  try {
-    const response = await fetch('/api/save', {
+const store = {
+  load: async () => {
+    const response = await fetch('/api/init');
+    if (!response.ok) {
+      return createInitialState();
+    }
+    const payload = (await response.json()) as { state: GameState };
+    return payload.state;
+  },
+  save: async (state: GameState) => {
+    await fetch('/api/save', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ state }),
     });
-    if (!response.ok) {
-      return;
-    }
-    await response.json();
-  } catch (error) {
-    console.error('Action failed', error);
-  }
+  },
+};
+
+const controller = createStateController(store, {
+  onState: (state) => {
+    scene?.updateState(state);
+    renderControls(state);
+  },
+  onError: (error) => {
+    console.error('Save failed', error);
+  },
+});
+
+const handleAction = (actionId: string) => {
+  controller.act(actionId);
 };
 
 const init = async () => {
   shell?.classList.add('is-loading');
-  const response = await fetch('/api/init');
-  if (!response.ok) {
-    throw new Error('Failed to init');
-  }
-  const payload = (await response.json()) as { state: GameState };
-  state = payload.state;
+  const initialState = await controller.init();
 
-  const localScene = new SteppyScene(state);
+  const localScene = new SteppyScene(initialState);
   scene = localScene;
 
   new Phaser.Game({
     type: Phaser.CANVAS,
-    width: COLUMNS * CELL_SIZE,
-    height: ROWS * CELL_SIZE,
+    width: STEPPY_COLUMNS * CELL_SIZE,
+    height: STEPPY_ROWS * CELL_SIZE,
     backgroundColor: 'transparent',
     parent: 'game-root',
     scene: [localScene],
@@ -188,7 +144,7 @@ const init = async () => {
     },
   });
 
-  renderControls(state);
+  renderControls(initialState);
   shell?.classList.remove('is-loading');
 };
 

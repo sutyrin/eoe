@@ -1,5 +1,6 @@
 import express from 'express';
-import { GameState, InitResponse, SaveResponse } from '../shared/types/api';
+import { createInitialState, type GameState } from '@eoe/game-core/steppy';
+import { InitResponse, SaveResponse } from '../shared/types/api';
 import { redis, createServer, context } from '@devvit/web/server';
 import { createPost } from './core/post';
 
@@ -13,16 +14,6 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.text());
 
 const router = express.Router();
-
-const COLUMNS = 5;
-const ROWS = 9;
-
-const createInitialState = (): GameState => ({
-  version: '0.1',
-  status: 'running',
-  tick: 0,
-  player: { x: Math.floor(COLUMNS / 2), y: 0 },
-});
 
 const getStateKey = (postId: string, userId: string) => `state:${postId}:${userId}`;
 

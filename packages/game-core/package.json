@@ -1,0 +1,12 @@
+{
+  "name": "@eoe/game-core",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./steppy": "./src/steppy.ts",
+    "./browser-id": "./src/browser-id.ts",
+    "./state-controller": "./src/state-controller.ts"
+  }
+}

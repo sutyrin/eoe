@@ -1,52 +1,17 @@
 import './style.css';
 import Phaser from 'phaser';
-import { registerGame, type Action, type GameState } from './mcp/game-api';
+import { registerGame } from './mcp/game-api';
+import { getBrowserId } from '@eoe/game-core/browser-id';
+import { createStateController } from '@eoe/game-core/state-controller';
+import {
+  computeActions,
+  createInitialState,
+  STEPPY_COLUMNS,
+  STEPPY_ROWS,
+  type GameState
+} from '@eoe/game-core/steppy';
 
-const COLUMNS = 5;
-const ROWS = 9;
 const CELL_SIZE = 56;
-
-const createInitialState = (): GameState => ({
-  version: '0.1',
-  status: 'running',
-  tick: 0,
-  player: { x: Math.floor(COLUMNS / 2), y: 0 },
-  actions: [],
-  meta: { columns: COLUMNS, rows: ROWS }
-});
-
-const computeActions = (state: GameState): Action[] => {
-  if (state.status !== 'running') {
-    return [];
-  }
-  return [
-    { id: 'step-left', label: '←', enabled: state.player.x > 0 },
-    { id: 'step-up', label: '↑', enabled: state.player.y < ROWS - 1 },
-    { id: 'step-right', label: '→', enabled: state.player.x < COLUMNS - 1 }
-  ];
-};
-
-const applyAction = (state: GameState, actionId: string): GameState => {
-  if (state.status !== 'running') {
-    return state;
-  }
-  const next = { ...state, player: { ...state.player } };
-  if (actionId === 'step-left' && next.player.x > 0) {
-    next.player.x -= 1;
-  }
-  if (actionId === 'step-right' && next.player.x < COLUMNS - 1) {
-    next.player.x += 1;
-  }
-  if (actionId === 'step-up' && next.player.y < ROWS - 1) {
-    next.player.y += 1;
-  }
-  next.tick += 1;
-  if (next.player.y >= ROWS - 1) {
-    next.status = 'ended';
-  }
-  next.actions = computeActions(next);
-  return next;
-};
 
 class SteppyScene extends Phaser.Scene {
   private graphics?: Phaser.GameObjects.Graphics;
@@ -73,18 +38,18 @@ class SteppyScene extends Phaser.Scene {
     }
     this.graphics.clear();
 
-    const width = COLUMNS * CELL_SIZE;
-    const height = ROWS * CELL_SIZE;
+    const width = STEPPY_COLUMNS * CELL_SIZE;
+    const height = STEPPY_ROWS * CELL_SIZE;
 
     this.graphics.fillStyle(0xe6f0dc, 0.8);
     this.graphics.fillRect(0, 0, width, height);
 
     this.graphics.lineStyle(2, 0x9eb28f, 0.8);
-    for (let col = 0; col <= COLUMNS; col += 1) {
+    for (let col = 0; col <= STEPPY_COLUMNS; col += 1) {
       const x = col * CELL_SIZE;
       this.graphics.lineBetween(x, 0, x, height);
     }
-    for (let row = 0; row <= ROWS; row += 1) {
+    for (let row = 0; row <= STEPPY_ROWS; row += 1) {
       const y = row * CELL_SIZE;
       this.graphics.lineBetween(0, y, width, y);
     }
@@ -117,14 +82,13 @@ app.innerHTML = `
 const controlsEl = document.querySelector<HTMLDivElement>('#controls');
 
 let state = createInitialState();
-state.actions = computeActions(state);
 
 const scene = new SteppyScene(state);
 
 new Phaser.Game({
   type: Phaser.CANVAS,
-  width: COLUMNS * CELL_SIZE,
-  height: ROWS * CELL_SIZE,
+  width: STEPPY_COLUMNS * CELL_SIZE,
+  height: STEPPY_ROWS * CELL_SIZE,
   backgroundColor: 'transparent',
   parent: 'game-root',
   scene: [scene],
@@ -143,33 +107,66 @@ const renderUi = () => {
     return;
   }
   controlsEl.innerHTML = '';
-  state.actions.forEach((action) => {
+  const actions = computeActions(state);
+  actions.forEach((action) => {
     const button = document.createElement('button');
     button.type = 'button';
     button.className = 'action';
     button.textContent = action.label;
     button.disabled = !action.enabled;
     button.addEventListener('click', () => {
-      state = applyAction(state, action.id);
-      scene.updateState(state);
-      renderUi();
+      controller.act(action.id);
     });
     controlsEl.appendChild(button);
   });
 };
 
+const store = {
+  load: async () => {
+    const clientId = getBrowserId();
+    const response = await fetch('/api/state', {
+      headers: { 'x-client-id': clientId }
+    });
+    if (!response.ok) {
+      return createInitialState();
+    }
+    const payload = (await response.json()) as { state: GameState };
+    return payload.state;
+  },
+  save: async (nextState: GameState) => {
+    const clientId = getBrowserId();
+    await fetch('/api/state', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-client-id': clientId
+      },
+      body: JSON.stringify({ state: nextState })
+    });
+  }
+};
+
+const controller = createStateController(store, {
+  onState: (nextState) => {
+    state = nextState;
+    scene.updateState(state);
+    renderUi();
+  },
+  onError: (error) => {
+    console.error('Save failed', error);
+  }
+});
+
 registerGame(
   {
-    getState: () => state,
-    getActions: () => state.actions,
+    getState: () => ({ ...state, actions: computeActions(state) }),
+    getActions: () => computeActions(state),
     act: (actionId: string) => {
-      state = applyAction(state, actionId);
-      scene.updateState(state);
-      renderUi();
-      return state;
+      controller.act(actionId);
+      return { ...state, actions: computeActions(state) };
     }
   },
   { log: true, tag: '[mcp]' }
 );
 
-renderUi();
+void controller.init();

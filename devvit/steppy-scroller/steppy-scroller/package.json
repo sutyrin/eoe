@@ -23,6 +23,7 @@
   },
   "dependencies": {
     "@devvit/web": "0.12.6",
+    "@eoe/game-core": "file:../../../packages/game-core",
     "devvit": "0.12.6",
     "express": "5.1.0",
     "phaser": "3.88.2"

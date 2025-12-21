@@ -1,14 +1,4 @@
-export type PlayerState = {
-  x: number;
-  y: number;
-};
-
-export type GameState = {
-  version: string;
-  status: 'ready' | 'running' | 'ended';
-  tick: number;
-  player: PlayerState;
-};
+import type { GameState } from '@eoe/game-core/steppy';
 
 export type InitResponse = {
   type: 'init';
