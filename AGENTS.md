@@ -207,6 +207,45 @@ Phaser переносится напрямую: `game.html` + `game.ts` + `game.
 - Playwright использует `page.evaluate()` для доступа к API.
 - Допускаются логи `console.log("[mcp]", ...)` для отладки, но это не основной интерфейс.
 
+### E2E smoke (Playwright)
+
+Локально (поднимается dev‑сервер):
+```
+cd games/steppy-scroller
+npm run test:e2e
+```
+
+Vercel smoke (без локального сервера):
+```
+cd games/steppy-scroller
+E2E_BASE_URL="https://steppy-scroller.vercel.app" npm run test:e2e
+```
+
+Отладка:
+```
+PWDEBUG=1 npm run test:e2e
+```
+
+Ожидания тестов: `window.__MCP__` доступен, есть `#controls .action`, и есть `#game-root canvas`.
+
+### Каноничные URL (обновлять при деплое)
+
+- Steppy Scroller (Vercel, prod): `https://steppy-scroller.vercel.app` (проверено 2025-12-21)
+
+### Как избегать ошибок (чек‑лист)
+
+- Всегда фиксируй финальные URL деплоя в этом файле (см. секцию выше) и обновляй дату.
+- Перед Vercel e2e проверь, что URL отвечает `200` и это нужный билд (минимум через `curl -I`).
+- В Playwright используй новый контекст (по умолчанию так и есть) — состояние должно стартовать с «чистого» browserId.
+- Не выводи токены/секреты из `.env` в stdout команд.
+- Для изменений UI сверяй `state.actions` с кнопками, и прогоняй минимум один MCP‑сценарий.
+
+### Где искать логи Codex CLI
+
+- `~/.codex/sessions/YYYY/MM/DD/*.jsonl` — покомандные логи диалогов и tool‑calls.
+- `~/.codex/history.jsonl` — общая история.
+- `~/.codex/log/codex-tui.log` — TUI‑лог.
+
 ### Тестовая пирамида на уровне структуры
 
 - `tests/unit` — максимальное покрытие утилит и логики.
