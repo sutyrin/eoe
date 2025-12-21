@@ -133,6 +133,12 @@ API реализуется как общий модуль в корне репо
 - Создание нового Devvit‑приложения (`devvit new`) требует действия пользователя в браузере; это нормально, нужно просить пользователя сделать это.
 - Деплой: `npm run build` → `devvit upload --bump patch` → `devvit install r/softwart <app>@<version>`.
 - Тестовый сабреддит: `/r/softwart`.
+- Playwright (браузерный тест, требуется логин):
+  1) `cd devvit/steppy-scroller/steppy-scroller`
+  2) Один раз: `npm run pw:login` → вручную залогиниться в Reddit → Enter (сохранит `playwright/.auth/reddit.json`).
+  3) Запуск: `DEVVIT_POST_URL="<post url>" HEADLESS=1 npm run pw:devvit:e2e`.
+  Скрипт кликает по центру поста, находит splash iframe, жмет Start и скринит результат в `test-results/devvit/`.
+  Для ручной отладки: `DEVTOOLS=1 npm run pw:devvit:e2e` (окно браузера + devtools).
 
 ## Devvit (итоги и практика)
 
@@ -147,6 +153,8 @@ Phaser переносится напрямую: `game.html` + `game.ts` + `game.
 
 Создание нового Devvit приложения требует участия пользователя в браузере при `devvit new`. После этого
 рекомендуемый путь: собрать ассеты, `devvit upload`, установить в `/r/softwart`, создать пост из меню.
+Проверка в браузере вручную: открыть пост → кликнуть по карточке поста (открывает splash) → нажать Start
+→ открывается игра (WebView).
 
 ## Структура разработки (черновик)
 
