@@ -19,6 +19,7 @@ Output columns:
 - `sessions`: number of Codex sessions for the day
 - `missing`: sessions that had no `token_count` info
 - `input`, `cached`, `output`, `reasoning`, `total`: summed from per‑session max `total_token_usage`
+Numbers are printed with a space thousands separator for readability.
 
 Notes:
 - `cached_input_tokens` can be non‑zero when the model reuses cached context.

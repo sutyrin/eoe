@@ -204,14 +204,17 @@ def main() -> int:
         ):
             bucket[key] += int(delta.get(key) or 0)
 
+    def fmt(value: int) -> str:
+        return f"{value:,}".replace(",", " ")
+
     print(f"Codex token usage for {date} (from token_count in session logs)")
     print("model\tsessions\tmissing\tinput\tcached\toutput\treasoning\ttotal")
     for model, data in per_model.items():
         print(
-            f"{model}\t{data['sessions']}\t{data['missing_sessions']}\t"
-            f"{data['input_tokens']}\t{data['cached_input_tokens']}\t"
-            f"{data['output_tokens']}\t{data['reasoning_output_tokens']}\t"
-            f"{data['total_tokens']}"
+            f"{model}\t{fmt(data['sessions'])}\t{fmt(data['missing_sessions'])}\t"
+            f"{fmt(data['input_tokens'])}\t{fmt(data['cached_input_tokens'])}\t"
+            f"{fmt(data['output_tokens'])}\t{fmt(data['reasoning_output_tokens'])}\t"
+            f"{fmt(data['total_tokens'])}"
         )
 
     return 0
