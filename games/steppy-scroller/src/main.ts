@@ -1,6 +1,6 @@
 import './style.css';
 import Phaser from 'phaser';
-import { registerGame, type Action, type GameState } from '../../../packages/game-api/src/index';
+import { registerGame, type Action, type GameState } from './mcp/game-api';
 
 const COLUMNS = 5;
 const ROWS = 9;
