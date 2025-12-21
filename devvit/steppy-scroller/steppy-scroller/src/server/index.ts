@@ -1,5 +1,5 @@
 import express from 'express';
-import { InitResponse, IncrementResponse } from '../shared/types/api';
+import { ActResponse, GameState, InitResponse } from '../shared/types/api';
 import { redis, createServer, context } from '@devvit/web/server';
 import { createPost } from './core/post';
 
@@ -13,6 +13,43 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.text());
 
 const router = express.Router();
+
+const COLUMNS = 5;
+const ROWS = 9;
+
+const createInitialState = (): GameState => ({
+  version: '0.1',
+  status: 'running',
+  tick: 0,
+  player: { x: Math.floor(COLUMNS / 2), y: 0 },
+});
+
+const applyAction = (state: GameState, actionId: string): GameState => {
+  if (state.status !== 'running') {
+    return state;
+  }
+  const next: GameState = {
+    ...state,
+    player: { ...state.player },
+  };
+
+  if (actionId === 'step-left' && next.player.x > 0) {
+    next.player.x -= 1;
+  }
+  if (actionId === 'step-right' && next.player.x < COLUMNS - 1) {
+    next.player.x += 1;
+  }
+  if (actionId === 'step-up' && next.player.y < ROWS - 1) {
+    next.player.y += 1;
+  }
+  next.tick += 1;
+  if (next.player.y >= ROWS - 1) {
+    next.status = 'ended';
+  }
+  return next;
+};
+
+const getStateKey = (postId: string, userId: string) => `state:${postId}:${userId}`;
 
 router.get<{ postId: string }, InitResponse | { status: string; message: string }>(
   '/api/init',
@@ -29,13 +66,17 @@ router.get<{ postId: string }, InitResponse | { status: string; message: string 
     }
 
     try {
-      const key = `count:${postId}:${userId}`;
-      const count = await redis.get(key);
+      const key = getStateKey(postId, userId);
+      const raw = await redis.get(key);
+      const state = raw ? (JSON.parse(raw) as GameState) : createInitialState();
+      if (!raw) {
+        await redis.set(key, JSON.stringify(state));
+      }
       res.json({
         type: 'init',
-        postId: postId,
-        userId: userId,
-        count: count ? parseInt(count) : 0,
+        postId,
+        userId,
+        state,
       });
     } catch (error) {
       console.error(`API Init Error for post ${postId}:`, error);
@@ -48,9 +89,11 @@ router.get<{ postId: string }, InitResponse | { status: string; message: string 
   }
 );
 
-router.post<{ postId: string }, IncrementResponse | { status: string; message: string }, unknown>(
-  '/api/increment',
-  async (_req, res): Promise<void> => {
+router.post<
+  { postId: string },
+  ActResponse | { status: string; message: string },
+  { actionId?: string }
+>('/api/act', async (req, res): Promise<void> => {
     const { postId, userId } = context;
     if (!postId || !userId) {
       res.status(400).json({
@@ -59,15 +102,28 @@ router.post<{ postId: string }, IncrementResponse | { status: string; message: s
       });
       return;
     }
+    const actionId = req.body?.actionId;
+    if (!actionId) {
+      res.status(400).json({
+        status: 'error',
+        message: 'actionId is required',
+      });
+      return;
+    }
+
+    const key = getStateKey(postId, userId);
+    const raw = await redis.get(key);
+    const state = raw ? (JSON.parse(raw) as GameState) : createInitialState();
+    const next = applyAction(state, actionId);
+    await redis.set(key, JSON.stringify(next));
 
     res.json({
-      count: await redis.incrBy(`count:${postId}:${userId}`, 1),
+      type: 'act',
       postId,
       userId,
-      type: 'increment',
+      state: next,
     });
-  }
-);
+  });
 
 router.post('/internal/on-app-install', async (_req, res): Promise<void> => {
   try {

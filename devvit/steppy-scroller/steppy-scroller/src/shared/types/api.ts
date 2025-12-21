@@ -1,13 +1,25 @@
+export type PlayerState = {
+  x: number;
+  y: number;
+};
+
+export type GameState = {
+  version: string;
+  status: 'ready' | 'running' | 'ended';
+  tick: number;
+  player: PlayerState;
+};
+
 export type InitResponse = {
   type: 'init';
   postId: string;
   userId: string;
-  count: number;
+  state: GameState;
 };
 
-export type IncrementResponse = {
-  type: 'increment';
+export type ActResponse = {
+  type: 'act';
   postId: string;
   userId: string;
-  count: number;
+  state: GameState;
 };
