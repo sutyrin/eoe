@@ -41,14 +41,14 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding-bottom: calc(200px + env(safe-area-inset-bottom));
+  padding-bottom: calc(220px + env(safe-area-inset-bottom));
   transition: opacity 0.2s ease;
 }
 
 #game-root canvas {
   width: min(92vw, 420px);
   height: auto;
-  max-height: calc(100vh - 280px);
+  max-height: calc(100vh - 300px);
   border-radius: 22px;
   box-shadow: 0 18px 46px rgba(29, 54, 36, 0.25);
 }

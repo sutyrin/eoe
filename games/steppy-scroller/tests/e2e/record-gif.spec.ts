@@ -23,8 +23,8 @@ test('record gameplay gif', async ({ page }) => {
     content: `
       .action.simulated-active {
         background-color: #4a8c5f !important;
-        transform: translateY(2px);
-        box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
+        transform: translateY(6px) !important;
+        box-shadow: 0 6px 0 #203b26 !important;
         color: white;
       }
     `
