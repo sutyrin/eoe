@@ -41,14 +41,14 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding-bottom: calc(130px + env(safe-area-inset-bottom));
+  padding-bottom: calc(200px + env(safe-area-inset-bottom));
   transition: opacity 0.2s ease;
 }
 
 #game-root canvas {
   width: min(92vw, 420px);
   height: auto;
-  max-height: calc(100vh - 220px);
+  max-height: calc(100vh - 280px);
   border-radius: 22px;
   box-shadow: 0 18px 46px rgba(29, 54, 36, 0.25);
 }
@@ -56,25 +56,25 @@ body {
 .controls {
   position: absolute;
   left: 50%;
-  bottom: calc(12px + env(safe-area-inset-bottom));
+  bottom: calc(18px + env(safe-area-inset-bottom));
   transform: translateX(-50%);
   display: flex;
-  gap: 16px;
+  gap: 24px;
   transition: opacity 0.2s ease;
 }
 
 .action {
-  width: 88px;
-  height: 88px;
+  width: 132px;
+  height: 132px;
   background: #2f583a;
   color: #f4f4e7;
-  border: 3px solid rgba(255, 255, 255, 0.25);
-  border-radius: 22px;
-  font-size: 2rem;
+  border: 4px solid rgba(255, 255, 255, 0.25);
+  border-radius: 33px;
+  font-size: 3rem;
   letter-spacing: 0.02em;
   cursor: pointer;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
-  box-shadow: 0 10px 0 #203b26;
+  box-shadow: 0 15px 0 #203b26;
 }
 
 .action:disabled {
@@ -85,18 +85,18 @@ body {
 }
 
 .action:not(:disabled):active {
-  transform: translateY(4px);
-  box-shadow: 0 4px 0 #203b26;
+  transform: translateY(6px);
+  box-shadow: 0 6px 0 #203b26;
 }
 
 @media (max-height: 720px) {
   #game-root canvas {
-    max-height: calc(100vh - 200px);
+    max-height: calc(100vh - 240px);
   }
 
   .action {
-    width: 76px;
-    height: 76px;
-    font-size: 1.6rem;
+    width: 114px;
+    height: 114px;
+    font-size: 2.4rem;
   }
 }
