@@ -1,6 +1,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { createClient, type RedisClientType } from 'redis';
-import { createInitialState, type GameState } from '../src/game-core/steppy';
+import { createInitialState, type GameState } from './game-core/steppy';
 
 const getClientId = (req: VercelRequest): string | null => {
   const header = req.headers['x-client-id'];
