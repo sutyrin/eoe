@@ -42,11 +42,11 @@ class SteppyScene extends Phaser.Scene {
     this.graphics.fillRect(0, 0, width, height);
 
     this.graphics.lineStyle(2, 0x9eb28f, 0.8);
-    for (let col = 0; col <= COLUMNS; col += 1) {
+    for (let col = 0; col <= STEPPY_COLUMNS; col += 1) {
       const x = col * CELL_SIZE;
       this.graphics.lineBetween(x, 0, x, height);
     }
-    for (let row = 0; row <= ROWS; row += 1) {
+    for (let row = 0; row <= STEPPY_ROWS; row += 1) {
       const y = row * CELL_SIZE;
       this.graphics.lineBetween(0, y, width, y);
     }

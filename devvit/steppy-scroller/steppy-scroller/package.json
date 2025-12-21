@@ -18,6 +18,8 @@
     "lint:fix": "eslint --fix ./src",
     "login": "devvit login --copy-paste",
     "launch": "npm run build && npm run deploy && devvit publish",
+    "pw:login": "node scripts/reddit-login.mjs",
+    "pw:devvit": "node scripts/devvit-smoke.mjs",
     "prettier": "prettier-package-json --write ./package.json && prettier --write .",
     "type-check": "tsc --build"
   },
@@ -35,6 +37,7 @@
     "eslint": "9.23.0",
     "dotenv-cli": "8.0.0",
     "globals": "15.15.0",
+    "playwright": "1.57.0",
     "prettier": "3.5.3",
     "prettier-package-json": "2.8.0",
     "terser": "5.39.0",
