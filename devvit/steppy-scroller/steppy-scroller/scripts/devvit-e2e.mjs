@@ -119,6 +119,28 @@ for (const point of clickCandidates(rect)) {
 
 console.log('frames', frames);
 
+const playInFrame = async () => {
+  const framesList = page.frames();
+  const splashFrame = framesList.find((frame) => frame.url().includes('/splash.html'));
+  if (!splashFrame) {
+    console.log('splash frame not found in page.frames()');
+    return;
+  }
+  await splashFrame.waitForLoadState('domcontentloaded');
+  const start = splashFrame.getByRole('button', { name: /^start$/i });
+  if (await start.count()) {
+    await start.first().click();
+    await page.waitForTimeout(5000);
+    await screenshot('after-start');
+  } else {
+    console.log('start button not found inside splash frame');
+  }
+};
+
+if (frames.length > 0) {
+  await playInFrame();
+}
+
 if (headless) {
   await context.close();
   await browser.close();
