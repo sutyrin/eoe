@@ -21,7 +21,7 @@ const getRedis = async () => {
   }
   if (!redisReady) {
     redisClient = createClient({ url: process.env.REDIS_URL });
-    redisClient.on('error', (error) => {
+    redisClient.on('error', (error: unknown) => {
       console.error('Redis error', error);
     });
     redisReady = redisClient.connect().then(() => redisClient as RedisClientType);
