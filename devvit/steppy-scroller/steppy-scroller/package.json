@@ -20,6 +20,7 @@
     "launch": "npm run build && npm run deploy && devvit publish",
     "pw:login": "node scripts/reddit-login.mjs",
     "pw:devvit": "node scripts/devvit-smoke.mjs",
+    "pw:devvit:e2e": "node scripts/devvit-e2e.mjs",
     "prettier": "prettier-package-json --write ./package.json && prettier --write .",
     "type-check": "tsc --build"
   },
