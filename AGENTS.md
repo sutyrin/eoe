@@ -246,6 +246,11 @@ PWDEBUG=1 npm run test:e2e
 - `~/.codex/history.jsonl` — общая история.
 - `~/.codex/log/codex-tui.log` — TUI‑лог.
 
+### Token usage (Codex CLI)
+
+- Док: `docs/codex-token-usage.md`
+- Скрипт: `scripts/codex_token_usage.py --date YYYY-MM-DD` (см. `--mode request`)
+
 ### Тестовая пирамида на уровне структуры
 
 - `tests/unit` — максимальное покрытие утилит и логики.
