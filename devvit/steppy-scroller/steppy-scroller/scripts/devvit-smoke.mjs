@@ -1,9 +1,11 @@
-import { chromium } from 'playwright';
+import { chromium, devices } from 'playwright';
 import path from 'node:path';
 import fs from 'node:fs';
 
 const authFile = path.resolve('playwright', '.auth', 'reddit.json');
 const postUrl = process.env.DEVVIT_POST_URL ?? process.env.REDDIT_POST_URL;
+const useMobile = process.env.PW_MOBILE !== '0';
+const deviceName = process.env.PW_DEVICE ?? 'iPhone 13';
 
 if (!postUrl) {
   console.error('Set DEVVIT_POST_URL (or REDDIT_POST_URL) to the Reddit post URL with the Devvit app.');
@@ -16,9 +18,18 @@ if (!fs.existsSync(authFile)) {
 }
 
 const browser = await chromium.launch({ headless: false });
+const device = devices[deviceName];
+if (useMobile && !device) {
+  console.error(`Unknown Playwright device: ${deviceName}`);
+  process.exit(1);
+}
 const context = await browser.newContext({
   storageState: authFile,
-  viewport: { width: 1280, height: 800 },
+  ...(useMobile && device
+    ? device
+    : {
+        viewport: { width: 1280, height: 800 },
+      }),
 });
 
 const page = await context.newPage();

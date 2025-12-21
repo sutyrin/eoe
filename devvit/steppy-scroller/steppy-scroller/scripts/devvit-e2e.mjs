@@ -1,4 +1,4 @@
-import { chromium } from 'playwright';
+import { chromium, devices } from 'playwright';
 import path from 'node:path';
 import fs from 'node:fs/promises';
 
@@ -7,6 +7,8 @@ const authFile = path.resolve('playwright', '.auth', 'reddit.json');
 const outDir = path.resolve('test-results', 'devvit');
 const headless = process.env.HEADLESS === '1';
 const openDevtools = process.env.DEVTOOLS === '1';
+const useMobile = process.env.PW_MOBILE !== '0';
+const deviceName = process.env.PW_DEVICE ?? 'iPhone 13';
 
 if (!postUrl) {
   console.error('Set DEVVIT_POST_URL (or REDDIT_POST_URL) to the Reddit post URL with the Devvit app.');
@@ -21,11 +23,21 @@ const browser = await chromium.launch({
   args: ['--disable-blink-features=AutomationControlled'],
 });
 
+const device = devices[deviceName];
+if (useMobile && !device) {
+  console.error(`Unknown Playwright device: ${deviceName}`);
+  process.exit(1);
+}
+
 const context = await browser.newContext({
   storageState: authFile,
-  viewport: { width: 1280, height: 800 },
-  userAgent:
-    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36',
+  ...(useMobile && device
+    ? device
+    : {
+        viewport: { width: 1280, height: 800 },
+        userAgent:
+          'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36',
+      }),
   locale: 'en-US',
   timezoneId: 'America/Los_Angeles',
 });
@@ -40,7 +52,7 @@ await page.waitForTimeout(3000);
 
 const screenshot = async (label) => {
   const outPath = path.join(outDir, `steppy-${label}-${Date.now()}.png`);
-  await page.screenshot({ path: outPath, fullPage: true });
+  await page.screenshot({ path: outPath, fullPage: false });
   console.log('screenshot', outPath);
 };
 
@@ -85,6 +97,19 @@ const waitForAppFrame = async (timeoutMs) => {
     await page.waitForTimeout(500);
   }
   return [];
+};
+
+const waitForFrameByUrl = async (urlPart, timeoutMs) => {
+  const deadline = Date.now() + timeoutMs;
+  while (Date.now() < deadline) {
+    const framesList = page.frames();
+    const target = framesList.find((frame) => frame.url().includes(urlPart));
+    if (target) {
+      return target;
+    }
+    await page.waitForTimeout(500);
+  }
+  return null;
 };
 
 const clickCandidates = (rect) => [
@@ -137,8 +162,38 @@ const playInFrame = async () => {
   }
 };
 
+const clickArrowButtons = async () => {
+  const gameFrame = await waitForFrameByUrl('/game.html', 10000);
+  if (!gameFrame) {
+    console.log('game frame not found after start');
+    return;
+  }
+  await gameFrame.waitForLoadState('domcontentloaded');
+  const controls = gameFrame.locator('#controls');
+  await controls.waitFor({ timeout: 10000 });
+
+  const buttonLabels = ['←', '↑', '→'];
+  for (const label of buttonLabels) {
+    const button = gameFrame.getByRole('button', { name: label });
+    const count = await button.count();
+    if (!count) {
+      console.log('button not found', label);
+      continue;
+    }
+    const target = button.first();
+    const isDisabled = await target.isDisabled();
+    console.log('button', label, isDisabled ? 'disabled' : 'enabled');
+    if (!isDisabled) {
+      await target.click();
+      await page.waitForTimeout(800);
+      await screenshot(`after-${encodeURIComponent(label)}`);
+    }
+  }
+};
+
 if (frames.length > 0) {
   await playInFrame();
+  await clickArrowButtons();
 }
 
 if (headless) {
