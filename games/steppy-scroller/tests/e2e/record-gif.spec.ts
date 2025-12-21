@@ -116,10 +116,10 @@ test('record gameplay gif', async ({ page }) => {
   try {
     // Generate palette for better quality
     const palettePath = path.join(framesDir, 'palette.png');
-    execSync(`ffmpeg -y -i "${path.join(framesDir, 'frame-%03d.png')}" -vf "fps=5,scale=600:-1:flags=lanczos,palettegen" "${palettePath}"`, { stdio: 'inherit' });
+    execSync(`ffmpeg -y -i "${path.join(framesDir, 'frame-%03d.png')}" -vf "fps=8,scale=600:-1:flags=lanczos,palettegen" "${palettePath}"`, { stdio: 'inherit' });
     
     // Generate final GIF
-    execSync(`ffmpeg -y -framerate 5 -i "${path.join(framesDir, 'frame-%03d.png')}" -i "${palettePath}" -lavfi "fps=5,scale=600:-1:flags=lanczos [x]; [x][1:v] paletteuse" "${gifPath}"`, { stdio: 'inherit' });
+    execSync(`ffmpeg -y -framerate 8 -i "${path.join(framesDir, 'frame-%03d.png')}" -i "${palettePath}" -lavfi "fps=8,scale=600:-1:flags=lanczos [x]; [x][1:v] paletteuse" "${gifPath}"`, { stdio: 'inherit' });
     
     console.log(`GIF saved to: ${gifPath}`);
   } catch (error) {
