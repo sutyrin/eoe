@@ -20,6 +20,7 @@ const getRedis = async () => {
     throw new Error('REDIS_URL is not set');
   }
   if (!redisReady) {
+    console.log('Redis init', { hasUrl: Boolean(process.env.REDIS_URL) });
     redisClient = createClient({ url: process.env.REDIS_URL });
     redisClient.on('error', (error: unknown) => {
       console.error('Redis error', error);
@@ -30,37 +31,45 @@ const getRedis = async () => {
 };
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
-  const clientId = getClientId(req);
-  if (!clientId) {
-    res.status(400).json({ status: 'error', message: 'x-client-id is required' });
-    return;
-  }
-
-  if (req.method === 'GET') {
-    const redis = await getRedis();
-    const raw = await redis.get(getKey(clientId));
-    const state = raw ? (JSON.parse(raw) as GameState) : createInitialState();
-    if (!raw) {
-      await redis.set(getKey(clientId), JSON.stringify(state));
-    }
-    res.json({ state });
-    return;
-  }
-
-  if (req.method === 'POST') {
-    const incoming = req.body?.state as GameState | undefined;
-    if (!incoming) {
-      res.status(400).json({ status: 'error', message: 'state is required' });
+  try {
+    const clientId = getClientId(req);
+    if (!clientId) {
+      res.status(400).json({ status: 'error', message: 'x-client-id is required' });
       return;
     }
-    const redis = await getRedis();
-    const raw = await redis.get(getKey(clientId));
-    const current = raw ? (JSON.parse(raw) as GameState) : createInitialState();
-    const next = incoming.tick >= current.tick ? incoming : current;
-    await redis.set(getKey(clientId), JSON.stringify(next));
-    res.json({ state: next });
-    return;
-  }
 
-  res.status(405).json({ status: 'error', message: 'Method not allowed' });
+    if (req.method === 'GET') {
+      const redis = await getRedis();
+      const raw = await redis.get(getKey(clientId));
+      const state = raw ? (JSON.parse(raw) as GameState) : createInitialState();
+      if (!raw) {
+        await redis.set(getKey(clientId), JSON.stringify(state));
+      }
+      res.json({ state });
+      return;
+    }
+
+    if (req.method === 'POST') {
+      const incoming = req.body?.state as GameState | undefined;
+      if (!incoming) {
+        res.status(400).json({ status: 'error', message: 'state is required' });
+        return;
+      }
+      const redis = await getRedis();
+      const raw = await redis.get(getKey(clientId));
+      const current = raw ? (JSON.parse(raw) as GameState) : createInitialState();
+      const next = incoming.tick >= current.tick ? incoming : current;
+      await redis.set(getKey(clientId), JSON.stringify(next));
+      res.json({ state: next });
+      return;
+    }
+
+    res.status(405).json({ status: 'error', message: 'Method not allowed' });
+  } catch (error) {
+    console.error('State API failed', {
+      message: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack : null,
+    });
+    res.status(500).json({ status: 'error', message: 'Server error' });
+  }
 }
