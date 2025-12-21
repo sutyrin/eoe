@@ -1,5 +1,5 @@
 import express from 'express';
-import { InitResponse, IncrementResponse, DecrementResponse } from '../shared/types/api';
+import { InitResponse, IncrementResponse } from '../shared/types/api';
 import { redis, createServer, context } from '@devvit/web/server';
 import { createPost } from './core/post';
 
@@ -17,22 +17,24 @@ const router = express.Router();
 router.get<{ postId: string }, InitResponse | { status: string; message: string }>(
   '/api/init',
   async (_req, res): Promise<void> => {
-    const { postId } = context;
+    const { postId, userId } = context;
 
-    if (!postId) {
-      console.error('API Init Error: postId not found in devvit context');
+    if (!postId || !userId) {
+      console.error('API Init Error: postId or userId not found in devvit context');
       res.status(400).json({
         status: 'error',
-        message: 'postId is required but missing from context',
+        message: 'postId and userId are required but missing from context',
       });
       return;
     }
 
     try {
-      const count = await redis.get('count');
+      const key = `count:${postId}:${userId}`;
+      const count = await redis.get(key);
       res.json({
         type: 'init',
         postId: postId,
+        userId: userId,
         count: count ? parseInt(count) : 0,
       });
     } catch (error) {
@@ -49,39 +51,20 @@ router.get<{ postId: string }, InitResponse | { status: string; message: string 
 router.post<{ postId: string }, IncrementResponse | { status: string; message: string }, unknown>(
   '/api/increment',
   async (_req, res): Promise<void> => {
-    const { postId } = context;
-    if (!postId) {
+    const { postId, userId } = context;
+    if (!postId || !userId) {
       res.status(400).json({
         status: 'error',
-        message: 'postId is required',
+        message: 'postId and userId are required',
       });
       return;
     }
 
     res.json({
-      count: await redis.incrBy('count', 1),
+      count: await redis.incrBy(`count:${postId}:${userId}`, 1),
       postId,
+      userId,
       type: 'increment',
-    });
-  }
-);
-
-router.post<{ postId: string }, DecrementResponse | { status: string; message: string }, unknown>(
-  '/api/decrement',
-  async (_req, res): Promise<void> => {
-    const { postId } = context;
-    if (!postId) {
-      res.status(400).json({
-        status: 'error',
-        message: 'postId is required',
-      });
-      return;
-    }
-
-    res.json({
-      count: await redis.incrBy('count', -1),
-      postId,
-      type: 'decrement',
     });
   }
 );
