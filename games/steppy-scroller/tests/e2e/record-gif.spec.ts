@@ -8,7 +8,16 @@ test('record gameplay gif', async ({ page }) => {
   const screenshotsDir = path.resolve('screenshots');
   const framesDir = path.resolve(screenshotsDir, 'temp_frames');
   const timestamp = Date.now();
-  const gifPath = path.resolve(screenshotsDir, `gameplay-${timestamp}.gif`);
+  const gifPath = (() => {
+    let filenameSuffix = '';
+    const baseUrl = process.env.E2E_BASE_URL || '';
+    if (baseUrl.includes('vercel.app')) {
+      filenameSuffix = '-prod';
+    } else if (baseUrl.includes('localhost') || baseUrl.includes('127.0.0.1')) {
+      filenameSuffix = '-localhost';
+    }
+    return path.resolve(screenshotsDir, `gameplay-${timestamp}${filenameSuffix}.gif`);
+  })();
 
   if (fs.existsSync(framesDir)) {
     fs.rmSync(framesDir, { recursive: true, force: true });
@@ -16,7 +25,7 @@ test('record gameplay gif', async ({ page }) => {
   fs.mkdirSync(framesDir, { recursive: true });
 
   await page.goto('/');
-  await page.waitForSelector('#controls .action');
+  await page.waitForSelector('#controls .action', { timeout: 60000 });
   
   // Inject CSS for active button state simulation
   await page.addStyleTag({

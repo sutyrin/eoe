@@ -5,7 +5,7 @@ const isLocal = baseURL.includes('127.0.0.1') || baseURL.includes('localhost');
 
 export default defineConfig({
   testDir: './tests/e2e',
-  timeout: 30000,
+  timeout: 60000,
   use: {
     baseURL,
     viewport: { width: 420, height: 900 }
