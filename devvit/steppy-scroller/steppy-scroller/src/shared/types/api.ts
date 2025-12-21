@@ -17,8 +17,8 @@ export type InitResponse = {
   state: GameState;
 };
 
-export type ActResponse = {
-  type: 'act';
+export type SaveResponse = {
+  type: 'save';
   postId: string;
   userId: string;
   state: GameState;

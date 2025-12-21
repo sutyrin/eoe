@@ -1,5 +1,5 @@
 import express from 'express';
-import { ActResponse, GameState, InitResponse } from '../shared/types/api';
+import { GameState, InitResponse, SaveResponse } from '../shared/types/api';
 import { redis, createServer, context } from '@devvit/web/server';
 import { createPost } from './core/post';
 
@@ -23,31 +23,6 @@ const createInitialState = (): GameState => ({
   tick: 0,
   player: { x: Math.floor(COLUMNS / 2), y: 0 },
 });
-
-const applyAction = (state: GameState, actionId: string): GameState => {
-  if (state.status !== 'running') {
-    return state;
-  }
-  const next: GameState = {
-    ...state,
-    player: { ...state.player },
-  };
-
-  if (actionId === 'step-left' && next.player.x > 0) {
-    next.player.x -= 1;
-  }
-  if (actionId === 'step-right' && next.player.x < COLUMNS - 1) {
-    next.player.x += 1;
-  }
-  if (actionId === 'step-up' && next.player.y < ROWS - 1) {
-    next.player.y += 1;
-  }
-  next.tick += 1;
-  if (next.player.y >= ROWS - 1) {
-    next.status = 'ended';
-  }
-  return next;
-};
 
 const getStateKey = (postId: string, userId: string) => `state:${postId}:${userId}`;
 
@@ -91,9 +66,9 @@ router.get<{ postId: string }, InitResponse | { status: string; message: string 
 
 router.post<
   { postId: string },
-  ActResponse | { status: string; message: string },
-  { actionId?: string }
->('/api/act', async (req, res): Promise<void> => {
+  SaveResponse | { status: string; message: string },
+  { state?: GameState }
+>('/api/save', async (req, res): Promise<void> => {
     const { postId, userId } = context;
     if (!postId || !userId) {
       res.status(400).json({
@@ -102,23 +77,23 @@ router.post<
       });
       return;
     }
-    const actionId = req.body?.actionId;
-    if (!actionId) {
+    const incoming = req.body?.state;
+    if (!incoming) {
       res.status(400).json({
         status: 'error',
-        message: 'actionId is required',
+        message: 'state is required',
       });
       return;
     }
 
     const key = getStateKey(postId, userId);
     const raw = await redis.get(key);
-    const state = raw ? (JSON.parse(raw) as GameState) : createInitialState();
-    const next = applyAction(state, actionId);
+    const current = raw ? (JSON.parse(raw) as GameState) : createInitialState();
+    const next = incoming.tick >= current.tick ? incoming : current;
     await redis.set(key, JSON.stringify(next));
 
     res.json({
-      type: 'act',
+      type: 'save',
       postId,
       userId,
       state: next,

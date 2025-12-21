@@ -134,8 +134,6 @@ const renderControls = (state: GameState) => {
 
 let state: GameState | null = null;
 let scene: SteppyScene | null = null;
-let requestId = 0;
-let lastAppliedRequest = 0;
 
 const handleAction = async (actionId: string) => {
   if (!state) {
@@ -146,25 +144,16 @@ const handleAction = async (actionId: string) => {
   scene?.updateState(state);
   renderControls(state);
 
-  const currentRequest = requestId + 1;
-  requestId = currentRequest;
   try {
-    const response = await fetch('/api/act', {
+    const response = await fetch('/api/save', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ actionId }),
+      body: JSON.stringify({ state }),
     });
     if (!response.ok) {
       return;
     }
-    const payload = (await response.json()) as { state: GameState };
-    if (currentRequest < lastAppliedRequest) {
-      return;
-    }
-    lastAppliedRequest = currentRequest;
-    state = payload.state;
-    scene?.updateState(state);
-    renderControls(state);
+    await response.json();
   } catch (error) {
     console.error('Action failed', error);
   }
