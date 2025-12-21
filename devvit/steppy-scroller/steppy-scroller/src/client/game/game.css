@@ -1,0 +1,74 @@
+:root {
+  color-scheme: light;
+  font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+}
+
+body {
+  display: grid;
+  place-items: center;
+  background: linear-gradient(180deg, #f5f0dd 0%, #dbe7d1 100%);
+}
+
+#app {
+  width: 100%;
+  display: grid;
+  place-items: center;
+}
+
+.card {
+  width: min(92vw, 360px);
+  padding: 28px 24px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.7);
+  box-shadow: 0 24px 50px rgba(28, 47, 36, 0.2);
+  text-align: center;
+}
+
+.title {
+  font-size: 1.4rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #2f4a35;
+  margin-bottom: 6px;
+}
+
+.subtitle {
+  font-size: 1rem;
+  color: #47624f;
+  margin-bottom: 16px;
+}
+
+button {
+  padding: 12px 18px;
+  border: none;
+  border-radius: 14px;
+  background: #2f583a;
+  color: #f5f2e9;
+  font-size: 1rem;
+  cursor: pointer;
+  box-shadow: 0 8px 0 #1f3b27;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+button:active {
+  transform: translateY(4px);
+  box-shadow: 0 4px 0 #1f3b27;
+}
+
+.counter {
+  margin-top: 16px;
+  font-size: 2rem;
+  color: #2f4a35;
+}
