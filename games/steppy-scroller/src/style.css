@@ -56,6 +56,14 @@ body {
 #game-root {
   display: flex;
   justify-content: center;
+  min-height: 60vh;
+}
+
+#game-root canvas {
+  width: min(100%, 420px);
+  height: auto;
+  border-radius: 18px;
+  box-shadow: 0 16px 40px rgba(32, 59, 38, 0.2);
 }
 
 .controls {

@@ -128,12 +128,16 @@ state.actions = computeActions(state);
 const scene = new SteppyScene(state);
 
 new Phaser.Game({
-  type: Phaser.AUTO,
+  type: Phaser.CANVAS,
   width: COLUMNS * CELL_SIZE,
   height: ROWS * CELL_SIZE,
   backgroundColor: '#e3f0db',
   parent: 'game-root',
   scene: [scene],
+  render: {
+    antialias: false,
+    pixelArt: true
+  },
   scale: {
     mode: Phaser.Scale.FIT,
     autoCenter: Phaser.Scale.CENTER_BOTH
