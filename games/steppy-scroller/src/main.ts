@@ -6,12 +6,15 @@ import { createStateController } from './game-core/state-controller';
 import {
   computeActions,
   createInitialState,
+  getRow,
   STEPPY_COLUMNS,
-  STEPPY_ROWS,
+  STEPPY_VERSION,
+  CELL_BLOCK,
   type GameState
 } from './game-core/steppy';
 
 const CELL_SIZE = 56;
+const VIEW_ROWS = 9; // Number of rows visible on screen
 
 class SteppyScene extends Phaser.Scene {
   private graphics?: Phaser.GameObjects.Graphics;
@@ -39,31 +42,81 @@ class SteppyScene extends Phaser.Scene {
     this.graphics.clear();
 
     const width = STEPPY_COLUMNS * CELL_SIZE;
-    const height = STEPPY_ROWS * CELL_SIZE;
+    const height = VIEW_ROWS * CELL_SIZE;
 
+    // Calculate camera offset to keep player in view
+    // We want the player to be roughly at the 3rd row from the bottom
+    // screenRow = VIEW_ROWS - 1 - (worldY - cameraY)
+    // We want screenRow ~ VIEW_ROWS - 3 => worldY - cameraY ~ 2 => cameraY ~ worldY - 2
+    let cameraY = Math.max(0, this.state.player.y - 2);
+
+    // Draw Background
     this.graphics.fillStyle(0xe6f0dc, 0.8);
     this.graphics.fillRect(0, 0, width, height);
 
+    // Draw Grid Lines
     this.graphics.lineStyle(2, 0x9eb28f, 0.8);
     for (let col = 0; col <= STEPPY_COLUMNS; col += 1) {
       const x = col * CELL_SIZE;
       this.graphics.lineBetween(x, 0, x, height);
     }
-    for (let row = 0; row <= STEPPY_ROWS; row += 1) {
-      const y = row * CELL_SIZE;
-      this.graphics.lineBetween(0, y, width, y);
+    for (let i = 0; i <= VIEW_ROWS; i += 1) {
+        const y = i * CELL_SIZE;
+        this.graphics.lineBetween(0, y, width, y);
     }
 
-    const { x, y } = this.state.player;
+    // Draw Cells (Blocks)
+    this.graphics.fillStyle(0x5e4c35, 1); // Brown for obstacles
+    
+    // We render rows from cameraY to cameraY + VIEW_ROWS
+    for (let rowOffset = 0; rowOffset < VIEW_ROWS; rowOffset++) {
+        const worldY = cameraY + rowOffset;
+        const rowData = getRow(this.state, worldY);
+        
+        // Screen Y calculation:
+        // World Y increases UP. Screen Y increases DOWN.
+        // If worldY = cameraY, it should be at the bottom? 
+        // No, cameraY is the "bottom-most visible row index".
+        // So worldY=cameraY is at screenY = (VIEW_ROWS - 1) * CELL_SIZE?
+        // Let's verify:
+        // If worldY = cameraY, we want it at the bottom of the screen.
+        // screenY index = VIEW_ROWS - 1 - rowOffset
+        const screenY = (VIEW_ROWS - 1 - rowOffset) * CELL_SIZE;
+        
+        for (let x = 0; x < STEPPY_COLUMNS; x++) {
+            if (rowData[x] === CELL_BLOCK) {
+                const screenX = x * CELL_SIZE;
+                this.graphics.fillRoundedRect(
+                    screenX + 4,
+                    screenY + 4,
+                    CELL_SIZE - 8,
+                    CELL_SIZE - 8,
+                    4
+                );
+            }
+        }
+    }
+
+    // Draw Player
     const padding = 10;
-    this.graphics.fillStyle(0x2e5c3a, 1);
-    this.graphics.fillRoundedRect(
-      x * CELL_SIZE + padding,
-      height - (y + 1) * CELL_SIZE + padding,
-      CELL_SIZE - padding * 2,
-      CELL_SIZE - padding * 2,
-      8
-    );
+    const playerRelativeY = this.state.player.y - cameraY;
+    
+    // Only draw if within view (should always be true due to camera logic)
+    if (playerRelativeY >= 0 && playerRelativeY < VIEW_ROWS) {
+        const playerScreenY = (VIEW_ROWS - 1 - playerRelativeY) * CELL_SIZE;
+        
+        this.graphics.fillStyle(0x2e5c3a, 1);
+        this.graphics.fillRoundedRect(
+            this.state.player.x * CELL_SIZE + padding,
+            playerScreenY + padding,
+            CELL_SIZE - padding * 2,
+            CELL_SIZE - padding * 2,
+            8
+        );
+    }
+    
+    // Debug info
+    // this.add.text(10, 10, `Y: ${this.state.player.y}`, { color: '#000' });
   }
 }
 
@@ -89,7 +142,7 @@ const scene = new SteppyScene(state);
 new Phaser.Game({
   type: Phaser.CANVAS,
   width: STEPPY_COLUMNS * CELL_SIZE,
-  height: STEPPY_ROWS * CELL_SIZE,
+  height: VIEW_ROWS * CELL_SIZE,
   backgroundColor: 'transparent',
   parent: 'game-root',
   scene: [scene],
@@ -138,6 +191,11 @@ const store = {
         return createInitialState();
       }
       const payload = (await response.json()) as { state: GameState };
+      // Version Check
+      if (payload.state.version !== STEPPY_VERSION) {
+          console.warn('Version mismatch, resetting state', payload.state.version, STEPPY_VERSION);
+          return createInitialState();
+      }
       return payload.state;
     } catch (err) {
       console.warn('Failed to load state from API, falling back to local:', err);

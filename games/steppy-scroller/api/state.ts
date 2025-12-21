@@ -1,6 +1,8 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { createClient, type RedisClientType } from 'redis';
-const STEPPY_VERSION = '0.1';
+
+// Keep these in sync with src/game-core/steppy.ts
+const STEPPY_VERSION = '0.2-garden';
 const STEPPY_COLUMNS = 5;
 
 type PlayerState = {
@@ -13,6 +15,8 @@ type GameState = {
   status: 'ready' | 'running' | 'ended';
   tick: number;
   player: PlayerState;
+  map: Record<string, number[]>;
+  seed: number;
 };
 
 const createInitialState = (): GameState => ({
@@ -20,6 +24,8 @@ const createInitialState = (): GameState => ({
   status: 'running',
   tick: 0,
   player: { x: Math.floor(STEPPY_COLUMNS / 2), y: 0 },
+  map: {},
+  seed: Date.now(),
 });
 
 const getClientId = (req: VercelRequest): string | null => {
@@ -62,6 +68,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       const redis = await getRedis();
       const raw = await redis.get(getKey(clientId));
       const state = raw ? (JSON.parse(raw) as GameState) : createInitialState();
+      
+      // Auto-migrate or Reset if version mismatch?
+      // For now, let's just return what we have. Client handles reset.
+      // But if we generated a fresh state (createInitialState), it is correct.
+      
       if (!raw) {
         await redis.set(getKey(clientId), JSON.stringify(state));
       }

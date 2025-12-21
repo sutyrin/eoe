@@ -1,33 +1,30 @@
-# Steppy Scroller
+# Steppy Scroller: Infinite Garden
 
-Вертикальный скроллер-лабиринт.
+An endless, procedurally generated climbing game. Traverse the infinite vine, avoid thorns, and choose your path.
 
-## Запуск локально
+## Vision: Infinite Garden
+The game is evolving from a simple grid puzzle to an "Infinite Garden" metaphor. 
+See [Design Doc](./docs/concept_infinite_garden.md) for detailed roadmap.
+
+### Current Features (v0.2-garden)
+- **Infinite Verticality:** No level cap. Procedurally generated terrain.
+- **Camera Follow:** Viewport tracks the player's ascent.
+- **Persistence:** Game state (including generated map) is saved.
+
+## Local Development
 
 ```bash
 npm install
 npm run dev
 ```
-Игра будет доступна по адресу `http://localhost:5173/`.
-Локальный сервер включает в себя in-memory mock API, поэтому состояние игры сохраняется между перезагрузками страницы (пока сервер запущен).
 
-## Тестирование
-
-### E2E тесты (Playwright)
-
-Запускают локальный dev-сервер и проверяют работу игры и API.
+## Testing
 
 ```bash
 npm run test:e2e
 ```
 
-Включают в себя:
-- `smoke.spec.ts`: базовый рендер и наличие контролов.
-- `mcp.spec.ts`: проверка синхронизации UI и MCP state.
-- `persistence.spec.ts`: проверка сохранения состояния между перезагрузками.
-
-### Структура
-- `src/main.ts`: Точка входа, инициализация Phaser и MCP.
-- `src/game-core/`: Логика игры (чистые функции) и контроллер состояния.
-- `src/mcp/`: Адаптер для MCP.
-- `vite.config.ts`: Конфигурация Vite, включая Mock API middleware.
+### Key Files
+- `src/game-core/steppy.ts`: Core logic (PCG, movement).
+- `src/main.ts`: Phaser 3 rendering (scrolling viewport).
+- `api/state.ts`: Serverless function for state persistence.
