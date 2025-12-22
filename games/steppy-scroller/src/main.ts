@@ -11,16 +11,25 @@ import {
   STEPPY_COLUMNS,
   STEPPY_VERSION,
   CELL_BLOCK,
-  CELL_WATER,
   type GameState
 } from './game-core/steppy';
 
 const CELL_SIZE = 56;
 const VIEW_ROWS = 9; // Number of rows visible on screen
+const HUD_HEIGHT = 30;
+const HUD_INSET = 6;
+const HUD_TEXT_Y = 10;
+const HUD_GAP = 12;
+const HUD_BAR_HEIGHT = HUD_HEIGHT + 8;
 
 class SteppyScene extends Phaser.Scene {
   private graphics?: Phaser.GameObjects.Graphics;
   private state: GameState;
+  private staminaText?: Phaser.GameObjects.Text;
+  private altitudeText?: Phaser.GameObjects.Text;
+  private endText?: Phaser.GameObjects.Text;
+  private gridTop = 0;
+  private gridHeight = 0;
 
   constructor(initialState: GameState) {
     super('steppy');
@@ -28,7 +37,42 @@ class SteppyScene extends Phaser.Scene {
   }
 
   create() {
+    const width = STEPPY_COLUMNS * CELL_SIZE;
+    this.gridTop = HUD_BAR_HEIGHT;
+    this.gridHeight = VIEW_ROWS * CELL_SIZE;
     this.graphics = this.add.graphics();
+    const hudStyle = {
+      fontFamily: 'monospace',
+      color: '#2e5c3a',
+      fontSize: '14px'
+    };
+    const hudBoxWidth = (width - HUD_INSET * 2 - HUD_GAP) / 2;
+    const leftBoxX = HUD_INSET;
+    const rightBoxX = HUD_INSET + hudBoxWidth + HUD_GAP;
+    const hudTopY = HUD_INSET + 4;
+    this.staminaText = this.add
+      .text(leftBoxX, hudTopY, '', hudStyle)
+      .setFixedSize(hudBoxWidth, HUD_HEIGHT - 6)
+      .setPadding(8, 3)
+      .setAlign('left')
+      .setDepth(10);
+    this.altitudeText = this.add
+      .text(rightBoxX, hudTopY, '', hudStyle)
+      .setFixedSize(hudBoxWidth, HUD_HEIGHT - 6)
+      .setPadding(8, 3)
+      .setAlign('right')
+      .setDepth(10);
+    this.endText = this.add
+      .text((STEPPY_COLUMNS * CELL_SIZE) / 2, this.gridTop + this.gridHeight / 2, 'EXHAUSTED', {
+        fontSize: '48px',
+        color: '#c0392b',
+        fontStyle: 'bold',
+        stroke: '#fff',
+        strokeThickness: 4
+      })
+      .setOrigin(0.5)
+      .setDepth(20)
+      .setVisible(false);
     this.redraw();
   }
 
@@ -44,7 +88,7 @@ class SteppyScene extends Phaser.Scene {
     this.graphics.clear();
 
     const width = STEPPY_COLUMNS * CELL_SIZE;
-    const height = VIEW_ROWS * CELL_SIZE;
+    const height = this.gridHeight + this.gridTop;
     const gaugeWidth = 16;
     const padding = 10;
 
@@ -59,10 +103,10 @@ class SteppyScene extends Phaser.Scene {
     this.graphics.lineStyle(2, 0x9eb28f, 0.8);
     for (let col = 0; col <= STEPPY_COLUMNS; col += 1) {
       const x = col * CELL_SIZE;
-      this.graphics.lineBetween(x, 0, x, height);
+      this.graphics.lineBetween(x, this.gridTop, x, this.gridTop + this.gridHeight);
     }
     for (let i = 0; i <= VIEW_ROWS; i += 1) {
-        const y = i * CELL_SIZE;
+        const y = this.gridTop + i * CELL_SIZE;
         this.graphics.lineBetween(0, y, width, y);
     }
 
@@ -70,32 +114,45 @@ class SteppyScene extends Phaser.Scene {
     for (let rowOffset = 0; rowOffset < VIEW_ROWS; rowOffset++) {
         const worldY = cameraY + rowOffset;
         const rowData = getRow(this.state, worldY);
-        const screenY = (VIEW_ROWS - 1 - rowOffset) * CELL_SIZE;
+        const screenY = this.gridTop + (VIEW_ROWS - 1 - rowOffset) * CELL_SIZE;
         
         for (let x = 0; x < STEPPY_COLUMNS; x++) {
             const cell = rowData[x];
             const screenX = x * CELL_SIZE;
             
             if (cell === CELL_BLOCK) {
-                // Deep Green for "Vine/Leaf" blocks
+                // Deep Green for "Rock" blocks
                 this.graphics.fillStyle(0x1a472a, 1); 
                 this.graphics.fillRoundedRect(screenX + 4, screenY + 4, CELL_SIZE - 8, CELL_SIZE - 8, 8);
                 this.graphics.lineStyle(2, 0x2d6e42, 1);
                 this.graphics.strokeRoundedRect(screenX + 4, screenY + 4, CELL_SIZE - 8, CELL_SIZE - 8, 8);
-            } else if (cell === CELL_WATER) {
-                // Blue Droplet
-                this.graphics.fillStyle(0x3498db, 0.8);
-                this.graphics.fillCircle(screenX + CELL_SIZE/2, screenY + CELL_SIZE/2, CELL_SIZE/4);
-                this.graphics.lineStyle(2, 0x2980b9, 1);
-                this.graphics.strokeCircle(screenX + CELL_SIZE/2, screenY + CELL_SIZE/2, CELL_SIZE/4);
             }
+        }
+    }
+
+    // Highlight available/unavailable next steps
+    if (this.state.status === 'running') {
+        const nextY = this.state.player.y + 1;
+        const targetXs = [this.state.player.x - 1, this.state.player.x, this.state.player.x + 1];
+        const rowData = getRow(this.state, nextY);
+        const rowOffset = nextY - cameraY;
+        if (rowOffset >= 0 && rowOffset < VIEW_ROWS) {
+            const screenY = this.gridTop + (VIEW_ROWS - 1 - rowOffset) * CELL_SIZE;
+            targetXs.forEach((targetX) => {
+                const screenX = targetX * CELL_SIZE;
+                const isInBounds = targetX >= 0 && targetX < STEPPY_COLUMNS;
+                const blocked = !isInBounds || rowData[targetX] === CELL_BLOCK;
+                const color = blocked ? 0xe74c3c : 0x2ecc71;
+                this.graphics.lineStyle(4, color, 0.7);
+                this.graphics.strokeRoundedRect(screenX + 6, screenY + 6, CELL_SIZE - 12, CELL_SIZE - 12, 10);
+            });
         }
     }
 
     // Draw Player
     const playerRelativeY = this.state.player.y - cameraY;
     if (playerRelativeY >= 0 && playerRelativeY < VIEW_ROWS) {
-        const playerScreenY = (VIEW_ROWS - 1 - playerRelativeY) * CELL_SIZE;
+        const playerScreenY = this.gridTop + (VIEW_ROWS - 1 - playerRelativeY) * CELL_SIZE;
         
         // Bright Flower/Sprout color
         this.graphics.fillStyle(0xffd700, 1);
@@ -113,8 +170,24 @@ class SteppyScene extends Phaser.Scene {
             8
          );
     }
+
+    // HUD Bar + Boxes (drawn on top of grid)
+    const hudBoxWidth = (width - HUD_INSET * 2 - HUD_GAP) / 2;
+    const leftBoxX = HUD_INSET;
+    const rightBoxX = HUD_INSET + hudBoxWidth + HUD_GAP;
+    const hudBarY = 0;
+    this.graphics.fillStyle(0xe6f0dc, 0.98);
+    this.graphics.fillRect(0, hudBarY, width, HUD_BAR_HEIGHT);
+    this.graphics.lineStyle(2, 0x9eb28f, 0.9);
+    this.graphics.strokeRect(0, hudBarY, width, HUD_BAR_HEIGHT);
+    this.graphics.fillStyle(0xf3f7ee, 1);
+    this.graphics.fillRoundedRect(leftBoxX, HUD_INSET + 4, hudBoxWidth, HUD_HEIGHT - 6, 6);
+    this.graphics.fillRoundedRect(rightBoxX, HUD_INSET + 4, hudBoxWidth, HUD_HEIGHT - 6, 6);
+    this.graphics.lineStyle(2, 0x9eb28f, 0.9);
+    this.graphics.strokeRoundedRect(leftBoxX, HUD_INSET + 4, hudBoxWidth, HUD_HEIGHT - 6, 6);
+    this.graphics.strokeRoundedRect(rightBoxX, HUD_INSET + 4, hudBoxWidth, HUD_HEIGHT - 6, 6);
     
-    // Water Gauge (Left Side)
+    // Stamina Gauge (Left Side)
     // Draw relative to the left of the main grid.
     // Phaser Graphics is relative to scene 0,0. 
     // The game width is STEPPY_COLUMNS * CELL_SIZE.
@@ -122,40 +195,28 @@ class SteppyScene extends Phaser.Scene {
     // Actually, let's draw it overlaying on the left, or just left of grid?
     // Since width is defined, we can just draw at x = 10.
     
-    const maxBarHeight = height - 40;
-    const currentBarHeight = (this.state.water / this.state.maxWater) * maxBarHeight;
+    const maxBarHeight = this.gridHeight - padding * 2;
+    const currentBarHeight = (this.state.stamina / this.state.maxStamina) * maxBarHeight;
     const barX = 8;
-    const barY = 20 + (maxBarHeight - currentBarHeight);
+    const barY = this.gridTop + padding + (maxBarHeight - currentBarHeight);
     
     // Background bar
     this.graphics.fillStyle(0xbdc3c7, 0.5);
-    this.graphics.fillRoundedRect(barX, 20, gaugeWidth, maxBarHeight, 4);
+    this.graphics.fillRoundedRect(barX, this.gridTop + padding, gaugeWidth, maxBarHeight, 4);
     
     // Fill bar
-    const waterColor = this.state.water < 5 ? 0xe74c3c : 0x3498db;
-    this.graphics.fillStyle(waterColor, 1);
+    const staminaColor = this.state.stamina < 4 ? 0xe74c3c : 0x2ecc71;
+    this.graphics.fillStyle(staminaColor, 1);
     this.graphics.fillRoundedRect(barX, barY, gaugeWidth, currentBarHeight, 4);
     
-    // HUD Text
-    const hudStyle = { 
-        fontFamily: 'monospace',
-        color: '#2e5c3a',
-        fontSize: '16px',
-        backgroundColor: '#e6f0dccc',
-        padding: { x: 4, y: 4 }
-    };
-
-    // Top Right: Height
-    this.add.text(width - 120, 10, `Height: ${this.state.player.y}m`, hudStyle).setDepth(10);
-    
-    if (this.state.status === 'ended') {
-        this.add.text(width/2, height/2, 'WITHERED', {
-            fontSize: '48px',
-            color: '#c0392b',
-            fontStyle: 'bold',
-            stroke: '#fff',
-            strokeThickness: 4
-        }).setOrigin(0.5).setDepth(20);
+    if (this.staminaText) {
+      this.staminaText.setText(`Stamina: ${this.state.stamina}`);
+    }
+    if (this.altitudeText) {
+      this.altitudeText.setText(`Altitude: ${this.state.altitude}m`);
+    }
+    if (this.endText) {
+      this.endText.setVisible(this.state.status === 'ended');
     }
   }
 }
@@ -182,7 +243,7 @@ const scene = new SteppyScene(state);
 new Phaser.Game({
   type: Phaser.CANVAS,
   width: STEPPY_COLUMNS * CELL_SIZE,
-  height: VIEW_ROWS * CELL_SIZE,
+  height: VIEW_ROWS * CELL_SIZE + HUD_BAR_HEIGHT,
   backgroundColor: 'transparent',
   parent: 'game-root',
   scene: [scene],

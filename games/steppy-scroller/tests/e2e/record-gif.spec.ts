@@ -3,10 +3,14 @@ import path from 'path';
 import fs from 'fs';
 import { execSync } from 'child_process';
 
-test('record gameplay gif', async ({ page }) => {
+test('record gameplay gif', async ({ page }, testInfo) => {
   // Setup output paths
   const screenshotsDir = path.resolve('screenshots');
-  const framesDir = path.resolve(screenshotsDir, 'temp_frames');
+  const projectSlug = testInfo.project.name.replace(/[^a-z0-9_-]+/gi, '-').toLowerCase();
+  const framesDir = path.resolve(
+    screenshotsDir,
+    `temp_frames_${projectSlug}_${testInfo.workerIndex}`
+  );
   const timestamp = Date.now();
   const gifPath = (() => {
     let filenameSuffix = '';
@@ -16,7 +20,10 @@ test('record gameplay gif', async ({ page }) => {
     } else if (baseUrl.includes('localhost') || baseUrl.includes('127.0.0.1')) {
       filenameSuffix = '-localhost';
     }
-    return path.resolve(screenshotsDir, `gameplay-${timestamp}${filenameSuffix}.gif`);
+    return path.resolve(
+      screenshotsDir,
+      `gameplay-${projectSlug}-${timestamp}${filenameSuffix}.gif`
+    );
   })();
 
   if (fs.existsSync(framesDir)) {

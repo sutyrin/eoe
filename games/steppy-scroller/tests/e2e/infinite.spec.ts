@@ -10,10 +10,10 @@ test('Game supports infinite vertical scrolling with evaluation', async ({ page 
   // Check initial state has evaluation
   const initialState: any = await getState();
   expect(initialState.evaluation).toBeDefined();
-  expect(initialState.evaluation.resources.water).toBe(20);
+  expect(initialState.evaluation.resources.stamina).toBe(12);
   expect(initialState.evaluation.target).toBeDefined();
 
-  // Climb 10 steps (conserving water)
+  // Climb 10 steps (consuming stamina)
   for (let i = 0; i < 10; i++) {
     let climbed = false;
     let attempts = 0;
@@ -55,11 +55,11 @@ test('Game supports infinite vertical scrolling with evaluation', async ({ page 
 
   const finalState: any = await getState();
   console.log('Final Y:', finalState.player.y);
-  console.log('Final Water:', finalState.water);
+  console.log('Final Stamina:', finalState.stamina);
   
   expect(finalState.player.y).toBeGreaterThan(5);
   expect(finalState.map[finalState.player.y]).toBeDefined();
   
-  // Verify water was consumed
-  expect(finalState.water).toBeLessThan(20);
+  // Verify stamina was consumed
+  expect(finalState.stamina).toBeLessThan(12);
 });
