@@ -60,36 +60,36 @@ router.post<
   SaveResponse | { status: string; message: string },
   { state?: GameState }
 >('/api/save', async (req, res): Promise<void> => {
-    const { postId, userId } = context;
-    if (!postId || !userId) {
-      res.status(400).json({
-        status: 'error',
-        message: 'postId and userId are required',
-      });
-      return;
-    }
-    const incoming = req.body?.state;
-    if (!incoming) {
-      res.status(400).json({
-        status: 'error',
-        message: 'state is required',
-      });
-      return;
-    }
-
-    const key = getStateKey(postId, userId);
-    const raw = await redis.get(key);
-    const current = raw ? (JSON.parse(raw) as GameState) : createInitialState();
-    const next = incoming.tick >= current.tick ? incoming : current;
-    await redis.set(key, JSON.stringify(next));
-
-    res.json({
-      type: 'save',
-      postId,
-      userId,
-      state: next,
+  const { postId, userId } = context;
+  if (!postId || !userId) {
+    res.status(400).json({
+      status: 'error',
+      message: 'postId and userId are required',
     });
+    return;
+  }
+  const incoming = req.body?.state;
+  if (!incoming) {
+    res.status(400).json({
+      status: 'error',
+      message: 'state is required',
+    });
+    return;
+  }
+
+  const key = getStateKey(postId, userId);
+  const raw = await redis.get(key);
+  const current = raw ? (JSON.parse(raw) as GameState) : createInitialState();
+  const next = incoming.tick >= current.tick ? incoming : current;
+  await redis.set(key, JSON.stringify(next));
+
+  res.json({
+    type: 'save',
+    postId,
+    userId,
+    state: next,
   });
+});
 
 router.post('/internal/on-app-install', async (_req, res): Promise<void> => {
   try {

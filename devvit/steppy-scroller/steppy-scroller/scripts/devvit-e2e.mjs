@@ -11,7 +11,9 @@ const useMobile = process.env.PW_MOBILE !== '0';
 const deviceName = process.env.PW_DEVICE ?? 'iPhone 13';
 
 if (!postUrl) {
-  console.error('Set DEVVIT_POST_URL (or REDDIT_POST_URL) to the Reddit post URL with the Devvit app.');
+  console.error(
+    'Set DEVVIT_POST_URL (or REDDIT_POST_URL) to the Reddit post URL with the Devvit app.'
+  );
   process.exit(1);
 }
 

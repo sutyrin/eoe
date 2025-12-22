@@ -16,7 +16,9 @@ const page = await context.newPage();
 await page.goto(loginUrl, { waitUntil: 'domcontentloaded' });
 
 const rl = readline.createInterface({ input, output });
-await rl.question('Log in to Reddit in the browser window, then press Enter here to save the session...');
+await rl.question(
+  'Log in to Reddit in the browser window, then press Enter here to save the session...'
+);
 rl.close();
 
 await context.storageState({ path: authFile });

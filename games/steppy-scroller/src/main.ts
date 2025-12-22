@@ -18,7 +18,6 @@ const CELL_SIZE = 56;
 const VIEW_ROWS = 9; // Number of rows visible on screen
 const HUD_HEIGHT = 30;
 const HUD_INSET = 6;
-const HUD_TEXT_Y = 10;
 const HUD_GAP = 12;
 const HUD_BAR_HEIGHT = HUD_HEIGHT + 8;
 
@@ -82,10 +81,11 @@ class SteppyScene extends Phaser.Scene {
   }
 
   private redraw() {
-    if (!this.graphics) {
+    const g = this.graphics;
+    if (!g) {
       return;
     }
-    this.graphics.clear();
+    g.clear();
 
     const width = STEPPY_COLUMNS * CELL_SIZE;
     const height = this.gridHeight + this.gridTop;
@@ -96,18 +96,18 @@ class SteppyScene extends Phaser.Scene {
     const cameraY = this.state.player.y;
 
     // Draw Background
-    this.graphics.fillStyle(0xe6f0dc, 0.8);
-    this.graphics.fillRect(0, 0, width, height);
+    g.fillStyle(0xe6f0dc, 0.8);
+    g.fillRect(0, 0, width, height);
 
     // Draw Grid Lines
-    this.graphics.lineStyle(2, 0x9eb28f, 0.8);
+    g.lineStyle(2, 0x9eb28f, 0.8);
     for (let col = 0; col <= STEPPY_COLUMNS; col += 1) {
       const x = col * CELL_SIZE;
-      this.graphics.lineBetween(x, this.gridTop, x, this.gridTop + this.gridHeight);
+      g.lineBetween(x, this.gridTop, x, this.gridTop + this.gridHeight);
     }
     for (let i = 0; i <= VIEW_ROWS; i += 1) {
         const y = this.gridTop + i * CELL_SIZE;
-        this.graphics.lineBetween(0, y, width, y);
+        g.lineBetween(0, y, width, y);
     }
 
     // Draw Cells
@@ -122,10 +122,10 @@ class SteppyScene extends Phaser.Scene {
             
             if (cell === CELL_BLOCK) {
                 // Deep Green for "Rock" blocks
-                this.graphics.fillStyle(0x1a472a, 1); 
-                this.graphics.fillRoundedRect(screenX + 4, screenY + 4, CELL_SIZE - 8, CELL_SIZE - 8, 8);
-                this.graphics.lineStyle(2, 0x2d6e42, 1);
-                this.graphics.strokeRoundedRect(screenX + 4, screenY + 4, CELL_SIZE - 8, CELL_SIZE - 8, 8);
+                g.fillStyle(0x1a472a, 1); 
+                g.fillRoundedRect(screenX + 4, screenY + 4, CELL_SIZE - 8, CELL_SIZE - 8, 8);
+                g.lineStyle(2, 0x2d6e42, 1);
+                g.strokeRoundedRect(screenX + 4, screenY + 4, CELL_SIZE - 8, CELL_SIZE - 8, 8);
             }
         }
     }
@@ -143,8 +143,8 @@ class SteppyScene extends Phaser.Scene {
                 const isInBounds = targetX >= 0 && targetX < STEPPY_COLUMNS;
                 const blocked = !isInBounds || rowData[targetX] === CELL_BLOCK;
                 const color = blocked ? 0xe74c3c : 0x2ecc71;
-                this.graphics.lineStyle(4, color, 0.7);
-                this.graphics.strokeRoundedRect(screenX + 6, screenY + 6, CELL_SIZE - 12, CELL_SIZE - 12, 10);
+                g.lineStyle(4, color, 0.7);
+                g.strokeRoundedRect(screenX + 6, screenY + 6, CELL_SIZE - 12, CELL_SIZE - 12, 10);
             });
         }
     }
@@ -155,16 +155,16 @@ class SteppyScene extends Phaser.Scene {
         const playerScreenY = this.gridTop + (VIEW_ROWS - 1 - playerRelativeY) * CELL_SIZE;
         
         // Bright Flower/Sprout color
-        this.graphics.fillStyle(0xffd700, 1);
-        this.graphics.fillRoundedRect(
+        g.fillStyle(0xffd700, 1);
+        g.fillRoundedRect(
             this.state.player.x * CELL_SIZE + padding,
             playerScreenY + padding,
             CELL_SIZE - padding * 2,
             CELL_SIZE - padding * 2,
             16
         );
-         this.graphics.fillStyle(0xff8c00, 1);
-         this.graphics.fillCircle(
+         g.fillStyle(0xff8c00, 1);
+         g.fillCircle(
             this.state.player.x * CELL_SIZE + CELL_SIZE/2,
             playerScreenY + CELL_SIZE/2,
             8
@@ -176,16 +176,16 @@ class SteppyScene extends Phaser.Scene {
     const leftBoxX = HUD_INSET;
     const rightBoxX = HUD_INSET + hudBoxWidth + HUD_GAP;
     const hudBarY = 0;
-    this.graphics.fillStyle(0xe6f0dc, 0.98);
-    this.graphics.fillRect(0, hudBarY, width, HUD_BAR_HEIGHT);
-    this.graphics.lineStyle(2, 0x9eb28f, 0.9);
-    this.graphics.strokeRect(0, hudBarY, width, HUD_BAR_HEIGHT);
-    this.graphics.fillStyle(0xf3f7ee, 1);
-    this.graphics.fillRoundedRect(leftBoxX, HUD_INSET + 4, hudBoxWidth, HUD_HEIGHT - 6, 6);
-    this.graphics.fillRoundedRect(rightBoxX, HUD_INSET + 4, hudBoxWidth, HUD_HEIGHT - 6, 6);
-    this.graphics.lineStyle(2, 0x9eb28f, 0.9);
-    this.graphics.strokeRoundedRect(leftBoxX, HUD_INSET + 4, hudBoxWidth, HUD_HEIGHT - 6, 6);
-    this.graphics.strokeRoundedRect(rightBoxX, HUD_INSET + 4, hudBoxWidth, HUD_HEIGHT - 6, 6);
+    g.fillStyle(0xe6f0dc, 0.98);
+    g.fillRect(0, hudBarY, width, HUD_BAR_HEIGHT);
+    g.lineStyle(2, 0x9eb28f, 0.9);
+    g.strokeRect(0, hudBarY, width, HUD_BAR_HEIGHT);
+    g.fillStyle(0xf3f7ee, 1);
+    g.fillRoundedRect(leftBoxX, HUD_INSET + 4, hudBoxWidth, HUD_HEIGHT - 6, 6);
+    g.fillRoundedRect(rightBoxX, HUD_INSET + 4, hudBoxWidth, HUD_HEIGHT - 6, 6);
+    g.lineStyle(2, 0x9eb28f, 0.9);
+    g.strokeRoundedRect(leftBoxX, HUD_INSET + 4, hudBoxWidth, HUD_HEIGHT - 6, 6);
+    g.strokeRoundedRect(rightBoxX, HUD_INSET + 4, hudBoxWidth, HUD_HEIGHT - 6, 6);
     
     // Stamina Gauge (Left Side)
     // Draw relative to the left of the main grid.
@@ -201,13 +201,13 @@ class SteppyScene extends Phaser.Scene {
     const barY = this.gridTop + padding + (maxBarHeight - currentBarHeight);
     
     // Background bar
-    this.graphics.fillStyle(0xbdc3c7, 0.5);
-    this.graphics.fillRoundedRect(barX, this.gridTop + padding, gaugeWidth, maxBarHeight, 4);
+    g.fillStyle(0xbdc3c7, 0.5);
+    g.fillRoundedRect(barX, this.gridTop + padding, gaugeWidth, maxBarHeight, 4);
     
     // Fill bar
     const staminaColor = this.state.stamina < 4 ? 0xe74c3c : 0x2ecc71;
-    this.graphics.fillStyle(staminaColor, 1);
-    this.graphics.fillRoundedRect(barX, barY, gaugeWidth, currentBarHeight, 4);
+    g.fillStyle(staminaColor, 1);
+    g.fillRoundedRect(barX, barY, gaugeWidth, currentBarHeight, 4);
     
     if (this.staminaText) {
       this.staminaText.setText(`Stamina: ${this.state.stamina}`);

@@ -120,7 +120,7 @@ const getCellType = (state: GameState, x: number, y: number): number => {
     if (!row) {
         row = generateRowData(state.seed, y);
     }
-    return row[x];
+    return row[x] ?? CELL_BLOCK;
 }
 
 export const createInitialState = (): GameState => ({
@@ -186,12 +186,15 @@ export const applyAction = (state: GameState, actionId: string): GameState => {
       }
       
       // Check for collection
-      const cell = next.map[targetY][targetX];
+      const row = next.map[targetY];
+      const cell = row ? row[targetX] : CELL_EMPTY;
       if (cell === CELL_WATER) {
           next.water = Math.min(next.maxWater, next.water + 5);
-          const newRow = [...next.map[targetY]];
-          newRow[targetX] = CELL_EMPTY;
-          next.map[targetY] = newRow;
+          if (row) {
+            const newRow = [...row];
+            newRow[targetX] = CELL_EMPTY;
+            next.map[targetY] = newRow;
+          }
           next.score += 5;
       }
       
@@ -213,7 +216,8 @@ export const evaluateState = (state: GameState): Evaluation => {
     
     // 1. Identify Threats (Blocks ahead)
     const threats: { x: number, y: number }[] = [];
-    [ [x-1, y+1], [x, y+1], [x+1, y+1] ].forEach(([tx, ty]) => {
+    const candidates: [number, number][] = [ [x-1, y+1], [x, y+1], [x+1, y+1] ];
+    candidates.forEach(([tx, ty]) => {
         if (!isWalkable(state, tx, ty)) {
             threats.push({ x: tx, y: ty });
         }

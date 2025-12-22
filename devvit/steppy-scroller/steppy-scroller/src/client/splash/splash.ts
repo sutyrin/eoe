@@ -6,7 +6,7 @@ const discordLink = document.getElementById('discord-link') as HTMLDivElement;
 const startButton = document.getElementById('start-button') as HTMLButtonElement;
 
 startButton.addEventListener('click', (e) => {
-  requestExpandedMode(e, 'game');
+  void requestExpandedMode(e, 'game');
 });
 
 docsLink.addEventListener('click', () => {
