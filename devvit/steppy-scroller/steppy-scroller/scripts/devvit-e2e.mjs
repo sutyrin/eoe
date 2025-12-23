@@ -2,7 +2,10 @@ import { chromium, devices } from 'playwright';
 import path from 'node:path';
 import fs from 'node:fs/promises';
 
-const postUrl = process.env.DEVVIT_POST_URL ?? process.env.REDDIT_POST_URL;
+const defaultPostUrl =
+  'https://www.reddit.com/r/softwart/comments/1ps7jke/steppyscroller/';
+const postUrl =
+  process.env.DEVVIT_POST_URL ?? process.env.REDDIT_POST_URL ?? defaultPostUrl;
 const authFile = path.resolve('playwright', '.auth', 'reddit.json');
 const outDir = path.resolve('test-results', 'devvit');
 const headless = process.env.HEADLESS === '1';

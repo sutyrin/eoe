@@ -9,12 +9,17 @@
 - Деплой: `npm run build` → `devvit upload --bump patch` → `devvit install r/softwart <app>@<version>`.
 - Тестовый сабреддит: `/r/softwart`.
 - Steppy Scroller (Devvit): локальные детали и версия Devvit — `devvit/steppy-scroller/AGENTS.md`.
-- Playwright (браузерный тест, требуется логин):
+- Playwright (браузерный тест, требуется логин, используется спец‑профиль Playwright):
   1) `cd devvit/steppy-scroller/steppy-scroller`
-  2) Один раз: `npm run pw:login` → вручную залогиниться в Reddit → Enter (сохранит `playwright/.auth/reddit.json`).
-  3) Запуск: `DEVVIT_POST_URL="<post url>" HEADLESS=0 npm run pw:devvit:e2e`.
-  Скрипт кликает по центру поста, находит splash iframe, жмет Start и скринит результат в `test-results/devvit/`.
-  Для ручной отладки: `DEVTOOLS=1 npm run pw:devvit:e2e` (окно браузера + devtools).
+  2) Один раз: `npm run pw:login` → вручную залогиниться в Reddit → Enter.
+     Сохранит профиль в `playwright/.auth/reddit.json` (его читает `storageState` в `scripts/devvit-*.mjs`).
+  3) Запуск: `HEADLESS=0 npm run pw:devvit:e2e`.
+     По умолчанию используется пост: `https://www.reddit.com/r/softwart/comments/1ps7jke/steppyscroller/`.
+     Переопределение: `DEVVIT_POST_URL="<post url>"`.
+     Скрипт кликает по центру поста, находит splash iframe, жмет Start и скринит результат в `test-results/devvit/`.
+  4) Ручная отладка: `DEVTOOLS=1 npm run pw:devvit:e2e` (окно браузера + devtools).
+  5) Профиль устройства по умолчанию: `PW_DEVICE="iPhone 13"`, мобильный режим включен.
+     Отключить мобильный режим: `PW_MOBILE=0`.
 
 ## Devvit (итоги и практика)
 

@@ -3,7 +3,10 @@ import path from 'node:path';
 import fs from 'node:fs';
 
 const authFile = path.resolve('playwright', '.auth', 'reddit.json');
-const postUrl = process.env.DEVVIT_POST_URL ?? process.env.REDDIT_POST_URL;
+const defaultPostUrl =
+  'https://www.reddit.com/r/softwart/comments/1ps7jke/steppyscroller/';
+const postUrl =
+  process.env.DEVVIT_POST_URL ?? process.env.REDDIT_POST_URL ?? defaultPostUrl;
 const useMobile = process.env.PW_MOBILE !== '0';
 const deviceName = process.env.PW_DEVICE ?? 'iPhone 13';
 

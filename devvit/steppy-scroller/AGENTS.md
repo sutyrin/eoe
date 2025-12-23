@@ -16,3 +16,9 @@
 3) `devvit install r/softwart <app>@<version>`
 
 Тестовый сабреддит: `/r/softwart`.
+
+## Playwright e2e (Devvit)
+
+По умолчанию e2e/smoke открывают пост:
+`https://www.reddit.com/r/softwart/comments/1ps7jke/steppyscroller/`.
+Переопределение: `DEVVIT_POST_URL="<post url>"`.
