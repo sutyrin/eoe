@@ -17,8 +17,10 @@
      По умолчанию используется пост: `https://www.reddit.com/r/softwart/comments/1ps7jke/steppyscroller/`.
      Переопределение: `DEVVIT_POST_URL="<post url>"`.
      Скрипт кликает по центру поста, находит splash iframe, жмет Start и скринит результат в `test-results/devvit/`.
-  4) Ручная отладка: `DEVTOOLS=1 npm run pw:devvit:e2e` (окно браузера + devtools).
-  5) Профиль устройства по умолчанию: `PW_DEVICE="iPhone 13"`, мобильный режим включен.
+  4) GIF (проклик + запись): `HEADLESS=0 npm run pw:devvit:gif`.
+     Параметры: `GIF_STEPS=20` (ходы), `GIF_FPS=8`, `GIF_WIDTH=600`.
+  5) Ручная отладка: `DEVTOOLS=1 npm run pw:devvit:e2e` (окно браузера + devtools).
+  6) Профиль устройства по умолчанию: `PW_DEVICE="iPhone 13"`, мобильный режим включен.
      Отключить мобильный режим: `PW_MOBILE=0`.
 
 ## Devvit (итоги и практика)

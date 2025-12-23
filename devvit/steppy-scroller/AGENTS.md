@@ -22,3 +22,4 @@
 По умолчанию e2e/smoke открывают пост:
 `https://www.reddit.com/r/softwart/comments/1ps7jke/steppyscroller/`.
 Переопределение: `DEVVIT_POST_URL="<post url>"`.
+GIF запись: `npm run pw:devvit:gif` (параметры `GIF_STEPS`, `GIF_FPS`, `GIF_WIDTH`).

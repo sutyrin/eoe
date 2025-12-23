@@ -1,14 +1,18 @@
 import { chromium, devices } from 'playwright';
 import path from 'node:path';
-import fs from 'node:fs/promises';
+import fs from 'node:fs';
+import { execSync } from 'node:child_process';
 import { authFile, resolvePostUrl } from './devvit-config.mjs';
 
 const postUrl = resolvePostUrl();
-const outDir = path.resolve('test-results', 'devvit');
 const headless = process.env.HEADLESS === '1';
 const openDevtools = process.env.DEVTOOLS === '1';
 const useMobile = process.env.PW_MOBILE !== '0';
 const deviceName = process.env.PW_DEVICE ?? 'iPhone 13';
+const steps = Number(process.env.GIF_STEPS ?? '20');
+const fps = Number(process.env.GIF_FPS ?? '8');
+const width = Number(process.env.GIF_WIDTH ?? '600');
+const outDir = path.resolve('test-results', 'devvit', 'gif');
 
 if (!postUrl) {
   console.error(
@@ -17,7 +21,14 @@ if (!postUrl) {
   process.exit(1);
 }
 
-await fs.mkdir(outDir, { recursive: true });
+if (!fs.existsSync(authFile)) {
+  console.error(
+    'Missing auth file. Run `npm run pw:login` first to create playwright/.auth/reddit.json.'
+  );
+  process.exit(1);
+}
+
+fs.mkdirSync(outDir, { recursive: true });
 
 const browser = await chromium.launch({
   headless,
@@ -51,12 +62,6 @@ await context.addInitScript(() => {
 const page = await context.newPage();
 await page.goto(postUrl, { waitUntil: 'domcontentloaded' });
 await page.waitForTimeout(3000);
-
-const screenshot = async (label) => {
-  const outPath = path.join(outDir, `steppy-${label}-${Date.now()}.png`);
-  await page.screenshot({ path: outPath, fullPage: false });
-  console.log('screenshot', outPath);
-};
 
 const getPostRect = async () => {
   return page.evaluate(() => {
@@ -122,12 +127,9 @@ const clickCandidates = (rect) => [
   { name: 'upper-center', x: rect.x + rect.w * 0.5, y: rect.y + rect.h * 0.45 },
 ];
 
-await screenshot('before');
-
 const rect = await getPostRect();
 if (!rect) {
   console.error('Could not find shredder-post bounding box.');
-  await screenshot('no-post');
   await context.close();
   await browser.close();
   process.exit(1);
@@ -135,16 +137,12 @@ if (!rect) {
 
 let frames = [];
 for (const point of clickCandidates(rect)) {
-  console.log('click', point.name, point.x, point.y);
   await page.mouse.click(point.x, point.y);
   frames = await waitForAppFrame(4000);
-  await screenshot(`after-${point.name}`);
   if (frames.length > 0) {
     break;
   }
 }
-
-console.log('frames', frames);
 
 const playInFrame = async () => {
   const framesList = page.frames();
@@ -158,44 +156,149 @@ const playInFrame = async () => {
   if (await start.count()) {
     await start.first().click();
     await page.waitForTimeout(5000);
-    await screenshot('after-start');
   } else {
     console.log('start button not found inside splash frame');
   }
 };
 
-const clickArrowButtons = async () => {
-  const gameFrame = await waitForFrameByUrl('/game.html', 10000);
-  if (!gameFrame) {
-    console.log('game frame not found after start');
-    return;
-  }
-  await gameFrame.waitForLoadState('domcontentloaded');
-  const controls = gameFrame.locator('#controls');
-  await controls.waitFor({ timeout: 10000 });
-
-  const buttonLabels = ['←', '↑', '→'];
-  for (const label of buttonLabels) {
-    const button = gameFrame.getByRole('button', { name: label });
-    const count = await button.count();
-    if (!count) {
-      console.log('button not found', label);
-      continue;
-    }
-    const target = button.first();
-    const isDisabled = await target.isDisabled();
-    console.log('button', label, isDisabled ? 'disabled' : 'enabled');
-    if (!isDisabled) {
-      await target.click();
-      await page.waitForTimeout(800);
-      await screenshot(`after-${encodeURIComponent(label)}`);
-    }
-  }
-};
-
 if (frames.length > 0) {
   await playInFrame();
-  await clickArrowButtons();
+}
+
+const gameFrame = await waitForFrameByUrl('/game.html', 10000);
+if (!gameFrame) {
+  console.log('game frame not found after start');
+  await context.close();
+  await browser.close();
+  process.exit(1);
+}
+await gameFrame.waitForLoadState('domcontentloaded');
+const controls = gameFrame.locator('#controls');
+await controls.waitFor({ timeout: 10000 });
+
+await gameFrame.addStyleTag({
+  content: `
+    .action.simulated-active {
+      background-color: #4a8c5f !important;
+      transform: translateY(6px) !important;
+      box-shadow: 0 6px 0 #203b26 !important;
+      color: white;
+    }
+  `,
+});
+
+const timestamp = Date.now();
+const postId = (() => {
+  try {
+    const parts = new URL(postUrl).pathname.split('/').filter(Boolean);
+    const idx = parts.indexOf('comments');
+    return idx >= 0 && parts[idx + 1] ? parts[idx + 1] : 'post';
+  } catch {
+    return 'post';
+  }
+})();
+const framesDir = path.resolve(outDir, `frames-${postId}-${timestamp}`);
+const gifPath = path.resolve(outDir, `gameplay-${postId}-${timestamp}.gif`);
+
+if (fs.existsSync(framesDir)) {
+  fs.rmSync(framesDir, { recursive: true, force: true });
+}
+fs.mkdirSync(framesDir, { recursive: true });
+
+let frameCount = 0;
+const takeScreenshot = async () => {
+  const framePath = path.join(framesDir, `frame-${String(frameCount).padStart(3, '0')}.png`);
+  const target = gameFrame.locator('#game-root');
+  await target.waitFor({ timeout: 10000 });
+  await target.screenshot({ path: framePath });
+  frameCount++;
+};
+
+const getState = () => gameFrame.evaluate(() => window.__MCP__?.getState());
+
+await takeScreenshot();
+
+for (let i = 0; i < steps; i++) {
+  let climbed = false;
+  let attempts = 0;
+  let actionToClick = '';
+
+  while (!climbed && attempts < 5) {
+    const state = await getState();
+    const actions = state?.actions ?? [];
+    const optimal = state?.evaluation?.optimalChoice;
+
+    if (optimal && actions.find((a) => a.id === optimal && a.enabled)) {
+      actionToClick = optimal;
+    } else {
+      const up = actions.find((a) => a.id === 'step-up');
+      const right = actions.find((a) => a.id === 'step-right');
+      const left = actions.find((a) => a.id === 'step-left');
+
+      if (up?.enabled) {
+        actionToClick = 'step-up';
+      } else if (right?.enabled) {
+        actionToClick = 'step-right';
+      } else if (left?.enabled) {
+        actionToClick = 'step-left';
+      }
+    }
+
+    if (actionToClick) {
+      const labelMap = {
+        'step-up': '↑',
+        'step-left': '←',
+        'step-right': '→',
+      };
+      const label = labelMap[actionToClick];
+      const button = gameFrame.getByRole('button', { name: label });
+      const count = await button.count();
+      if (!count) {
+        await page.waitForTimeout(100);
+        attempts++;
+        continue;
+      }
+
+      await button.evaluate((el) => el.classList.add('simulated-active'));
+      await takeScreenshot();
+
+      await button.click();
+      await page.waitForTimeout(100);
+
+      await takeScreenshot();
+      await button.evaluate((el) => el.classList.remove('simulated-active'));
+
+      climbed = true;
+    } else {
+      await page.waitForTimeout(100);
+    }
+    attempts++;
+  }
+}
+
+console.log(`Captured ${frameCount} frames. Generating GIF...`);
+
+try {
+  const palettePath = path.join(framesDir, 'palette.png');
+  execSync(
+    `ffmpeg -y -i "${path.join(
+      framesDir,
+      'frame-%03d.png'
+    )}" -vf "fps=${fps},scale=${width}:-1:flags=lanczos,palettegen" "${palettePath}"`,
+    { stdio: 'inherit' }
+  );
+  execSync(
+    `ffmpeg -y -framerate ${fps} -i "${path.join(
+      framesDir,
+      'frame-%03d.png'
+    )}" -i "${palettePath}" -lavfi "fps=${fps},scale=${width}:-1:flags=lanczos [x]; [x][1:v] paletteuse" "${gifPath}"`,
+    { stdio: 'inherit' }
+  );
+  console.log(`GIF saved to: ${gifPath}`);
+} catch (error) {
+  console.error('Failed to generate GIF with ffmpeg', error);
+} finally {
+  fs.rmSync(framesDir, { recursive: true, force: true });
 }
 
 if (headless) {

@@ -21,6 +21,7 @@
     "prettier": "prettier-package-json --write ./package.json && prettier --write .",
     "pw:devvit": "node scripts/devvit-smoke.mjs",
     "pw:devvit:e2e": "node scripts/devvit-e2e.mjs",
+    "pw:devvit:gif": "node scripts/devvit-gif.mjs",
     "pw:login": "node scripts/reddit-login.mjs",
     "type-check": "tsc --build"
   },

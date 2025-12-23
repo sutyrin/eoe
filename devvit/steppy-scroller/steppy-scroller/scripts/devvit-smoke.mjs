@@ -1,12 +1,8 @@
 import { chromium, devices } from 'playwright';
-import path from 'node:path';
 import fs from 'node:fs';
+import { authFile, resolvePostUrl } from './devvit-config.mjs';
 
-const authFile = path.resolve('playwright', '.auth', 'reddit.json');
-const defaultPostUrl =
-  'https://www.reddit.com/r/softwart/comments/1ps7jke/steppyscroller/';
-const postUrl =
-  process.env.DEVVIT_POST_URL ?? process.env.REDDIT_POST_URL ?? defaultPostUrl;
+const postUrl = resolvePostUrl();
 const useMobile = process.env.PW_MOBILE !== '0';
 const deviceName = process.env.PW_DEVICE ?? 'iPhone 13';
 
