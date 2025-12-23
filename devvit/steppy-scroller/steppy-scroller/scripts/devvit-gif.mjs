@@ -72,38 +72,17 @@ const getPostRect = async () => {
   });
 };
 
-const countShadowIframes = async () => {
-  return page.evaluate(() => {
-    const collect = (root) => {
-      const results = [];
-      const walker = document.createTreeWalker(root, NodeFilter.SHOW_ELEMENT);
-      let node = walker.nextNode();
-      while (node) {
-        const el = node;
-        if (el.tagName === 'IFRAME') {
-          results.push({ src: el.getAttribute('src') || '' });
-        }
-        if (el.shadowRoot) {
-          results.push(...collect(el.shadowRoot));
-        }
-        node = walker.nextNode();
-      }
-      return results;
-    };
-    return collect(document);
-  });
-};
-
-const waitForAppFrame = async (timeoutMs) => {
-  const deadline = Date.now() + timeoutMs;
-  while (Date.now() < deadline) {
-    const frames = await countShadowIframes();
-    if (frames.length > 0) {
-      return frames;
-    }
-    await page.waitForTimeout(500);
-  }
-  return [];
+const getPostClip = async () => {
+  const rect = await getPostRect();
+  if (!rect) return null;
+  const viewport = page.viewportSize();
+  if (!viewport) return null;
+  const x = Math.max(0, rect.x);
+  const y = Math.max(0, rect.y);
+  const width = Math.max(0, Math.min(rect.w, viewport.width - x));
+  const height = Math.max(0, Math.min(rect.h, viewport.height - y));
+  if (!width || !height) return null;
+  return { x, y, width, height };
 };
 
 const waitForFrameByUrl = async (urlPart, timeoutMs) => {
@@ -135,24 +114,23 @@ if (!rect) {
   process.exit(1);
 }
 
-let frames = [];
+let splashFrame = null;
 for (const point of clickCandidates(rect)) {
   await page.mouse.click(point.x, point.y);
-  frames = await waitForAppFrame(4000);
-  if (frames.length > 0) {
+  splashFrame = await waitForFrameByUrl('/splash.html', 6000);
+  if (splashFrame) {
     break;
   }
 }
 
-const playInFrame = async () => {
-  const framesList = page.frames();
-  const splashFrame = framesList.find((frame) => frame.url().includes('/splash.html'));
-  if (!splashFrame) {
+const playInFrame = async (target) => {
+  const splash = target ?? page.frames().find((frame) => frame.url().includes('/splash.html'));
+  if (!splash) {
     console.log('splash frame not found in page.frames()');
     return;
   }
-  await splashFrame.waitForLoadState('domcontentloaded');
-  const start = splashFrame.getByRole('button', { name: /^start$/i });
+  await splash.waitForLoadState('domcontentloaded');
+  const start = splash.getByRole('button', { name: /^start$/i });
   if (await start.count()) {
     await start.first().click();
     await page.waitForTimeout(5000);
@@ -161,8 +139,8 @@ const playInFrame = async () => {
   }
 };
 
-if (frames.length > 0) {
-  await playInFrame();
+if (splashFrame) {
+  await playInFrame(splashFrame);
 }
 
 const gameFrame = await waitForFrameByUrl('/game.html', 10000);
@@ -173,8 +151,31 @@ if (!gameFrame) {
   process.exit(1);
 }
 await gameFrame.waitForLoadState('domcontentloaded');
-const controls = gameFrame.locator('#controls');
-await controls.waitFor({ timeout: 10000 });
+await gameFrame.waitForTimeout(2000);
+await gameFrame.locator('#game-root canvas').waitFor({ timeout: 20000 });
+await gameFrame.locator('#controls button').first().waitFor({ timeout: 20000 });
+try {
+  const debug = await gameFrame.evaluate(() => ({
+    title: document.title,
+    bodyChildren: document.body?.children?.length ?? 0,
+    hasMcp: Boolean((window).__MCP__?.getState),
+    hasGame: Boolean((window).__GAME__),
+    buttons: Array.from(document.querySelectorAll('button'))
+      .map((btn) => btn.textContent?.trim())
+      .filter(Boolean),
+  }));
+  console.log('Game frame debug:', debug);
+} catch (error) {
+  console.log('Game frame debug failed:', error);
+}
+try {
+  await gameFrame.waitForFunction(
+    () => document.querySelectorAll('button').length > 0,
+    { timeout: 20000 }
+  );
+} catch {
+  // Buttons may appear after state init; continue and retry clicks later.
+}
 
 await gameFrame.addStyleTag({
   content: `
@@ -208,15 +209,89 @@ fs.mkdirSync(framesDir, { recursive: true });
 let frameCount = 0;
 const takeScreenshot = async () => {
   const framePath = path.join(framesDir, `frame-${String(frameCount).padStart(3, '0')}.png`);
-  const target = gameFrame.locator('#game-root');
-  await target.waitFor({ timeout: 10000 });
-  await target.screenshot({ path: framePath });
+  const clip = await getPostClip();
+  if (clip) {
+    await page.screenshot({ path: framePath, clip });
+  } else {
+    await page.screenshot({ path: framePath, fullPage: false });
+  }
   frameCount++;
 };
 
 const getState = () => gameFrame.evaluate(() => window.__MCP__?.getState());
+const act = (actionId) =>
+  gameFrame.evaluate((id) => (window).__MCP__?.act?.(id), actionId);
+const getButtonLabels = () =>
+  gameFrame.evaluate(() =>
+    Array.from(document.querySelectorAll('#controls button'))
+      .map((btn) => btn.textContent?.trim())
+      .filter(Boolean)
+  );
+
+const clickAnyButton = async () => {
+  const button = gameFrame.locator('#controls button').first();
+  const count = await button.count();
+  if (!count) return false;
+
+  try {
+    await button.evaluate((el) => el.classList.add('simulated-active'), { timeout: 2000 });
+  } catch {
+    // ignore highlight failures
+  }
+  await takeScreenshot();
+
+  try {
+    await button.click({ timeout: 5000, force: true });
+  } catch {
+    return false;
+  }
+  await page.waitForTimeout(100);
+
+  await takeScreenshot();
+  try {
+    await button.evaluate((el) => el.classList.remove('simulated-active'), { timeout: 2000 });
+  } catch {
+    // ignore cleanup failures
+  }
+  return true;
+};
+
+const clickByLabel = async (label) => {
+  const button = gameFrame.locator('#controls button', { hasText: label }).first();
+  const count = await button.count();
+  if (!count) return false;
+
+  try {
+    await button.evaluate((el) => el.classList.add('simulated-active'), { timeout: 2000 });
+  } catch {
+    // ignore highlight failures
+  }
+  await takeScreenshot();
+
+  try {
+    await button.click({ timeout: 5000, force: true });
+  } catch {
+    return false;
+  }
+  await page.waitForTimeout(100);
+
+  await takeScreenshot();
+  try {
+    await button.evaluate((el) => el.classList.remove('simulated-active'), { timeout: 2000 });
+  } catch {
+    // ignore cleanup failures
+  }
+  return true;
+};
 
 await takeScreenshot();
+
+const initialLabels = await getButtonLabels();
+if (initialLabels.length > 0) {
+  console.log('Detected button labels:', initialLabels.join(', '));
+} else {
+  console.log('No button labels detected; will try clicking any button.');
+}
 
 for (let i = 0; i < steps; i++) {
   let climbed = false;
@@ -228,49 +303,38 @@ for (let i = 0; i < steps; i++) {
     const actions = state?.actions ?? [];
     const optimal = state?.evaluation?.optimalChoice;
 
-    if (optimal && actions.find((a) => a.id === optimal && a.enabled)) {
-      actionToClick = optimal;
-    } else {
-      const up = actions.find((a) => a.id === 'step-up');
-      const right = actions.find((a) => a.id === 'step-right');
-      const left = actions.find((a) => a.id === 'step-left');
+    if (actions.length > 0) {
+      if (optimal && actions.find((a) => a.id === optimal && a.enabled)) {
+        actionToClick = optimal;
+      } else {
+        const up = actions.find((a) => a.id === 'step-up');
+        const right = actions.find((a) => a.id === 'step-right');
+        const left = actions.find((a) => a.id === 'step-left');
 
-      if (up?.enabled) {
-        actionToClick = 'step-up';
-      } else if (right?.enabled) {
-        actionToClick = 'step-right';
-      } else if (left?.enabled) {
-        actionToClick = 'step-left';
+        if (up?.enabled) {
+          actionToClick = 'step-up';
+        } else if (right?.enabled) {
+          actionToClick = 'step-right';
+        } else if (left?.enabled) {
+          actionToClick = 'step-left';
+        }
       }
     }
 
     if (actionToClick) {
-      const labelMap = {
-        'step-up': '↑',
-        'step-left': '←',
-        'step-right': '→',
-      };
-      const label = labelMap[actionToClick];
-      const button = gameFrame.getByRole('button', { name: label });
-      const count = await button.count();
-      if (!count) {
-        await page.waitForTimeout(100);
-        attempts++;
-        continue;
+      const label = actions.find((a) => a.id === actionToClick)?.label;
+      if (label) {
+        climbed = await clickByLabel(label);
       }
-
-      await button.evaluate((el) => el.classList.add('simulated-active'));
-      await takeScreenshot();
-
-      await button.click();
-      await page.waitForTimeout(100);
-
-      await takeScreenshot();
-      await button.evaluate((el) => el.classList.remove('simulated-active'));
-
-      climbed = true;
     } else {
-      await page.waitForTimeout(100);
+      const labels = await getButtonLabels();
+      const fallbackLabels = labels.length > 0 ? labels : ['↖', '↑', '↗', '←', '→'];
+      const label = fallbackLabels[i % fallbackLabels.length];
+      climbed = await clickByLabel(label);
+    }
+
+    if (!climbed) {
+      climbed = await clickAnyButton();
     }
     attempts++;
   }
@@ -280,20 +344,30 @@ console.log(`Captured ${frameCount} frames. Generating GIF...`);
 
 try {
   const palettePath = path.join(framesDir, 'palette.png');
-  execSync(
-    `ffmpeg -y -i "${path.join(
-      framesDir,
-      'frame-%03d.png'
-    )}" -vf "fps=${fps},scale=${width}:-1:flags=lanczos,palettegen" "${palettePath}"`,
-    { stdio: 'inherit' }
-  );
-  execSync(
-    `ffmpeg -y -framerate ${fps} -i "${path.join(
-      framesDir,
-      'frame-%03d.png'
-    )}" -i "${palettePath}" -lavfi "fps=${fps},scale=${width}:-1:flags=lanczos [x]; [x][1:v] paletteuse" "${gifPath}"`,
-    { stdio: 'inherit' }
-  );
+  if (frameCount < 2) {
+    execSync(
+      `ffmpeg -y -framerate ${fps} -i "${path.join(
+        framesDir,
+        'frame-%03d.png'
+      )}" "${gifPath}"`,
+      { stdio: 'inherit' }
+    );
+  } else {
+    execSync(
+      `ffmpeg -y -i "${path.join(
+        framesDir,
+        'frame-%03d.png'
+      )}" -vf "fps=${fps},scale=${width}:-1:flags=lanczos,palettegen" "${palettePath}"`,
+      { stdio: 'inherit' }
+    );
+    execSync(
+      `ffmpeg -y -framerate ${fps} -i "${path.join(
+        framesDir,
+        'frame-%03d.png'
+      )}" -i "${palettePath}" -lavfi "fps=${fps},scale=${width}:-1:flags=lanczos [x]; [x][1:v] paletteuse" "${gifPath}"`,
+      { stdio: 'inherit' }
+    );
+  }
   console.log(`GIF saved to: ${gifPath}`);
 } catch (error) {
   console.error('Failed to generate GIF with ffmpeg', error);

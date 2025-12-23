@@ -12,6 +12,7 @@ import {
   type GameState,
 } from '@eoe/game-core/steppy';
 import { InitResponse } from '../../shared/types/api';
+import { BUILD_SHA } from '../../shared/build-info';
 
 const CELL_SIZE = 56;
 const VIEW_ROWS = 9;
@@ -28,6 +29,7 @@ export class Game extends Scene {
   }
 
   create() {
+    console.log('[steppy] build sha', BUILD_SHA);
     this.graphics = this.add.graphics();
 
     // Setup UI Container (Overlay)
@@ -86,13 +88,15 @@ export class Game extends Scene {
   }
 
   createUiOverlay() {
+    const existing = document.getElementById('controls');
+    if (existing instanceof HTMLDivElement) {
+      this.uiContainer = existing;
+      return;
+    }
+
     this.uiContainer = document.createElement('div');
-    this.uiContainer.style.position = 'absolute';
-    this.uiContainer.style.bottom = '20px';
-    this.uiContainer.style.left = '50%';
-    this.uiContainer.style.transform = 'translateX(-50%)';
-    this.uiContainer.style.display = 'flex';
-    this.uiContainer.style.gap = '16px';
+    this.uiContainer.id = 'controls';
+    this.uiContainer.className = 'controls';
     document.body.appendChild(this.uiContainer);
   }
 
@@ -106,19 +110,6 @@ export class Game extends Scene {
       btn.textContent = action.label;
       btn.disabled = !action.enabled;
       btn.className = 'action';
-      // Apply basic styles inline since CSS might not be loaded the same way
-      Object.assign(btn.style, {
-        width: '88px',
-        height: '88px',
-        fontSize: '32px',
-        background: '#2f583a',
-        color: '#fff',
-        border: '3px solid rgba(255,255,255,0.3)',
-        borderRadius: '22px',
-        cursor: action.enabled ? 'pointer' : 'not-allowed',
-        opacity: action.enabled ? '1' : '0.6',
-      });
-
       btn.onclick = () => this.controller?.act(action.id);
       this.uiContainer!.appendChild(btn);
     });

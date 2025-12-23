@@ -8,6 +8,10 @@
 - `@devvit/web`: 0.12.6
 Источник: `devvit/steppy-scroller/steppy-scroller/package.json`.
 
+## Build метаданные
+
+Сборка всегда включает git SHA через Vite define `__BUILD_SHA__` (см. `src/shared/build-info.ts`).
+
 ## Вкатка (Devvit)
 
 Из `devvit/steppy-scroller/steppy-scroller/`:
