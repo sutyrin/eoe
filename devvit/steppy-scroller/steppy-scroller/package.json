@@ -23,6 +23,7 @@
     "pw:devvit:e2e": "node scripts/devvit-e2e.mjs",
     "pw:devvit:gif": "node scripts/devvit-gif.mjs",
     "pw:login": "node scripts/reddit-login.mjs",
+    "test:qa": "npm run build && devvit upload && HEADLESS=1 npm run pw:devvit:e2e",
     "type-check": "tsc --build"
   },
   "dependencies": {
