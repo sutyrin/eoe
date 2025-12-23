@@ -4,6 +4,9 @@ export type InitResponse = {
   type: 'init';
   postId: string;
   userId: string;
+  build: {
+    gitSha: string;
+  };
   state: GameState;
 };
 
