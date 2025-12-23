@@ -85,14 +85,15 @@ export class Game extends Scene {
   }
 
   createUiOverlay() {
-    this.uiContainer = document.createElement('div');
+    this.uiContainer = document.getElementById('controls') as HTMLDivElement;
+    if (!this.uiContainer) return;
+
     this.uiContainer.style.position = 'absolute';
     this.uiContainer.style.bottom = '20px';
     this.uiContainer.style.left = '50%';
     this.uiContainer.style.transform = 'translateX(-50%)';
     this.uiContainer.style.display = 'flex';
     this.uiContainer.style.gap = '16px';
-    document.body.appendChild(this.uiContainer);
   }
 
   renderUi() {

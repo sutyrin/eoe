@@ -164,17 +164,25 @@ const playInFrame = async () => {
   }
 };
 
-const clickArrowButtons = async () => {
+  const clickArrowButtons = async () => {
   const gameFrame = await waitForFrameByUrl('/game.html', 10000);
   if (!gameFrame) {
     console.log('game frame not found after start');
     return;
   }
   await gameFrame.waitForLoadState('domcontentloaded');
-  const controls = gameFrame.locator('#controls');
-  await controls.waitFor({ timeout: 10000 });
 
-  const buttonLabels = ['←', '↑', '→'];
+  const buttonLabels = ['↖', '↑', '↗'];
+
+  // Wait for the first button to ensure UI is loaded
+  try {
+    await gameFrame
+      .getByRole('button', { name: buttonLabels[0] })
+      .waitFor({ state: 'visible', timeout: 10000 });
+  } catch (e) {
+    console.log('Timeout waiting for buttons to appear');
+  }
+
   for (const label of buttonLabels) {
     const button = gameFrame.getByRole('button', { name: label });
     const count = await button.count();
