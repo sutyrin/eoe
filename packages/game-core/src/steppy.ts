@@ -1,10 +1,10 @@
-export const STEPPY_VERSION = '0.4-diagonal';
+export const STEPPY_VERSION = '0.5-step1-stamina';
 export const STEPPY_COLUMNS = 5;
+const SAFE_ROWS = 2;
 
 // Cell Types
 export const CELL_EMPTY = 0;
 export const CELL_BLOCK = 1;
-export const CELL_WATER = 2;
 
 export type Action = {
   id: string;
@@ -22,17 +22,17 @@ export type GameState = {
   status: 'ready' | 'running' | 'ended';
   tick: number;
   player: PlayerState;
+  altitude: number;
   map: Record<string, number[]>; 
   seed: number;
-  water: number;
-  maxWater: number;
-  score: number;
+  stamina: number;
+  maxStamina: number;
 };
 
 export type Evaluation = {
   target: string;
   resources: {
-    water: number;
+    stamina: number;
     height: number;
   };
   threats: { x: number, y: number }[];
@@ -40,55 +40,71 @@ export type Evaluation = {
   choices: { id: string, label: string, safety: 'safe' | 'risky' | 'dead-end' }[];
 };
 
-// Simple pseudo-random using seed
-const random = (seed: number) => {
-  const x = Math.sin(seed) * 10000;
-  return x - Math.floor(x);
+const randomFloat = (seed: number) => {
+  let t = seed + 0x6d2b79f5;
+  t = Math.imul(t ^ (t >>> 15), t | 1);
+  t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+  return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+};
+
+const getPathX = (seed: number, y: number) => {
+  let pathX = Math.floor(STEPPY_COLUMNS / 2);
+  for (let step = 1; step <= y; step += 1) {
+    const roll = randomFloat(seed + step * 7919);
+    if (roll < 0.33) {
+      pathX -= 1;
+    } else if (roll > 0.66) {
+      pathX += 1;
+    }
+    if (pathX < 0) pathX = 0;
+    if (pathX >= STEPPY_COLUMNS) pathX = STEPPY_COLUMNS - 1;
+  }
+  return pathX;
+};
+
+const ensureMoveOptions = (seed: number, y: number, row: number[]) => {
+  if (row.length < 2) {
+    return;
+  }
+
+  if (row[0] === CELL_BLOCK && row[1] === CELL_BLOCK) {
+    const pickRight = randomFloat(seed + y * 271 + 3) > 0.5;
+    row[pickRight ? 1 : 0] = CELL_EMPTY;
+  }
+
+  const last = row.length - 1;
+  if (row[last] === CELL_BLOCK && row[last - 1] === CELL_BLOCK) {
+    const pickLeft = randomFloat(seed + y * 271 + 7) > 0.5;
+    row[pickLeft ? last - 1 : last] = CELL_EMPTY;
+  }
+
+  for (let x = 1; x < row.length - 1; x += 1) {
+    if (row[x - 1] === CELL_BLOCK && row[x] === CELL_BLOCK && row[x + 1] === CELL_BLOCK) {
+      row[x] = CELL_EMPTY;
+    }
+  }
 };
 
 // Pure function to generate a row's data based on seed and Y
 const generateRowData = (seed: number, y: number): number[] => {
-  const row: number[] = [];
-  const rowSeed = seed + y * 100;
-  
-  for (let x = 0; x < STEPPY_COLUMNS; x++) {
-    let cellType = CELL_EMPTY;
+  if (y <= SAFE_ROWS) {
+    return Array.from({ length: STEPPY_COLUMNS }, () => CELL_EMPTY);
+  }
 
-    // Safety Zone at start
-    if (y > 3) {
-      // 1. Scattered Noise (Thorns)
-      const noise = random(rowSeed + x);
-      if (noise < 0.1) {
-        cellType = CELL_BLOCK;
-      }
+  const row: number[] = Array.from({ length: STEPPY_COLUMNS }, () => CELL_EMPTY);
+  const pathX = getPathX(seed, y);
 
-      // 2. Structural Vines (Branching Paths)
-      const segmentHeight = 20;
-      const segmentIndex = Math.floor(y / segmentHeight);
-      const segmentSeed = seed + x * 500 + segmentIndex * 1000; 
-      
-      if (random(segmentSeed) < 0.3) {
-          cellType = CELL_BLOCK;
-      }
-      
-      // 3. Dew Drops (Water)
-      // If it's empty so far, small chance for water
-      if (cellType === CELL_EMPTY) {
-          if (random(rowSeed + x + 999) < 0.05) {
-              cellType = CELL_WATER;
-          }
-      }
+  for (let x = 0; x < STEPPY_COLUMNS; x += 1) {
+    if (x === pathX) {
+      continue;
     }
-    
-    row.push(cellType);
-  }
-  
-  // Emergency Pass: If row is full of blocks, clear a random spot
-  if (row.every(c => c === CELL_BLOCK)) {
-     const safeCol = Math.floor(random(rowSeed) * STEPPY_COLUMNS);
-     (row as number[])[safeCol] = CELL_EMPTY;
+    const roll = randomFloat(seed + y * 1337 + x * 97);
+    if (roll < 0.35) {
+      row[x] = CELL_BLOCK;
+    }
   }
 
+  ensureMoveOptions(seed, y, row);
   return row;
 };
 
@@ -113,29 +129,22 @@ const isWalkable = (state: GameState, x: number, y: number): boolean => {
   return row[x] !== CELL_BLOCK;
 };
 
-const getCellType = (state: GameState, x: number, y: number): number => {
-    if (x < 0 || x >= STEPPY_COLUMNS) return CELL_BLOCK;
-    if (y < 0) return CELL_BLOCK;
-    let row = state.map[y];
-    if (!row) {
-        row = generateRowData(state.seed, y);
-    }
-    return row[x] ?? CELL_BLOCK;
-}
-
 export const createInitialState = (): GameState => ({
   version: STEPPY_VERSION,
   status: 'running',
   tick: 0,
   player: { x: Math.floor(STEPPY_COLUMNS / 2), y: 0 },
+  altitude: 0,
   map: {},
   seed: Date.now(),
-  water: 20,
-  maxWater: 25,
-  score: 0
+  stamina: 12,
+  maxStamina: 12
 });
 
 export const computeActions = (state: GameState): Action[] => {
+  if (state.status === 'ended') {
+    return [{ id: 'restart', label: 'Restart', enabled: true }];
+  }
   if (state.status !== 'running') {
     return [];
   }
@@ -151,6 +160,9 @@ export const computeActions = (state: GameState): Action[] => {
 };
 
 export const applyAction = (state: GameState, actionId: string): GameState => {
+  if (actionId === 'restart') {
+    return createInitialState();
+  }
   if (state.status !== 'running') {
     return state;
   }
@@ -161,14 +173,6 @@ export const applyAction = (state: GameState, actionId: string): GameState => {
     map: { ...state.map } 
   };
 
-  // Cost of movement
-  if (next.water > 0) {
-      next.water -= 1;
-  } else {
-      next.status = 'ended';
-      return next;
-  }
-
   let targetX = next.player.x;
   let targetY = next.player.y + 1; // Always move up
 
@@ -177,34 +181,27 @@ export const applyAction = (state: GameState, actionId: string): GameState => {
   // step-up just keeps x same
 
   if (isWalkable(next, targetX, targetY)) {
-      next.player.x = targetX;
-      next.player.y = targetY;
-      
-      // Persist row
-      if (!next.map[targetY]) {
-          next.map[targetY] = getRow(next, targetY);
-      }
-      
-      // Check for collection
-      const row = next.map[targetY];
-      const cell = row ? row[targetX] : CELL_EMPTY;
-      if (cell === CELL_WATER) {
-          next.water = Math.min(next.maxWater, next.water + 5);
-          if (row) {
-            const newRow = [...row];
-            newRow[targetX] = CELL_EMPTY;
-            next.map[targetY] = newRow;
-          }
-          next.score += 5;
-      }
-      
-      next.score += 1;
+    next.player.x = targetX;
+    next.player.y = targetY;
+    next.altitude += 1;
+
+    // Cost of movement
+    if (next.stamina > 0) {
+      next.stamina -= 1;
+    }
+
+    // Persist row
+    if (!next.map[targetY]) {
+      next.map[targetY] = getRow(next, targetY);
+    }
+  } else {
+    next.status = 'ended';
   }
 
   next.tick += 1;
   
-  if (next.water <= 0) {
-      next.status = 'ended';
+  if (next.stamina <= 0) {
+    next.status = 'ended';
   }
 
   return next;
@@ -231,22 +228,11 @@ export const evaluateState = (state: GameState): Evaluation => {
     const leftSafe = isWalkable(state, x - 1, y + 1);
     const rightSafe = isWalkable(state, x + 1, y + 1);
     
-    // Greedy Water
-    if (state.water < 8) {
-        target = "Find Water";
-        if (getCellType(state, x, y+1) === CELL_WATER) optimalChoice = 'step-up';
-        else if (getCellType(state, x-1, y+1) === CELL_WATER) optimalChoice = 'step-left';
-        else if (getCellType(state, x+1, y+1) === CELL_WATER) optimalChoice = 'step-right';
-    }
-    
     if (!optimalChoice) {
-        // Prefer straight up if safe, then diagonals
-        // But diagonals are just as good now!
-        // Look 2 steps ahead?
-        // Simple: Pick safe
-        if (upSafe) optimalChoice = 'step-up';
-        else if (leftSafe) optimalChoice = 'step-left';
-        else if (rightSafe) optimalChoice = 'step-right';
+      // Prefer straight up if safe, then diagonals
+      if (upSafe) optimalChoice = 'step-up';
+      else if (leftSafe) optimalChoice = 'step-left';
+      else if (rightSafe) optimalChoice = 'step-right';
     }
     
     // 3. Annotate Choices
@@ -262,8 +248,8 @@ export const evaluateState = (state: GameState): Evaluation => {
     return {
         target,
         resources: {
-            water: state.water,
-            height: y
+            stamina: state.stamina,
+            height: state.altitude
         },
         threats,
         optimalChoice,

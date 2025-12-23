@@ -22,6 +22,7 @@
     "vite": "^7.2.4"
   },
   "dependencies": {
+    "@eoe/game-core": "file:../../packages/game-core",
     "phaser": "^3.90.0",
     "redis": "^4.7.0"
   }

@@ -1,8 +1,8 @@
 import './style.css';
 import Phaser from 'phaser';
 import { registerGame } from './mcp/game-api';
-import { getBrowserId } from './game-core/browser-id';
-import { createStateController } from './game-core/state-controller';
+import { getBrowserId } from '@eoe/game-core/browser-id';
+import { createStateController } from '@eoe/game-core/state-controller';
 import {
   computeActions,
   createInitialState,
@@ -11,8 +11,8 @@ import {
   STEPPY_COLUMNS,
   STEPPY_VERSION,
   CELL_BLOCK,
-  type GameState
-} from './game-core/steppy';
+  type GameState,
+} from '@eoe/game-core/steppy';
 
 const CELL_SIZE = 56;
 const VIEW_ROWS = 9; // Number of rows visible on screen

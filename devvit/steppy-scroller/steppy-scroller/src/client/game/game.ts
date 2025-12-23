@@ -8,7 +8,6 @@ import {
   STEPPY_COLUMNS,
   STEPPY_VERSION,
   CELL_BLOCK,
-  CELL_WATER,
   type GameState,
 } from '@eoe/game-core/steppy';
 import { InitResponse } from '../../shared/types/api';
@@ -170,15 +169,6 @@ export class Game extends Scene {
             CELL_SIZE - 8,
             8
           );
-        } else if (cell === CELL_WATER) {
-          this.graphics.fillStyle(0x3498db, 0.8);
-          this.graphics.fillCircle(screenX + CELL_SIZE / 2, screenY + CELL_SIZE / 2, CELL_SIZE / 4);
-          this.graphics.lineStyle(2, 0x2980b9, 1);
-          this.graphics.strokeCircle(
-            screenX + CELL_SIZE / 2,
-            screenY + CELL_SIZE / 2,
-            CELL_SIZE / 4
-          );
         }
       }
     }
@@ -214,24 +204,24 @@ export class Game extends Scene {
       padding: { x: 4, y: 4 } as Phaser.Types.GameObjects.Text.TextPadding,
     };
 
-    // Water Gauge
+    // Stamina Gauge
     const gaugeWidth = 16;
     const maxBarHeight = height - 40;
-    const currentBarHeight = (this.state.water / this.state.maxWater) * maxBarHeight;
+    const currentBarHeight = (this.state.stamina / this.state.maxStamina) * maxBarHeight;
     const barX = 8;
     const barY = 20 + (maxBarHeight - currentBarHeight);
 
     this.graphics.fillStyle(0xbdc3c7, 0.5);
     this.graphics.fillRoundedRect(barX, 20, gaugeWidth, maxBarHeight, 4);
 
-    const waterColor = this.state.water < 5 ? 0xe74c3c : 0x3498db;
-    this.graphics.fillStyle(waterColor, 1);
+    const staminaColor = this.state.stamina < 3 ? 0xe74c3c : 0xf1c40f;
+    this.graphics.fillStyle(staminaColor, 1);
     this.graphics.fillRoundedRect(barX, barY, gaugeWidth, currentBarHeight, 4);
 
-    this.updateTextObj('hud-height', 10, 10, `Height: ${this.state.player.y}m`, hudStyle);
-    this.updateTextObj('hud-water', width - 120, 10, `Water: ${this.state.water}`, {
+    this.updateTextObj('hud-height', 10, 10, `Altitude: ${this.state.altitude}m`, hudStyle);
+    this.updateTextObj('hud-stamina', width - 120, 10, `Stamina: ${this.state.stamina}`, {
       ...hudStyle,
-      color: this.state.water < 5 ? '#e74c3c' : '#3498db',
+      color: this.state.stamina < 3 ? '#e74c3c' : '#f1c40f',
     });
 
     if (this.state.status === 'ended') {
