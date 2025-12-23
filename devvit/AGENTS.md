@@ -8,6 +8,7 @@
 - Создание нового Devvit‑приложения (`devvit new`) требует действия пользователя в браузере; это нормально, нужно просить пользователя сделать это.
 - Деплой: `npm run build` → `devvit upload --bump patch` → `devvit install r/softwart <app>@<version>`.
 - Тестовый сабреддит: `/r/softwart`.
+- Steppy Scroller (Devvit): локальные детали и версия Devvit — `devvit/steppy-scroller/AGENTS.md`.
 - Playwright (браузерный тест, требуется логин):
   1) `cd devvit/steppy-scroller/steppy-scroller`
   2) Один раз: `npm run pw:login` → вручную залогиниться в Reddit → Enter (сохранит `playwright/.auth/reddit.json`).
