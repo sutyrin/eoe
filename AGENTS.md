@@ -33,6 +33,7 @@
 - Steppy Scroller (локальный пайплайн, тесты, URL, скриншоты): `games/steppy-scroller/AGENTS.md`.
 - Devvit инструкции: `devvit/AGENTS.md`.
 - Devvit Steppy Scroller (версия Devvit + выкатка): `devvit/steppy-scroller/AGENTS.md`.
+- Devvit e2e/gif (UI клипы, OAuth при upload, дефолтный пост) — см. эти AGENTS.
 - Общая разработка, структура, тестовая пирамида, логи: `docs/AGENTS.md`.
 - Описания игр: `docs/games.md`.
 - Идеи/концепции для новых игр (не использовать при реализации текущих игр): `docs/ideas/`.
