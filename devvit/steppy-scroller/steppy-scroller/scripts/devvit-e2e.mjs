@@ -17,6 +17,15 @@ if (!postUrl) {
   process.exit(1);
 }
 
+try {
+  await fs.access(authFile);
+} catch (err) {
+  console.error(
+    'Missing auth file. Run `npm run pw:login` first to create playwright/.auth/reddit.json.'
+  );
+  process.exit(1);
+}
+
 await fs.mkdir(outDir, { recursive: true });
 
 const browser = await chromium.launch({
@@ -52,12 +61,6 @@ const page = await context.newPage();
 await page.goto(postUrl, { waitUntil: 'domcontentloaded' });
 await page.waitForTimeout(3000);
 
-const screenshot = async (label) => {
-  const outPath = path.join(outDir, `steppy-${label}-${Date.now()}.png`);
-  await page.screenshot({ path: outPath, fullPage: false });
-  console.log('screenshot', outPath);
-};
-
 const getPostRect = async () => {
   return page.evaluate(() => {
     const el = document.querySelector('shreddit-post');
@@ -65,6 +68,30 @@ const getPostRect = async () => {
     const r = el.getBoundingClientRect();
     return { x: r.x, y: r.y, w: r.width, h: r.height };
   });
+};
+
+const getPostClip = async () => {
+  const rect = await getPostRect();
+  if (!rect) return null;
+  const viewport = page.viewportSize();
+  if (!viewport) return null;
+  const x = Math.max(0, rect.x);
+  const y = Math.max(0, rect.y);
+  const width = Math.max(0, Math.min(rect.w, viewport.width - x));
+  const height = Math.max(0, Math.min(rect.h, viewport.height - y));
+  if (!width || !height) return null;
+  return { x, y, width, height };
+};
+
+const screenshot = async (label) => {
+  const outPath = path.join(outDir, `steppy-${label}-${Date.now()}.png`);
+  const clip = await getPostClip();
+  if (clip) {
+    await page.screenshot({ path: outPath, clip });
+  } else {
+    await page.screenshot({ path: outPath, fullPage: false });
+  }
+  console.log('screenshot', outPath);
 };
 
 const countShadowIframes = async () => {
@@ -164,37 +191,25 @@ const playInFrame = async () => {
   }
 };
 
-  const clickArrowButtons = async () => {
+const clickArrowButtons = async () => {
   const gameFrame = await waitForFrameByUrl('/game.html', 10000);
   if (!gameFrame) {
     console.log('game frame not found after start');
     return;
   }
   await gameFrame.waitForLoadState('domcontentloaded');
+  const buttons = gameFrame.locator('#controls button');
+  await buttons.first().waitFor({ timeout: 15000 });
+  const count = await buttons.count();
+  const limit = Math.min(count, 3);
 
-  const buttonLabels = ['↖', '↑', '↗'];
-
-  // Wait for the first button to ensure UI is loaded
-  try {
-    await gameFrame
-      .getByRole('button', { name: buttonLabels[0] })
-      .waitFor({ state: 'visible', timeout: 10000 });
-  } catch (e) {
-    console.log('Timeout waiting for buttons to appear');
-  }
-
-  for (const label of buttonLabels) {
-    const button = gameFrame.getByRole('button', { name: label });
-    const count = await button.count();
-    if (!count) {
-      console.log('button not found', label);
-      continue;
-    }
-    const target = button.first();
-    const isDisabled = await target.isDisabled();
+  for (let i = 0; i < limit; i += 1) {
+    const button = buttons.nth(i);
+    const label = (await button.textContent())?.trim() || `button-${i}`;
+    const isDisabled = await button.isDisabled();
     console.log('button', label, isDisabled ? 'disabled' : 'enabled');
     if (!isDisabled) {
-      await target.click();
+      await button.click({ force: true });
       await page.waitForTimeout(800);
       await screenshot(`after-${encodeURIComponent(label)}`);
     }

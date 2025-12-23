@@ -1,6 +1,7 @@
 import express from 'express';
 import { createInitialState, type GameState } from '@eoe/game-core/steppy';
 import { InitResponse, SaveResponse } from '../shared/types/api';
+import { BUILD_SHA } from '../shared/build-info';
 import { redis, createServer, context } from '@devvit/web/server';
 import { createPost } from './core/post';
 
@@ -42,6 +43,9 @@ router.get<{ postId: string }, InitResponse | { status: string; message: string 
         type: 'init',
         postId,
         userId,
+        build: {
+          gitSha: BUILD_SHA,
+        },
         state,
       });
     } catch (error) {

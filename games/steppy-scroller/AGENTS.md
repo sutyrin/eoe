@@ -115,6 +115,10 @@ PWDEBUG=1 npm run test:e2e
 
 Ожидания тестов: `window.__MCP__` доступен, есть `#controls .action`, и есть `#game-root canvas`.
 
+## Линтинг
+
+Пока нет локальной зависимости `eslint`, команду `npm run lint` здесь не запускаем (пропускаем в чеклистах), чтобы не ломать пайплайн.
+
 ## Каноничные URL (обновлять при деплое)
 
 - Steppy Scroller (Vercel, prod): `https://steppy-scroller.vercel.app` (проверено 2025-12-21)

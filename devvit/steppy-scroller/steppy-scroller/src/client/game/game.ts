@@ -1,6 +1,7 @@
 import { Scene } from 'phaser';
 import Phaser from 'phaser';
 import { createStateController } from '@eoe/game-core/state-controller';
+import { registerGame, type GameApi, type GameState as McpState } from '@eoe/game-api';
 import {
   computeActions,
   createInitialState,
@@ -8,9 +9,11 @@ import {
   STEPPY_COLUMNS,
   STEPPY_VERSION,
   CELL_BLOCK,
+  CELL_WATER,
   type GameState,
 } from '@eoe/game-core/steppy';
 import { InitResponse } from '../../shared/types/api';
+import { BUILD_SHA } from '../../shared/build-info';
 
 const CELL_SIZE = 56;
 const VIEW_ROWS = 9;
@@ -20,6 +23,7 @@ export class Game extends Scene {
   private state: GameState;
   private controller: ReturnType<typeof createStateController> | undefined;
   private uiContainer: HTMLDivElement | null = null;
+  private api: GameApi | null = null;
 
   constructor() {
     super('Game');
@@ -27,6 +31,7 @@ export class Game extends Scene {
   }
 
   create() {
+    console.log('[steppy] build sha', BUILD_SHA);
     this.graphics = this.add.graphics();
 
     // Setup UI Container (Overlay)
@@ -69,6 +74,23 @@ export class Game extends Scene {
       }
     );
 
+    if (!this.api) {
+      const buildMcpState = (): McpState =>
+        ({
+          ...(this.state as GameState),
+          actions: computeActions(this.state),
+        }) as McpState;
+
+      this.api = registerGame({
+        getState: () => buildMcpState(),
+        getActions: () => computeActions(this.state),
+        act: (actionId) => {
+          this.controller?.act(actionId);
+          return buildMcpState();
+        },
+      });
+    }
+
     void this.controller?.init();
 
     // Responsive sizing
@@ -85,15 +107,16 @@ export class Game extends Scene {
   }
 
   createUiOverlay() {
-    this.uiContainer = document.getElementById('controls') as HTMLDivElement;
-    if (!this.uiContainer) return;
+    const existing = document.getElementById('controls');
+    if (existing instanceof HTMLDivElement) {
+      this.uiContainer = existing;
+      return;
+    }
 
-    this.uiContainer.style.position = 'absolute';
-    this.uiContainer.style.bottom = '20px';
-    this.uiContainer.style.left = '50%';
-    this.uiContainer.style.transform = 'translateX(-50%)';
-    this.uiContainer.style.display = 'flex';
-    this.uiContainer.style.gap = '16px';
+    this.uiContainer = document.createElement('div');
+    this.uiContainer.id = 'controls';
+    this.uiContainer.className = 'controls';
+    document.body.appendChild(this.uiContainer);
   }
 
   renderUi() {
@@ -106,19 +129,6 @@ export class Game extends Scene {
       btn.textContent = action.label;
       btn.disabled = !action.enabled;
       btn.className = 'action';
-      // Apply basic styles inline since CSS might not be loaded the same way
-      Object.assign(btn.style, {
-        width: '88px',
-        height: '88px',
-        fontSize: '32px',
-        background: '#2f583a',
-        color: '#fff',
-        border: '3px solid rgba(255,255,255,0.3)',
-        borderRadius: '22px',
-        cursor: action.enabled ? 'pointer' : 'not-allowed',
-        opacity: action.enabled ? '1' : '0.6',
-      });
-
       btn.onclick = () => this.controller?.act(action.id);
       this.uiContainer!.appendChild(btn);
     });
@@ -170,6 +180,15 @@ export class Game extends Scene {
             CELL_SIZE - 8,
             8
           );
+        } else if (cell === CELL_WATER) {
+          this.graphics.fillStyle(0x3498db, 0.8);
+          this.graphics.fillCircle(screenX + CELL_SIZE / 2, screenY + CELL_SIZE / 2, CELL_SIZE / 4);
+          this.graphics.lineStyle(2, 0x2980b9, 1);
+          this.graphics.strokeCircle(
+            screenX + CELL_SIZE / 2,
+            screenY + CELL_SIZE / 2,
+            CELL_SIZE / 4
+          );
         }
       }
     }
@@ -205,24 +224,24 @@ export class Game extends Scene {
       padding: { x: 4, y: 4 } as Phaser.Types.GameObjects.Text.TextPadding,
     };
 
-    // Stamina Gauge
+    // Water Gauge
     const gaugeWidth = 16;
     const maxBarHeight = height - 40;
-    const currentBarHeight = (this.state.stamina / this.state.maxStamina) * maxBarHeight;
+    const currentBarHeight = (this.state.water / this.state.maxWater) * maxBarHeight;
     const barX = 8;
     const barY = 20 + (maxBarHeight - currentBarHeight);
 
     this.graphics.fillStyle(0xbdc3c7, 0.5);
     this.graphics.fillRoundedRect(barX, 20, gaugeWidth, maxBarHeight, 4);
 
-    const staminaColor = this.state.stamina < 3 ? 0xe74c3c : 0xf1c40f;
-    this.graphics.fillStyle(staminaColor, 1);
+    const waterColor = this.state.water < 5 ? 0xe74c3c : 0x3498db;
+    this.graphics.fillStyle(waterColor, 1);
     this.graphics.fillRoundedRect(barX, barY, gaugeWidth, currentBarHeight, 4);
 
-    this.updateTextObj('hud-height', 10, 10, `Altitude: ${this.state.altitude}m`, hudStyle);
-    this.updateTextObj('hud-stamina', width - 120, 10, `Stamina: ${this.state.stamina}`, {
+    this.updateTextObj('hud-height', 10, 10, `Height: ${this.state.player.y}m`, hudStyle);
+    this.updateTextObj('hud-water', width - 120, 10, `Water: ${this.state.water}`, {
       ...hudStyle,
-      color: this.state.stamina < 3 ? '#e74c3c' : '#f1c40f',
+      color: this.state.water < 5 ? '#e74c3c' : '#3498db',
     });
 
     if (this.state.status === 'ended') {
