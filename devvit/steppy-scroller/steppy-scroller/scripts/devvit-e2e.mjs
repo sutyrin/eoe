@@ -17,6 +17,15 @@ if (!postUrl) {
   process.exit(1);
 }
 
+try {
+  await fs.access(authFile);
+} catch (err) {
+  console.error(
+    'Missing auth file. Run `npm run pw:login` first to create playwright/.auth/reddit.json.'
+  );
+  process.exit(1);
+}
+
 await fs.mkdir(outDir, { recursive: true });
 
 const browser = await chromium.launch({
