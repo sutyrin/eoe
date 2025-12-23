@@ -26,6 +26,7 @@
     "type-check": "tsc --build"
   },
   "dependencies": {
+    "@eoe/game-api": "file:../../../packages/game-api",
     "@devvit/web": "0.12.6",
     "@eoe/game-core": "file:../../../packages/game-core",
     "devvit": "0.12.6",

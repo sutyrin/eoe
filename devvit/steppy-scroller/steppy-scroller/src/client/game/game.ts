@@ -1,6 +1,7 @@
 import { Scene } from 'phaser';
 import Phaser from 'phaser';
 import { createStateController } from '@eoe/game-core/state-controller';
+import { registerGame, type GameApi, type GameState as McpState } from '@eoe/game-api';
 import {
   computeActions,
   createInitialState,
@@ -22,6 +23,7 @@ export class Game extends Scene {
   private state: GameState;
   private controller: ReturnType<typeof createStateController> | undefined;
   private uiContainer: HTMLDivElement | null = null;
+  private api: GameApi | null = null;
 
   constructor() {
     super('Game');
@@ -71,6 +73,23 @@ export class Game extends Scene {
         onError: (err) => console.error(err),
       }
     );
+
+    if (!this.api) {
+      const buildMcpState = (): McpState =>
+        ({
+          ...(this.state as GameState),
+          actions: computeActions(this.state),
+        }) as McpState;
+
+      this.api = registerGame({
+        getState: () => buildMcpState(),
+        getActions: () => computeActions(this.state),
+        act: (actionId) => {
+          this.controller?.act(actionId);
+          return buildMcpState();
+        },
+      });
+    }
 
     void this.controller?.init();
 

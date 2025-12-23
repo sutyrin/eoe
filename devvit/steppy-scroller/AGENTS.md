@@ -12,6 +12,10 @@
 
 Сборка всегда включает git SHA через Vite define `__BUILD_SHA__` (см. `src/shared/build-info.ts`).
 
+## MCP в Devvit
+
+`window.__MCP__` доступен в game frame через `@eoe/game-api` (см. `src/client/game/game.ts`).
+
 ## Вкатка (Devvit)
 
 Из `devvit/steppy-scroller/steppy-scroller/`:
