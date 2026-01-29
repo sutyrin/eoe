@@ -111,29 +111,35 @@ Deferred to future release. Tracked but not in current roadmap.
 | VIS-02 | Phase 1 | Pending |
 | VIS-03 | Phase 1 | Pending |
 | VIS-04 | Phase 1 | Pending |
+| CLI-01 | Phase 1 | Pending |
+| CLI-02 | Phase 1 | Pending |
+| NOTE-01 | Phase 1 | Pending |
+| NOTE-02 | Phase 1 | Pending |
 | AUD-01 | Phase 2 | Pending |
 | AUD-02 | Phase 2 | Pending |
 | AUD-03 | Phase 2 | Pending |
 | AUD-04 | Phase 2 | Pending |
+| CLI-03 | Phase 2 | Pending |
+| CLI-05 | Phase 2 | Pending |
+| NOTE-03 | Phase 2 | Pending |
+| NOTE-04 | Phase 2 | Pending |
 | VID-01 | Phase 3 | Pending |
 | VID-02 | Phase 3 | Pending |
 | VID-03 | Phase 3 | Pending |
 | VID-04 | Phase 3 | Pending |
-| CLI-01 | Phase 1 | Pending |
-| CLI-02 | Phase 1 | Pending |
-| CLI-03 | Phase 2 | Pending |
 | CLI-04 | Phase 3 | Pending |
-| CLI-05 | Phase 2 | Pending |
-| NOTE-01 | Phase 1 | Pending |
-| NOTE-02 | Phase 1 | Pending |
-| NOTE-03 | Phase 2 | Pending |
-| NOTE-04 | Phase 2 | Pending |
 
 **Coverage:**
-- v1 requirements: 22 total
-- Mapped to phases: 22
+- v1 requirements: 25 total
+- Mapped to phases: 25
 - Unmapped: 0
+- Coverage: 100%
+
+**Phase Distribution:**
+- Phase 1: 12 requirements (Foundation - Visual Atoms & Portfolio)
+- Phase 2: 8 requirements (Audio Integration)
+- Phase 3: 5 requirements (Video Capture & Distribution)
 
 ---
 *Requirements defined: 2026-01-29*
-*Last updated: 2026-01-29 after initial definition*
+*Last updated: 2026-01-29 after roadmap creation*
