@@ -18,7 +18,7 @@
 
 - Ориентация: портрет, мобильный фуллскрин.
 - Производительность: FPS 30+ и минимальный бандл; избегать тяжелых ассетов.
-- Логи: единый формат console-логов, готовность к дублированию на эндпоинт.
+- Логи: единый формат логов, пока что заправлены в консоль, впоследствии — будут шиппиться по сети
 
 ## Структура разработки (черновик)
 
@@ -29,13 +29,13 @@
   game-core/         # общий слой логики (state, reducers, random, helpers)
   ui-shared/         # общие UI-компоненты и темы (минимально, при необходимости)
 /games/
-  steppy-scroller/   # игра
-  phaser3-test/
-  kaboom-test/
+  steppy-scroller/   # игра steppy scroller
+  phaser3-test/      # игра phaser3 test
+  kaboom-test/       # игра kaboom test
 /docs/               # общая документация
 ```
 
-Шаблон структуры для каждой игры:
+Шаблон структуры для каждой игры (по имени game-name):
 ```
 /games/<game-name>/
   index.html
@@ -78,13 +78,7 @@
 - TypeScript, Phaser 3, Vite, Vitest, Playwright, npm.
 - Деплой: Vercel, размещение каждой игры по пути `/games/<game-name>/`.
 
-## Где искать логи Codex CLI
-
-- `~/.codex/sessions/YYYY/MM/DD/*.jsonl` — покомандные логи диалогов и tool‑calls.
-- `~/.codex/history.jsonl` — общая история.
-- `~/.codex/log/codex-tui.log` — TUI‑лог.
-
-## Token usage (Codex CLI)
+## Если пользователь спросил про token usage (Codex CLI)
 
 - Док: `docs/codex-token-usage.md`
 - Скрипт: `scripts/codex_token_usage.py --date YYYY-MM-DD` (см. `--mode request`)
