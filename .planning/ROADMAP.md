@@ -17,6 +17,14 @@ This roadmap delivers a creative practice and publishing ecosystem in 3 phases, 
 
 **Dependencies:** None (foundational phase)
 
+**Plans:** 4 plans
+
+Plans:
+- [ ] 01-01-PLAN.md — Monorepo skeleton with npm workspaces, Vite, Git LFS, shared configs
+- [ ] 01-02-PLAN.md — CLI tool with create/dev commands and visual atom template
+- [ ] 01-03-PLAN.md — Astro portfolio site with atom gallery and detail pages
+- [ ] 01-04-PLAN.md — Note/status CLI commands and dev dashboard
+
 **Requirements:**
 - REPO-01: Single monorepo contains all atoms, compositions, tools, and notes
 - REPO-02: Standardized atom directory structure (each atom is self-contained folder)
@@ -38,7 +46,7 @@ This roadmap delivers a creative practice and publishing ecosystem in 3 phases, 
 4. User can jot down creative ideas in markdown and associate notes with specific atoms
 5. User has created and published 20+ original sketches, proving consistent short-burst workflow
 
-**Research Flag:** SKIP - Well-documented technologies (p5.js, Vite, Astro, Cloudflare Pages). Focus on execution.
+**Research Flag:** REQUIRED - User override. Research implementation patterns for p5.js instance mode, lil-gui integration, Vite dev server customization, and monorepo structure.
 
 ---
 
@@ -97,13 +105,13 @@ This roadmap delivers a creative practice and publishing ecosystem in 3 phases, 
 
 | Phase | Status | Requirements | Completion |
 |-------|--------|--------------|------------|
-| Phase 1: Foundation - Visual Atoms & Portfolio | Pending | 12/12 | 0% |
+| Phase 1: Foundation - Visual Atoms & Portfolio | Planned (4 plans) | 12/12 | 0% |
 | Phase 2: Audio Integration | Pending | 8/8 | 0% |
 | Phase 3: Video Capture & Distribution | Pending | 5/5 | 0% |
 
 **Total:** 0/25 requirements completed (0%)
 
-**Current Focus:** Phase 1 planning not started
+**Current Focus:** Phase 1 planned, ready for execution
 
 ---
 
@@ -160,4 +168,4 @@ Based on research warnings and project constraints:
 ---
 
 *Last updated: 2026-01-29*
-*Next action: Plan Phase 1 with `/gsd:plan-phase 1`*
+*Next action: Execute Phase 1 with `/gsd:execute-phase 1`*
