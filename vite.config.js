@@ -1,8 +1,10 @@
 import { defineConfig } from 'vite';
 import { resolve } from 'path';
 import { readdirSync, existsSync } from 'fs';
+import { fileURLToPath } from 'url';
 
-const atomsDir = resolve('atoms');
+const __dirname = fileURLToPath(new URL('.', import.meta.url));
+const atomsDir = resolve(__dirname, 'atoms');
 const input = {};
 
 // Auto-discover atoms
@@ -20,7 +22,7 @@ if (existsSync(atomsDir)) {
 }
 
 // Add dashboard if exists
-const dashboardHtml = resolve('dashboard/index.html');
+const dashboardHtml = resolve(__dirname, 'dashboard/index.html');
 if (existsSync(dashboardHtml)) {
   input.dashboard = dashboardHtml;
 }
