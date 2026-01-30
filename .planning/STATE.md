@@ -1,7 +1,7 @@
 # Project State: Engines of Experience
 
 **Last Updated:** 2026-01-30
-**Session:** Phase 1 execution - Plan 01-04 completed and documented
+**Session:** Phase 2 execution - Plan 02-01 completed and documented
 
 ---
 
@@ -11,34 +11,35 @@
 Consistent output of creative atoms that compound into a body of work, tools, and audience — producing results, not consuming time learning tools.
 
 ### Current Focus
-Phase 1 execution: Building visual atoms workflow and portfolio foundation.
+Phase 2 execution: Audio integration with Tone.js synthesis and audio-visual binding.
 
 ---
 
 ## Current Position
 
 ### Active Phase
-**Phase 1: Foundation - Visual Atoms & Portfolio**
-- Status: COMPLETE (Plans 01-01, 01-02, 01-03, 01-04 complete)
-- Goal: Users can create p5.js sketches in short bursts, see them live in a portfolio, and track creative progress
-- Requirements: 12 (REPO-01 to REPO-04, VIS-01 to VIS-04, CLI-01/02, NOTE-01/02)
+**Phase 2: Audio Integration**
+- Status: IN PROGRESS (Plan 02-01 complete)
+- Goal: Add Tone.js audio synthesis with visual binding for audio-reactive sketches
+- Requirements: 8 (AUD-01 to AUD-04, VIS-05 to VIS-08)
 
 ### Active Plan
-**Plan 01-04: Note-Taking CLI & Dev Dashboard** - COMPLETE (2026-01-30)
-- CLI commands for idea capture (`eoe note`) and progress tracking (`eoe status`)
-- Dev dashboard with visual atom gallery and iframe previews
-- Auto-discovery of atoms via Vite directory listing
-- Dark theme consistent with portfolio
+**Plan 02-01: Audio Atom Template & Framework** - COMPLETE (2026-01-30)
+- Tone.js v15.1.22 installed with shared audio library
+- Audio atom template with synth, sequence, effects, transport controls
+- CLI extended to support both visual and audio types
+- Disposal patterns prevent audio duplication and memory leaks
 
 ### Status
-Phase 1: 4 plans complete (01-01, 01-02, 01-03, 01-04). All planned infrastructure in place. Ready for 20+ sketch creation quota to validate workflow.
+Phase 1: COMPLETE (4 plans, 11/12 requirements)
+Phase 2: 1 of 3 plans complete. Audio foundation ready, next: frequency analysis & audio-visual binding.
 
 ### Progress Bar
 ```
-[██████>                                          ] 11/25 requirements (44%)
-Phase 1 ██████████░ (11/12 reqs - all except VIS-02 gallery polish)
-Phase 2 ░░░░░░░░░░░░ (8 reqs)
-Phase 3 ░░░░░░░░░░░░ (5 reqs)
+[████████>                                        ] 15/25 requirements (60%)
+Phase 1 ██████████░ (11/12 reqs complete)
+Phase 2 ████░░░░░░░░ (4/8 reqs complete: AUD-01, AUD-03, AUD-04, VIS-05)
+Phase 3 ░░░░░░░░░░░░ (0/5 reqs)
 ```
 
 ---
@@ -46,10 +47,10 @@ Phase 3 ░░░░░░░░░░░░ (5 reqs)
 ## Performance Metrics
 
 ### Velocity
-- Requirements completed this session: 4 (CLI-01, CLI-02, NOTE-01, NOTE-02)
-- Plans completed this session: 1 (01-04)
-- Plans completed total: 4 (01-01, 01-02, 01-03, 01-04)
-- Average time per plan: ~2 min
+- Requirements completed this session: 4 (AUD-01, AUD-03, AUD-04, VIS-05)
+- Plans completed this session: 1 (02-01)
+- Plans completed total: 5 (01-01, 01-02, 01-03, 01-04, 02-01)
+- Average time per plan: ~4 min
 
 ### Quality
 - Tests passing: N/A
@@ -82,6 +83,10 @@ Phase 3 ░░░░░░░░░░░░ (5 reqs)
 | 2026-01-30 | Dashboard uses Vite directory listing | No build step needed for dev dashboard, works seamlessly with Vite dev server |
 | 2026-01-30 | Iframe previews at 0.5 scale for thumbnails | Shows full sketch layout but fits in 220px card |
 | 2026-01-30 | Status command parses NOTES.md for stage | Single source of truth in filesystem, no separate database |
+| 2026-01-30 | Tone.js v15.1.22 for audio synthesis | Proven Transport scheduling, comprehensive Web Audio API abstraction |
+| 2026-01-30 | Disposal pattern for Tone.js cleanup | stop transport -> cancel events -> wait 100ms -> dispose nodes to prevent memory leaks |
+| 2026-01-30 | Three synth types (mono, poly, drums) | mono for melodic lines, poly for chords, drums for percussion |
+| 2026-01-30 | HMR cleanup for audio contexts | import.meta.hot.dispose prevents audio duplication on hot reload |
 
 ### Active Todos
 - [ ] Plan Phase 1 with `/gsd:plan-phase 1`
@@ -118,38 +123,35 @@ Comprehensive research completed 2026-01-29 covering creative coding ecosystem, 
 ## Session Continuity
 
 ### What We Accomplished This Session
-1. Executed Plan 01-04: Note-Taking CLI & Dev Dashboard
-2. Registered `note` and `status` commands in cli/index.js
-3. Created dashboard/index.html - visual gallery with auto-discovery
-4. Created dashboard/style.css - dark theme with responsive grid
-5. Verified all CLI commands work (`eoe note`, `eoe status`, help menu)
-6. Verified dashboard loads with Vite and displays atom previews
-7. Created 01-04-SUMMARY.md documenting completion
-8. Updated STATE.md to reflect progress
+1. Executed Plan 02-01: Audio Atom Template & Framework
+2. Installed Tone.js v15.1.22 and created shared audio library (lib/audio/)
+3. Created audio atom template with synth, sequence, effects, transport controls
+4. Extended CLI create command to support both visual and audio types
+5. Verified end-to-end workflow: scaffold -> dev -> play -> tweak -> HMR
+6. Created 02-01-SUMMARY.md documenting completion
+7. Updated STATE.md to reflect Phase 2 progress
 
 ### Context for Next Session
-**Last session:** 2026-01-30 03:50 UTC
-**Stopped at:** Completed Plan 01-04: Note-Taking CLI & Dev Dashboard
+**Last session:** 2026-01-30 06:58 UTC
+**Stopped at:** Completed Plan 02-01: Audio Atom Template & Framework
 **Resume file:** None
 
-**Phase 1 Status:**
-- ✓ Plan 01-01: Monorepo Skeleton (REPO-01, REPO-02)
-- ✓ Plan 01-02: CLI Framework & Visual Atom Template (VIS-01, VIS-03, VIS-04, REPO-03, REPO-04)
-- ✓ Plan 01-03: Portfolio Site (complete)
-- ✓ Plan 01-04: Note-Taking CLI & Dev Dashboard (CLI-01, CLI-02, NOTE-01, NOTE-02)
-- Phase 1 infrastructure complete (11/12 requirements met)
-- Only remaining: VIS-02 (gallery polish - optional enhancement)
+**Phase 2 Status:**
+- ✓ Plan 02-01: Audio Atom Template & Framework (AUD-01, AUD-03, AUD-04, VIS-05)
+- ☐ Plan 02-02: Frequency Analysis & Audio-Visual Binding (AUD-02, VIS-06, VIS-07)
+- ☐ Plan 02-03: Audio-Visual Atom Template (VIS-08)
+- Phase 2: 1 of 3 plans complete (4/8 requirements met)
 
 **Next Actions:**
-- Phase 1 infrastructure complete - ready for creation phase
-- Begin 20+ sketch creation quota to validate workflow
-- Track setup vs. creation time ratio (target: <20% setup)
-- Weekly output quota: ship something every 7 days minimum
+- Execute Plan 02-02: Frequency Analysis & Audio-Visual Binding
+- Add Tone.Analyser and FFT utilities to lib/audio/
+- Create audio-visual atom template combining p5.js + Tone.js
+- Test audio-reactive visual patterns
 
 **Warning signs to watch:**
-- Setup time exceeding 20% of total time (tooling trap indicator)
-- Days passing without creating any sketch (tutorial purgatory)
-- "Just one more framework" syndrome before Phase 1 completion (scope creep)
+- Audio context memory leaks (monitor disposal patterns)
+- Performance degradation with analysis (optimize FFT settings)
+- Complex synchronization issues (keep patterns simple initially)
 
 ---
 

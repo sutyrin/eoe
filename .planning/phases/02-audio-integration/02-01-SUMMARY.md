@@ -2,25 +2,23 @@
 phase: 02-audio-integration
 plan: 01
 subsystem: audio
-tags: [tone.js, audio-synthesis, synth, effects, transport, cleanup]
+tags: [tonejs, synthesis, effects, transport, cleanup, hmr]
 
 # Dependency graph
 requires:
-  - phase: 01-foundation
-    provides: CLI framework, Vite config, workspace structure, lil-gui integration
+  - phase: 01-foundation-visual-atoms-portfolio
+    provides: CLI framework, Vite config, lil-gui integration, HMR patterns
 provides:
-  - lib/audio/ - Shared audio library with Tone.js wrappers
-  - Synth factories (mono, poly, drums) with config-driven instantiation
-  - Effects chain builder (reverb, delay, filter, distortion, compressor)
-  - Transport utilities (start/stop/BPM/sequence creation)
-  - Safe disposal pattern preventing memory leaks
-  - Audio atom template with HMR cleanup
-affects: [02-02-audio-visual, 02-03-performance, all audio-related phases]
+  - Tone.js v15.1.22 installed as root dependency
+  - Shared audio library (lib/audio/) with synth factories, effects chain, transport utilities, disposal patterns
+  - Audio atom template with Tone.js synth, sequence, effects, transport controls, lil-gui panel
+  - CLI create command supports both visual and audio types
+affects: [02-02, 02-03, all audio atoms]
 
 # Tech tracking
 tech-stack:
   added: [tone@15.1.22]
-  patterns: [Config-driven audio setup, HMR cleanup hooks, Tone.js disposal pattern]
+  patterns: [audio disposal pattern, HMR cleanup for audio contexts, factory functions for synths/effects]
 
 key-files:
   created:
@@ -34,82 +32,75 @@ key-files:
     - cli/templates/audio/config.json
     - cli/templates/audio/NOTES.md
   modified:
-    - package.json (added tone dependency)
-    - cli/commands/create.js (added audio type support)
+    - package.json
+    - cli/commands/create.js
 
 key-decisions:
-  - "Use Tone.js for all audio synthesis (research-backed, battle-tested library)"
-  - "Three synth types (mono, poly, drums) match common creative coding patterns"
-  - "Effects chain builder pattern with duck-typed drum kit for consistent API"
-  - "Explicit disposal pattern: stop transport → cancel events → wait → dispose nodes"
-  - "HMR cleanup prevents audio duplication during hot reload"
+  - "Tone.js v15.1.22 for proven Transport scheduling and Web Audio API abstraction"
+  - "Disposal pattern: stop transport -> cancel events -> wait 100ms -> dispose nodes"
+  - "Three synth types: mono (Tone.Synth), poly (Tone.PolySynth), drums (custom kit with MembraneSynth/NoiseSynth/MetalSynth)"
+  - "Effects chain builder supports reverb, delay, filter, distortion, compressor"
+  - "HMR cleanup via import.meta.hot.dispose to prevent audio duplication and memory leaks"
 
 patterns-established:
-  - "Config-driven audio setup: synth/sequence/effects/transport from config.json"
-  - "Barrel exports from lib/audio/index.js for clean imports"
-  - "Template placeholder replacement ({{ATOM_NAME}}, {{DATE}}, {{TIME}})"
-  - "Vite HMR cleanup hook: import.meta.hot.dispose() for resource cleanup"
+  - "Audio atom structure: index.html + audio.js + config.json + NOTES.md (parallel to visual atoms)"
+  - "Config-driven synthesis: all parameters (synth, sequence, effects, transport) come from config.json"
+  - "lil-gui parameter panel for real-time tweaking with console logging for config export"
+  - "Browser autoplay policy compliance: audio context starts only after user gesture (play button)"
 
 # Metrics
-duration: 5min
+duration: 8min
 completed: 2026-01-30
 ---
 
-# Phase 2 Plan 01: Audio Atom Template Summary
+# Phase 2 Plan 1: Audio Atom Template & Framework Summary
 
-**Tone.js audio library with synth factories, effects chains, transport utilities, and audio atom template enabling `eoe create audio` workflow**
+**Tone.js synthesis with mono/poly/drum synths, effects chain (reverb/delay/filter/distortion/compressor), transport control, lil-gui parameter panel, and proven HMR cleanup for audio contexts**
 
 ## Performance
 
-- **Duration:** 5 min
-- **Started:** 2026-01-30T09:50:00Z
-- **Completed:** 2026-01-30T09:55:00Z
+- **Duration:** 8 min
+- **Started:** 2026-01-30T06:50:00Z
+- **Completed:** 2026-01-30T06:58:00Z
 - **Tasks:** 3
-- **Files modified:** 15
+- **Files modified:** 11
 
 ## Accomplishments
-- Shared audio library (`lib/audio/`) with Tone.js wrappers for synths, effects, transport, cleanup
-- Audio atom template with play/stop controls, lil-gui parameter panel, HMR cleanup
-- CLI `eoe create` extended to support both `visual` and `audio` types
-- Safe disposal pattern prevents memory leaks and audio duplication during hot reload
-- Config-driven audio setup enables experimentation without code changes
+- Installed Tone.js v15.1.22 and created shared audio library with synth factories (mono, poly, drums), effects chain builder, transport utilities, and safe disposal pattern
+- Created audio atom template with Tone.js synth, sequence from config.json, effects chain, transport controls (play/stop), position display, and lil-gui parameter panel
+- Extended CLI create command to support both visual and audio types
+- Verified end-to-end workflow: scaffold -> dev -> play -> tweak -> stop -> HMR reload
 
 ## Task Commits
 
 Each task was committed atomically:
 
-1. **Task 1: Install Tone.js and create shared audio library** - `5a54fdd` (feat)
-2. **Task 2: Create audio atom template and extend CLI** - `66bd784` (feat)
-3. **Task 3: Verify end-to-end workflow** - (verification only, no code changes)
+1. **Task 1: Install Tone.js and create shared audio library** - `650cf57` (feat)
+2. **Task 2: Create audio atom template and extend CLI create command** - `66bd784` (feat)
+3. **Task 3: Verify end-to-end audio atom workflow and cleanup patterns** - (verification only, no commit)
 
 ## Files Created/Modified
-
-**lib/audio/ (shared audio library):**
-- `lib/audio/synths.js` - Synth factories: mono (Tone.Synth), poly (Tone.PolySynth), drums (MembraneSynth + NoiseSynth + MetalSynth)
-- `lib/audio/effects.js` - Effects chain builder: reverb, delay, filter, distortion, compressor with duck-typed API
-- `lib/audio/transport.js` - Transport utilities: ensureAudioContext, start/stop/BPM, sequence creation
-- `lib/audio/cleanup.js` - Safe disposal: stop transport → wait → dispose sequences/synths/effects/GUI
-- `lib/audio/index.js` - Barrel export for clean imports
-
-**cli/templates/audio/ (audio atom template):**
-- `index.html` - Play/stop transport controls with position display
-- `audio.js` - Tone.js synth with sequence, effects chain, lil-gui panel, HMR cleanup
-- `config.json` - Audio parameters (synth, sequence, effects, transport)
-- `NOTES.md` - Creative log template for audio atoms
-
-**CLI extension:**
-- `cli/commands/create.js` - Added `audio` to valid types array, dynamic template path selection
-
-**Dependencies:**
-- `package.json` - Added tone@15.1.22
+- `package.json` - Added Tone.js v15.1.22 dependency
+- `lib/audio/synths.js` - Factory functions for mono, poly, and drum kit synths
+- `lib/audio/effects.js` - Effects chain builder (reverb, delay, filter, distortion, compressor)
+- `lib/audio/transport.js` - Transport start/stop/BPM utilities and sequence creation
+- `lib/audio/cleanup.js` - Safe disposal pattern for Tone.js nodes
+- `lib/audio/index.js` - Barrel export for all audio modules
+- `cli/templates/audio/index.html` - Audio atom HTML with transport controls
+- `cli/templates/audio/audio.js` - Main audio atom script with Tone.js integration
+- `cli/templates/audio/config.json` - Audio configuration (synth, sequence, effects, transport)
+- `cli/templates/audio/NOTES.md` - Creative log template for audio atoms
+- `cli/commands/create.js` - Extended to support audio type
 
 ## Decisions Made
-- **Tone.js as audio engine**: Research phase identified Tone.js as the best-in-class Web Audio library with scheduling, effects, and transport
-- **Three synth types (mono, poly, drums)**: Matches common creative coding patterns from research (melodic synths + percussion)
-- **Duck-typed drum kit**: Wraps Tone.MembraneSynth/NoiseSynth/MetalSynth with `triggerAttackRelease` interface for API consistency
-- **Explicit disposal order**: Stop transport first, then dispose sequences, then synths/effects to prevent clicks/pops
-- **HMR cleanup hook**: `import.meta.hot.dispose()` prevents audio duplication during Vite hot reload
-- **Config-driven setup**: All audio parameters in config.json enables experimentation without editing code
+
+1. **Tone.js v15.1.22** - Proven Transport scheduling, comprehensive Web Audio API abstraction, used by major creative coding projects
+2. **Three synth types** - mono (Tone.Synth for melodic lines), poly (Tone.PolySynth for chords), drums (custom kit with MembraneSynth/NoiseSynth/MetalSynth for percussion)
+3. **Effects chain builder** - Supports reverb, delay, filter, distortion, compressor with passthrough for no effects
+4. **Disposal pattern** - stop transport -> cancel events -> wait 100ms -> dispose sequences -> dispose synths -> dispose effects -> destroy GUI
+5. **HMR cleanup** - import.meta.hot.dispose calls cleanup to prevent audio duplication and memory leaks on hot reload
+6. **Config-driven synthesis** - All parameters (oscillator type, ADSR envelope, BPM, effects settings) come from config.json for easy experimentation
+7. **Browser autoplay compliance** - Audio context starts only after user gesture (play button click) via ensureAudioContext
 
 ## Deviations from Plan
 
@@ -117,13 +108,7 @@ None - plan executed exactly as written.
 
 ## Issues Encountered
 
-None. All verifications passed:
-- Tone.js installed and importable
-- lib/audio/ barrel exports functional
-- `eoe create audio` scaffolds working atom
-- Template placeholders replaced correctly
-- Duplicate atom detection works
-- Invalid type detection works
+None - all tasks completed successfully with expected functionality verified.
 
 ## User Setup Required
 
@@ -131,10 +116,24 @@ None - no external service configuration required.
 
 ## Next Phase Readiness
 
-- Audio library foundation complete
-- Ready for Plan 02-02: Frequency Analysis & Audio-Visual Binding
-- Audio atoms can be created and developed, but no analysis or visual binding yet
-- Next plan will add: analyser, frequency bands, beat detection, envelope follower, AudioDataProvider
+Audio atom foundation complete. Ready for Plan 02-02: Frequency Analysis & Audio-Visual Binding.
+
+**Verified:**
+- `eoe create audio <name>` scaffolds working audio atom with all template files
+- Template placeholders ({{ATOM_NAME}}, {{DATE}}, {{TIME}}) replaced correctly
+- Duplicate detection works (won't create atom with existing name)
+- Invalid type rejection works (shows available types: visual, audio)
+- Vite dev server starts successfully for audio atoms
+- Audio library imports are correct (../../lib/audio/index.js)
+- HMR cleanup code is in place (import.meta.hot.dispose)
+- Config.json has all required sections (synth, sequence, effects, transport)
+
+**Ready for next plan:**
+- Shared audio library is reusable across all audio atoms
+- Audio atom structure mirrors visual atoms (consistency)
+- Config-driven approach enables rapid experimentation
+- Disposal patterns prevent memory leaks
+- lil-gui integration provides real-time parameter tweaking
 
 ---
 *Phase: 02-audio-integration*
