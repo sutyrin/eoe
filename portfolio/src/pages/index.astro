@@ -1,0 +1,106 @@
+---
+import Base from '../layouts/Base.astro';
+import fs from 'node:fs';
+import path from 'node:path';
+
+// Read atoms from the copied public/atoms directory
+const atomsDir = path.resolve('./public/atoms');
+let atoms = [];
+
+if (fs.existsSync(atomsDir)) {
+  atoms = fs.readdirSync(atomsDir, { withFileTypes: true })
+    .filter(d => d.isDirectory())
+    .map(d => {
+      const configPath = path.join(atomsDir, d.name, 'config.json');
+      const notesPath = path.join(atomsDir, d.name, 'NOTES.md');
+      let stage = 'idea';
+
+      // Try to read stage from NOTES.md
+      if (fs.existsSync(notesPath)) {
+        const notes = fs.readFileSync(notesPath, 'utf8');
+        const stageMatch = notes.match(/\*\*Stage:\*\*\s*(\w+)/);
+        if (stageMatch) stage = stageMatch[1];
+      }
+
+      // Extract name and date from folder name (YYYY-MM-DD-name)
+      const parts = d.name.match(/^(\d{4}-\d{2}-\d{2})-(.+)$/);
+      const date = parts ? parts[1] : '';
+      const name = parts ? parts[2] : d.name;
+
+      return { slug: d.name, name, date, stage };
+    })
+    .sort((a, b) => b.date.localeCompare(a.date)); // Newest first
+}
+---
+
+<Base title="Gallery">
+  <h1 style="margin-bottom: 1.5rem; font-size: 1.5rem;">Gallery</h1>
+
+  {atoms.length === 0 && (
+    <p style="color: #666;">
+      No atoms yet. Run <code style="color: #6bb5ff;">eoe create visual &lt;name&gt;</code> to get started.
+    </p>
+  )}
+
+  <div class="atom-grid">
+    {atoms.map(atom => (
+      <a href={`/atom/${atom.slug}`} class="atom-card">
+        <div class="atom-preview">
+          <iframe
+            src={`/atoms/${atom.slug}/index.html`}
+            width="400"
+            height="400"
+            style="border: none; pointer-events: none; transform: scale(0.5); transform-origin: top left;"
+            loading="lazy"
+            title={atom.name}
+          ></iframe>
+        </div>
+        <div class="atom-info">
+          <span class="atom-name">{atom.name}</span>
+          <span class="atom-meta">{atom.date} &middot; {atom.stage}</span>
+        </div>
+      </a>
+    ))}
+  </div>
+
+  <style>
+    .atom-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 1.5rem;
+    }
+    .atom-card {
+      background: #151515;
+      border: 1px solid #222;
+      border-radius: 8px;
+      overflow: hidden;
+      text-decoration: none;
+      transition: border-color 0.2s;
+    }
+    .atom-card:hover {
+      border-color: #444;
+      text-decoration: none;
+    }
+    .atom-preview {
+      width: 100%;
+      height: 200px;
+      overflow: hidden;
+      background: #0a0a0a;
+    }
+    .atom-info {
+      padding: 0.75rem 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+    .atom-name {
+      color: #fff;
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+    .atom-meta {
+      color: #666;
+      font-size: 0.8rem;
+    }
+  </style>
+</Base>
