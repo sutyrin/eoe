@@ -1,7 +1,7 @@
 # Project State: Engines of Experience
 
 **Last Updated:** 2026-01-30
-**Session:** Phase 2 COMPLETE + Quick Task 001 (CLI atom lookup fix)
+**Session:** Phase 2 COMPLETE + Quick Tasks 001-002 (CLI UX improvements)
 
 ---
 
@@ -24,7 +24,13 @@ Phase 2 COMPLETE: Audio integration with Tone.js synthesis, audio-visual binding
 - Requirements: 8/8 fulfilled (AUD-01 to AUD-04, VIS-05 to VIS-08)
 
 ### Last Plan Completed
-**Quick Task 001: Fix eoe dev Atom Lookup** - COMPLETE (2026-01-30)
+**Quick Task 002: Add Shell Completion for Atom Short Names** - COMPLETE (2026-01-30)
+- Shell tab completion suggests short atom names
+- getShortNames() function strips date prefixes
+- Short names appear first in completion list
+- Completion UX now matches runtime resolution UX
+
+**Previous: Quick Task 001: Fix eoe dev Atom Lookup** - COMPLETE (2026-01-30)
 - Short-name atom resolution in CLI commands
 - resolveAtomPath helper for dev, build, note commands
 - Exact match priority with suffix matching fallback
@@ -100,6 +106,7 @@ Phase 3 ░░░░░░░░░░░░ (0/5 reqs)
 | 2026-01-30 | Build from atom directory | Running `vite build` from atom dir makes index.html default entry, simpler than custom config |
 | 2026-01-30 | Type detection from config.json | Explicit "type" field with fallback to file structure detection for robustness |
 | 2026-01-30 | Short-name atom resolution | CLI commands accept short names (my-first-sketch) via suffix matching with exact-match priority for backward compatibility |
+| 2026-01-30 | Short-name completion first | Shell completion suggests short names before full names to prioritize primary UX |
 
 ### Active Todos
 - [ ] Plan Phase 1 with `/gsd:plan-phase 1`
@@ -159,10 +166,14 @@ Comprehensive research completed 2026-01-29 covering creative coding ecosystem, 
 21. Created resolveAtomPath helper for short-name atom resolution
 22. Updated dev, build, note commands to accept short names
 23. Fixed UX mismatch between eoe status and other commands
+24. Executed Quick Task 002: Add Shell Completion for Atom Short Names
+25. Added getShortNames() function to strip date prefixes for completion
+26. Updated setupCompletion() to suggest both short and full names
+27. Short names now appear first in tab completion list
 
 ### Context for Next Session
-**Last session:** 2026-01-30 12:22 UTC
-**Stopped at:** Completed Quick Task 001: Fix eoe dev Atom Lookup (CLI UX improvement)
+**Last session:** 2026-01-30 09:32 UTC
+**Stopped at:** Completed Quick Task 002: Add Shell Completion for Atom Short Names (CLI UX improvement)
 **Resume file:** None
 
 **Phase 2 Status:**
