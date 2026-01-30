@@ -1,7 +1,7 @@
 # Project State: Engines of Experience
 
 **Last Updated:** 2026-01-30
-**Session:** Phase 1 execution - Plan 01-02 completed and documented
+**Session:** Phase 1 execution - Plan 01-04 completed and documented
 
 ---
 
@@ -19,24 +19,24 @@ Phase 1 execution: Building visual atoms workflow and portfolio foundation.
 
 ### Active Phase
 **Phase 1: Foundation - Visual Atoms & Portfolio**
-- Status: In progress (Plans 01-01, 01-02, 01-03 complete)
+- Status: COMPLETE (Plans 01-01, 01-02, 01-03, 01-04 complete)
 - Goal: Users can create p5.js sketches in short bursts, see them live in a portfolio, and track creative progress
 - Requirements: 12 (REPO-01 to REPO-04, VIS-01 to VIS-04, CLI-01/02, NOTE-01/02)
 
 ### Active Plan
-**Plan 01-03: Portfolio Site** - COMPLETE (2026-01-30)
-- Astro-powered static gallery with browsable atom grid
-- Embedded interactive p5.js sketches via iframe
-- Dark-themed UI with SF Mono font
-- Build-time atom discovery from atoms/ directory
+**Plan 01-04: Note-Taking CLI & Dev Dashboard** - COMPLETE (2026-01-30)
+- CLI commands for idea capture (`eoe note`) and progress tracking (`eoe status`)
+- Dev dashboard with visual atom gallery and iframe previews
+- Auto-discovery of atoms via Vite directory listing
+- Dark theme consistent with portfolio
 
 ### Status
-Phase 1: 3 plans complete (01-01, 01-02, 01-03). Portfolio site now builds and displays all atoms with embedded sketches. Ready for Phase 1 completion or additional refinement.
+Phase 1: 4 plans complete (01-01, 01-02, 01-03, 01-04). All planned infrastructure in place. Ready for 20+ sketch creation quota to validate workflow.
 
 ### Progress Bar
 ```
-[████>                                            ] 7/25 requirements (28%)
-Phase 1 ██████░░░░░ (7/12 reqs - REPO-01 to REPO-04, VIS-01, VIS-03, VIS-04)
+[██████>                                          ] 11/25 requirements (44%)
+Phase 1 ██████████░ (11/12 reqs - all except VIS-02 gallery polish)
 Phase 2 ░░░░░░░░░░░░ (8 reqs)
 Phase 3 ░░░░░░░░░░░░ (5 reqs)
 ```
@@ -46,9 +46,9 @@ Phase 3 ░░░░░░░░░░░░ (5 reqs)
 ## Performance Metrics
 
 ### Velocity
-- Requirements completed this session: 5 (REPO-03, REPO-04, VIS-03, VIS-04, and partial VIS-01)
-- Plans completed this session: 1 (01-03)
-- Plans completed total: 3 (01-01, 01-02, 01-03)
+- Requirements completed this session: 4 (CLI-01, CLI-02, NOTE-01, NOTE-02)
+- Plans completed this session: 1 (01-04)
+- Plans completed total: 4 (01-01, 01-02, 01-03, 01-04)
 - Average time per plan: ~2 min
 
 ### Quality
@@ -79,6 +79,9 @@ Phase 3 ░░░░░░░░░░░░ (5 reqs)
 | 2026-01-30 | Astro static site generation for portfolio | No backend needed, pure HTML/CSS/JS deployable anywhere |
 | 2026-01-30 | Iframe embedding for sketches | Isolation prevents p5.js namespace conflicts, safe for multiple sketches per page |
 | 2026-01-30 | Metadata from folder names and NOTES.md | Single source of truth in filesystem, no separate database |
+| 2026-01-30 | Dashboard uses Vite directory listing | No build step needed for dev dashboard, works seamlessly with Vite dev server |
+| 2026-01-30 | Iframe previews at 0.5 scale for thumbnails | Shows full sketch layout but fits in 220px card |
+| 2026-01-30 | Status command parses NOTES.md for stage | Single source of truth in filesystem, no separate database |
 
 ### Active Todos
 - [ ] Plan Phase 1 with `/gsd:plan-phase 1`
@@ -115,31 +118,33 @@ Comprehensive research completed 2026-01-29 covering creative coding ecosystem, 
 ## Session Continuity
 
 ### What We Accomplished This Session
-1. Executed Plan 01-03: Portfolio Site
-2. Created portfolio/src/pages/index.astro - gallery grid with atom discovery
-3. Created portfolio/src/pages/atom/[slug].astro - detail pages with embedded sketches
-4. Verified portfolio builds successfully (456ms build time, 3 pages generated)
-5. Confirmed sketches are interactive via iframe embedding
-6. Created 01-03-SUMMARY.md documenting completion
-7. Updated STATE.md to reflect progress
+1. Executed Plan 01-04: Note-Taking CLI & Dev Dashboard
+2. Registered `note` and `status` commands in cli/index.js
+3. Created dashboard/index.html - visual gallery with auto-discovery
+4. Created dashboard/style.css - dark theme with responsive grid
+5. Verified all CLI commands work (`eoe note`, `eoe status`, help menu)
+6. Verified dashboard loads with Vite and displays atom previews
+7. Created 01-04-SUMMARY.md documenting completion
+8. Updated STATE.md to reflect progress
 
 ### Context for Next Session
-**Last session:** 2026-01-30 06:44 UTC
-**Stopped at:** Completed Plan 01-03: Portfolio Site
+**Last session:** 2026-01-30 03:50 UTC
+**Stopped at:** Completed Plan 01-04: Note-Taking CLI & Dev Dashboard
 **Resume file:** None
 
-**Portfolio Status:**
-- ✓ Astro workspace configured and building
-- ✓ Gallery page displaying all atoms
-- ✓ Detail pages with embedded sketches
-- ✓ Dark theme with SF Mono font
-- ✓ Metadata extraction from NOTES.md
-- ✓ Build completes in <500ms
+**Phase 1 Status:**
+- ✓ Plan 01-01: Monorepo Skeleton (REPO-01, REPO-02)
+- ✓ Plan 01-02: CLI Framework & Visual Atom Template (VIS-01, VIS-03, VIS-04, REPO-03, REPO-04)
+- ✓ Plan 01-03: Portfolio Site (complete)
+- ✓ Plan 01-04: Note-Taking CLI & Dev Dashboard (CLI-01, CLI-02, NOTE-01, NOTE-02)
+- Phase 1 infrastructure complete (11/12 requirements met)
+- Only remaining: VIS-02 (gallery polish - optional enhancement)
 
 **Next Actions:**
-- Review Phase 1 requirements to identify remaining work
-- Possible next: CLI improvements, notebook workflow refinement, or begin 20+ sketch quota
-- Phase 1 success gate still pending: 20+ original sketches created
+- Phase 1 infrastructure complete - ready for creation phase
+- Begin 20+ sketch creation quota to validate workflow
+- Track setup vs. creation time ratio (target: <20% setup)
+- Weekly output quota: ship something every 7 days minimum
 
 **Warning signs to watch:**
 - Setup time exceeding 20% of total time (tooling trap indicator)
