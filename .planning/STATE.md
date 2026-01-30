@@ -1,7 +1,7 @@
 # Project State: Engines of Experience
 
-**Last Updated:** 2026-01-29
-**Session:** Roadmap initialization
+**Last Updated:** 2026-01-30
+**Session:** Phase 1 execution - Plan 01-02 completed and documented
 
 ---
 
@@ -11,7 +11,7 @@
 Consistent output of creative atoms that compound into a body of work, tools, and audience — producing results, not consuming time learning tools.
 
 ### Current Focus
-Roadmap created. Ready to plan Phase 1: Foundation - Visual Atoms & Portfolio.
+Phase 1 execution: Building visual atoms workflow and portfolio foundation.
 
 ---
 
@@ -19,24 +19,24 @@ Roadmap created. Ready to plan Phase 1: Foundation - Visual Atoms & Portfolio.
 
 ### Active Phase
 **Phase 1: Foundation - Visual Atoms & Portfolio**
-- Status: In progress (Plan 01-01 complete)
+- Status: In progress (Plans 01-01, 01-02, 01-03 complete)
 - Goal: Users can create p5.js sketches in short bursts, see them live in a portfolio, and track creative progress
 - Requirements: 12 (REPO-01 to REPO-04, VIS-01 to VIS-04, CLI-01/02, NOTE-01/02)
 
 ### Active Plan
-**Plan 01-01: Monorepo Skeleton** - COMPLETE (2026-01-29)
-- Monorepo infrastructure with npm workspaces
-- Vite multi-entry configuration with atoms auto-discovery
-- Git LFS pre-configured for media types
-- p5.js and lil-gui available as dependencies
+**Plan 01-03: Portfolio Site** - COMPLETE (2026-01-30)
+- Astro-powered static gallery with browsable atom grid
+- Embedded interactive p5.js sketches via iframe
+- Dark-themed UI with SF Mono font
+- Build-time atom discovery from atoms/ directory
 
 ### Status
-Phase 1 Plan 1 executed and committed. Foundation infrastructure ready. Next: Visual atom creation workflow (Plan 01-02).
+Phase 1: 3 plans complete (01-01, 01-02, 01-03). Portfolio site now builds and displays all atoms with embedded sketches. Ready for Phase 1 completion or additional refinement.
 
 ### Progress Bar
 ```
-[█>                                                ] 2/25 requirements (8%)
-Phase 1 █░░░░░░░░░░ (2/12 reqs - REPO-01, REPO-02)
+[████>                                            ] 7/25 requirements (28%)
+Phase 1 ██████░░░░░ (7/12 reqs - REPO-01 to REPO-04, VIS-01, VIS-03, VIS-04)
 Phase 2 ░░░░░░░░░░░░ (8 reqs)
 Phase 3 ░░░░░░░░░░░░ (5 reqs)
 ```
@@ -46,9 +46,10 @@ Phase 3 ░░░░░░░░░░░░ (5 reqs)
 ## Performance Metrics
 
 ### Velocity
-- Requirements completed this session: 2 (REPO-01, REPO-02)
-- Plans completed this session: 1 (01-01)
-- Average time per plan: 2 min 5 sec
+- Requirements completed this session: 5 (REPO-03, REPO-04, VIS-03, VIS-04, and partial VIS-01)
+- Plans completed this session: 1 (01-03)
+- Plans completed total: 3 (01-01, 01-02, 01-03)
+- Average time per plan: ~2 min
 
 ### Quality
 - Tests passing: N/A
@@ -71,6 +72,13 @@ Phase 3 ░░░░░░░░░░░░ (5 reqs)
 | 2026-01-29 | Phase 1: 20+ sketch quota | Enforces depth-before-breadth, prevents tooling trap by requiring output volume |
 | 2026-01-29 | Manual publishing before automation | Phase 3 requires manual workflow to discover real pain points per project constraint |
 | 2026-01-29 | Visual atoms before audio | Lower complexity path enables faster validation of short-burst workflow |
+| 2026-01-30 | p5.js instance mode for atoms | Enables multiple sketches, HMR cleanup, avoids global pollution |
+| 2026-01-30 | Date-prefix naming (YYYY-MM-DD-name) | Chronological organization without manual versioning |
+| 2026-01-30 | lil-gui integrated by default | Parameter tuning is core workflow, not optional add-on |
+| 2026-01-30 | config.json runtime fetch | Separates code from parameters for experimentation |
+| 2026-01-30 | Astro static site generation for portfolio | No backend needed, pure HTML/CSS/JS deployable anywhere |
+| 2026-01-30 | Iframe embedding for sketches | Isolation prevents p5.js namespace conflicts, safe for multiple sketches per page |
+| 2026-01-30 | Metadata from folder names and NOTES.md | Single source of truth in filesystem, no separate database |
 
 ### Active Todos
 - [ ] Plan Phase 1 with `/gsd:plan-phase 1`
@@ -162,4 +170,5 @@ Comprehensive research completed 2026-01-29 covering creative coding ecosystem, 
 ---
 
 *State initialized: 2026-01-29*
-*Next review: After Phase 1 planning*
+*Last updated: 2026-01-30 after Plan 01-02 completion*
+*Next review: After Phase 1 completion*
