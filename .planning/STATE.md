@@ -1,7 +1,7 @@
 # Project State: Engines of Experience
 
 **Last Updated:** 2026-01-30
-**Session:** Phase 3 COMPLETE: Video Capture & Distribution (All Plans DONE)
+**Session:** Phase 3 COMPLETE + Quick Task 005 (Shell Completion Fixes)
 
 ---
 
@@ -23,8 +23,14 @@ Phase 3 COMPLETE: Full creation-to-distribution pipeline ready. Users can create
 - Goal: Users can capture running atoms as video, encode for platforms, and track distribution ✓
 - Requirements: 5/5 fulfilled (VID-01, VID-02, VID-03, VID-04, VID-05, CLI-04 all complete)
 
-### Last Plan Completed
-**Plan 03-03: Video Publishing Pipeline** - COMPLETE (2026-01-30)
+### Last Work Completed
+**Quick Task 005: Fix Shell Completion for All Commands** - COMPLETE (2026-01-30)
+- Added capture, auth, publish to shell completion atom list
+- All 10 commands now discoverable in tab completion
+- Atom list shows recent atoms first (reverse chronological)
+- Added preventive code comment for future command additions
+
+**Previous: Plan 03-03: Video Publishing Pipeline** - COMPLETE (2026-01-30)
 - OAuth2 authentication for YouTube (browser flow) and TikTok (manual token)
 - Video upload via googleapis (YouTube resumable) and Content Posting API (TikTok init+PUT)
 - Exponential backoff retry logic (3 attempts, 500ms->1s->2s, skips 401/403)
