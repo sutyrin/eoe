@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ATOM_NAME}}</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      background: #0a0a0a;
+      color: #e0e0e0;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+    }
+    .transport {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+      margin: 1rem 0;
+      z-index: 10;
+    }
+    .transport button {
+      padding: 0.5rem 1.5rem;
+      border: 1px solid #333;
+      border-radius: 6px;
+      background: #151515;
+      color: #e0e0e0;
+      font-family: inherit;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: border-color 0.2s;
+    }
+    .transport button:hover { border-color: #555; }
+    .transport button.active { border-color: #6bb5ff; color: #6bb5ff; }
+    .position {
+      font-variant-numeric: tabular-nums;
+      color: #888;
+      font-size: 0.9rem;
+      min-width: 80px;
+    }
+    h1 {
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-top: 1rem;
+      margin-bottom: 0;
+    }
+  </style>
+</head>
+<body>
+  <h1>{{ATOM_NAME}}</h1>
+  <div class="transport">
+    <button id="playBtn">Play</button>
+    <button id="stopBtn">Stop</button>
+    <span class="position" id="position">0:0:0</span>
+  </div>
+  <div id="canvas-container"></div>
+  <script type="module" src="./composition.js"></script>
+</body>
+</html>
