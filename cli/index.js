@@ -9,6 +9,8 @@ import { listCommand } from './commands/list.js';
 import { noteCommand } from './commands/note.js';
 import { statusCommand } from './commands/status.js';
 import { completionCommand } from './commands/completion.js';
+import { authCommand } from './commands/auth.js';
+import { publishCommand } from './commands/publish.js';
 import { setupCompletion } from './lib/completion.js';
 
 // Check for completion environment
@@ -31,5 +33,7 @@ program.addCommand(listCommand);
 program.addCommand(noteCommand);
 program.addCommand(statusCommand);
 program.addCommand(completionCommand);
+program.addCommand(authCommand);
+program.addCommand(publishCommand);
 
 program.parse();
