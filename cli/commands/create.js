@@ -7,11 +7,11 @@ import { fileURLToPath } from 'url';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export const createCommand = new Command('create')
-  .argument('<type>', 'Atom type (visual, audio)')
+  .argument('<type>', 'Atom type (visual, audio, audio-visual)')
   .argument('<name>', 'Atom name (lowercase, no spaces)')
   .description('Scaffold a new atom from template')
   .action(async (type, name) => {
-    const validTypes = ['visual', 'audio'];
+    const validTypes = ['visual', 'audio', 'audio-visual'];
     if (!validTypes.includes(type)) {
       console.error(chalk.red(`Type "${type}" not supported. Available: ${validTypes.join(', ')}`));
       process.exit(1);

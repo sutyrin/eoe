@@ -1,0 +1,41 @@
+{
+  "type": "audio-visual",
+  "bgHue": 240,
+  "baseSize": 100,
+  "particleCount": 60,
+  "rotationSpeed": 0.5,
+  "bassSizeScale": 200,
+  "midsHueShift": 120,
+  "trebleDetail": 8,
+  "beatFlash": 0.8,
+  "synth": {
+    "type": "mono",
+    "oscillator": { "type": "triangle" },
+    "envelope": {
+      "attack": 0.01,
+      "decay": 0.3,
+      "sustain": 0.4,
+      "release": 0.8
+    }
+  },
+  "sequence": {
+    "notes": ["C4", "E4", "G4", "B4", "C5", null, "G4", "E4"],
+    "duration": "8n",
+    "interval": "8n"
+  },
+  "effects": {
+    "reverb": {
+      "decay": 3.0,
+      "wet": 0.4
+    }
+  },
+  "transport": {
+    "bpm": 120
+  },
+  "analysis": {
+    "fftSize": 1024,
+    "smoothing": 0.8,
+    "outputSmoothing": 0.15,
+    "beatThreshold": 0.15
+  }
+}
