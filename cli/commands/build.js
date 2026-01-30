@@ -55,6 +55,16 @@ export const buildCommand = new Command('build')
           process.exit(code);
         }
 
+        // Copy static assets that are fetched at runtime (not bundled by Vite)
+        const staticAssets = ['config.json', 'NOTES.md'];
+        for (const asset of staticAssets) {
+          const src = path.join(atomPath, asset);
+          if (await fs.pathExists(src)) {
+            await fs.copy(src, path.join(distPath, asset));
+            console.log(chalk.gray(`  Copied: ${asset}`));
+          }
+        }
+
         // Verify output
         if (await fs.pathExists(distPath)) {
           const files = await fs.readdir(distPath, { recursive: true });
