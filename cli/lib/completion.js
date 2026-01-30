@@ -20,14 +20,37 @@ export async function getAtomNames() {
 }
 
 /**
+ * Get list of short atom names (date prefix stripped) for completion
+ */
+export async function getShortNames() {
+  const fullNames = await getAtomNames();
+  const datePattern = /^\d{4}-\d{2}-\d{2}-/;
+
+  const shortNames = fullNames.map(name => {
+    if (datePattern.test(name)) {
+      return name.replace(datePattern, '');
+    }
+    return name; // Already a short name
+  });
+
+  // Deduplicate (multiple dates might yield same short name)
+  return [...new Set(shortNames)].sort();
+}
+
+/**
  * Setup completion for atom name arguments
  */
 export async function setupCompletion(env) {
-  const atomNames = await getAtomNames();
-
   // Complete atom names for: dev, build, note commands
   if (env.prev === 'dev' || env.prev === 'build' || env.prev === 'note') {
-    return tabtab.log(atomNames);
+    const shortNames = await getShortNames();
+    const fullNames = await getAtomNames();
+
+    // Combine: short names first (primary UX), then full names
+    // Deduplicate in case a folder has no date prefix (appears in both lists)
+    const combined = [...new Set([...shortNames, ...fullNames])];
+
+    return tabtab.log(combined);
   }
 
   // Complete command names at top level
