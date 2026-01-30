@@ -1,0 +1,36 @@
+---
+export interface Props {
+  title: string;
+}
+const { title } = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{title} - Engines of Experience</title>
+  <style is:global>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      background: #0a0a0a;
+      color: #e0e0e0;
+      min-height: 100vh;
+    }
+    a { color: #6bb5ff; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <header style="padding: 2rem; border-bottom: 1px solid #222;">
+    <a href="/" style="font-size: 1.2rem; font-weight: bold; color: #fff;">
+      Engines of Experience
+    </a>
+  </header>
+  <main style="padding: 2rem; max-width: 1200px; margin: 0 auto;">
+    <slot />
+  </main>
+</body>
+</html>

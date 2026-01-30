@@ -1,0 +1,31 @@
+---
+export interface Props {
+  atomName: string;
+  width?: number;
+  height?: number;
+}
+
+const { atomName, width = 800, height = 800 } = Astro.props;
+---
+
+<div class="p5-container">
+  <iframe
+    src={`/atoms/${atomName}/index.html`}
+    width={width}
+    height={height}
+    style="border: none; border-radius: 4px;"
+    loading="lazy"
+    title={atomName}
+  ></iframe>
+</div>
+
+<style>
+  .p5-container {
+    display: flex;
+    justify-content: center;
+    margin: 1rem 0;
+  }
+  iframe {
+    max-width: 100%;
+  }
+</style>

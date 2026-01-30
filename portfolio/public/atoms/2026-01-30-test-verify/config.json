@@ -1,0 +1,9 @@
+{
+  "controllers": {
+    "bgHue": 200,
+    "shapeHue": 30,
+    "size": 100,
+    "speed": 1,
+    "noiseScale": 0.01
+  }
+}
