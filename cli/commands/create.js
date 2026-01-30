@@ -7,12 +7,13 @@ import { fileURLToPath } from 'url';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export const createCommand = new Command('create')
-  .argument('<type>', 'Atom type (visual)')
+  .argument('<type>', 'Atom type (visual, audio)')
   .argument('<name>', 'Atom name (lowercase, no spaces)')
   .description('Scaffold a new atom from template')
   .action(async (type, name) => {
-    if (type !== 'visual') {
-      console.error(chalk.red(`Type "${type}" not supported yet. Available: visual`));
+    const validTypes = ['visual', 'audio'];
+    if (!validTypes.includes(type)) {
+      console.error(chalk.red(`Type "${type}" not supported. Available: ${validTypes.join(', ')}`));
       process.exit(1);
     }
 
@@ -26,7 +27,7 @@ export const createCommand = new Command('create')
       process.exit(1);
     }
 
-    const templatePath = path.join(__dirname, '../templates/visual');
+    const templatePath = path.join(__dirname, `../templates/${type}`);
     await fs.copy(templatePath, atomPath);
 
     // Replace placeholders in all files

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ATOM_NAME}}</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      background: #0a0a0a;
+      color: #e0e0e0;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+    }
+    .transport {
+      display: flex;
+      gap: 1rem;
+      margin: 2rem 0;
+    }
+    .transport button {
+      padding: 0.75rem 2rem;
+      border: 1px solid #333;
+      border-radius: 6px;
+      background: #151515;
+      color: #e0e0e0;
+      font-family: inherit;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .transport button:hover {
+      border-color: #555;
+      background: #1a1a1a;
+    }
+    .transport button.active {
+      border-color: #6bb5ff;
+      color: #6bb5ff;
+    }
+    .info {
+      color: #555;
+      font-size: 0.85rem;
+      margin-top: 1rem;
+    }
+    h1 {
+      font-size: 1.4rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+    .position {
+      font-size: 1.1rem;
+      color: #888;
+      font-variant-numeric: tabular-nums;
+      margin-top: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <h1>{{ATOM_NAME}}</h1>
+  <div class="transport">
+    <button id="playBtn">Play</button>
+    <button id="stopBtn">Stop</button>
+  </div>
+  <div class="position" id="position">0:0:0</div>
+  <div class="info">Click Play to start audio (browser requires user gesture)</div>
+  <script type="module" src="./audio.js"></script>
+</body>
+</html>
