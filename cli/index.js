@@ -4,6 +4,7 @@ import tabtab from 'tabtab';
 import { createCommand } from './commands/create.js';
 import { devCommand } from './commands/dev.js';
 import { buildCommand } from './commands/build.js';
+import { captureCommand } from './commands/capture.js';
 import { listCommand } from './commands/list.js';
 import { noteCommand } from './commands/note.js';
 import { statusCommand } from './commands/status.js';
@@ -25,6 +26,7 @@ program
 program.addCommand(createCommand);
 program.addCommand(devCommand);
 program.addCommand(buildCommand);
+program.addCommand(captureCommand);
 program.addCommand(listCommand);
 program.addCommand(noteCommand);
 program.addCommand(statusCommand);
