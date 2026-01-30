@@ -15,7 +15,9 @@
   "devDependencies": {
     "vite": "^7.3.1",
     "eslint": "^9.0.0",
-    "prettier": "^3.0.0"
+    "prettier": "^3.0.0",
+    "playwright": "^1.50.0",
+    "ffmpeg-static": "^5.2.0"
   },
   "dependencies": {
     "p5": "^2.2.0",
