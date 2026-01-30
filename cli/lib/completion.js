@@ -52,13 +52,10 @@ export async function setupCompletion(env) {
   // Complete atom names for commands that accept atom arguments
   if (atomCommands.includes(env.prev)) {
     const shortNames = await getShortNames();
-    const fullNames = await getAtomNames();
 
-    // Combine: short names first (primary UX), then full names
-    // Deduplicate in case a folder has no date prefix (appears in both lists)
-    const combined = [...new Set([...shortNames, ...fullNames])];
-
-    return tabtab.log(combined);
+    // Show only short names (unique, user-friendly)
+    // resolveAtomPath() CLI helper handles both short and full name resolution at runtime
+    return tabtab.log(shortNames);
   }
 
   // Complete command names at top level
