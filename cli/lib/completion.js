@@ -6,7 +6,7 @@ import { fileURLToPath } from 'url';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 /**
- * Get list of atom names for completion
+ * Get list of atom names for completion (in reverse chronological order - newest first)
  */
 export async function getAtomNames() {
   const atomsDir = path.resolve(path.join(__dirname, '../../atoms'));
@@ -16,11 +16,12 @@ export async function getAtomNames() {
   return entries
     .filter(d => d.isDirectory())
     .map(d => d.name)
-    .sort();
+    .sort()
+    .reverse(); // Reverse alphabetical: newest (recent date) at top
 }
 
 /**
- * Get list of short atom names (date prefix stripped) for completion
+ * Get list of short atom names (date prefix stripped) for completion (in reverse chronological order)
  */
 export async function getShortNames() {
   const fullNames = await getAtomNames();
@@ -34,15 +35,22 @@ export async function getShortNames() {
   });
 
   // Deduplicate (multiple dates might yield same short name)
-  return [...new Set(shortNames)].sort();
+  // Preserve order from fullNames (reverse chronological)
+  return [...new Set(shortNames)];
 }
 
 /**
  * Setup completion for atom name arguments
+ * NOTE: Any NEW commands that take atom arguments MUST be added to the atomCommands list
+ * to prevent this completion gap from repeating.
  */
 export async function setupCompletion(env) {
-  // Complete atom names for: dev, build, note commands
-  if (env.prev === 'dev' || env.prev === 'build' || env.prev === 'note') {
+  // All commands that accept atom name arguments (atom is first positional arg)
+  // UPDATE THIS LIST when adding new commands that take atom names
+  const atomCommands = ['dev', 'build', 'note', 'capture', 'auth', 'publish'];
+
+  // Complete atom names for commands that accept atom arguments
+  if (atomCommands.includes(env.prev)) {
     const shortNames = await getShortNames();
     const fullNames = await getAtomNames();
 
@@ -56,8 +64,9 @@ export async function setupCompletion(env) {
   // Complete command names at top level
   if (!env.prev || env.prev === 'eoe') {
     return tabtab.log([
-      'create', 'dev', 'build', 'list',
-      'note', 'status', 'completion'
+      'create', 'dev', 'build', 'capture',
+      'list', 'note', 'status', 'auth', 'publish',
+      'completion'
     ]);
   }
 }
