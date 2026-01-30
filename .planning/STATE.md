@@ -1,7 +1,7 @@
 # Project State: Engines of Experience
 
 **Last Updated:** 2026-01-30
-**Session:** Phase 3 COMPLETE + Quick Task 008 (Fix Audio Capture in Audio-Visual Atoms) + Quick Task 001 (Remove TikTok paths)
+**Session:** Phase 3 COMPLETE + Quick Task 010 (Telethon verification rule) + Quick Task 008 (Fix Audio Capture in Audio-Visual Atoms) + Quick Task 001 (Remove TikTok paths)
 
 ---
 
@@ -24,7 +24,12 @@ Phase 3 COMPLETE: Full creation-to-distribution pipeline ready. Users can create
 - Requirements: 5/5 fulfilled (VID-01, VID-02, VID-03, VID-04, VID-05, CLI-04 all complete)
 
 ### Last Work Completed
-**Quick Task 008: Fix Audio Capture in Audio-Visual Atoms** - COMPLETE (2026-01-30)
+**Quick Task 010: Telethon Verification Rule for Chat Posts** - COMPLETE (2026-01-30)
+- Documented mandatory Telethon-based verification for any task that posts to chat
+- Provided applicability, execution steps, and reusable plan wording for planners/executors
+- Rule file stored at .planning/quick/010-when-task-is-to-post-smth-to-chat-go-and/010-RULE.md
+
+**Previous: Quick Task 008: Fix Audio Capture in Audio-Visual Atoms** - COMPLETE (2026-01-30)
 - Fixed audio capture by exposing window.__TONE_CONTEXT__ and __TONE_DESTINATION__ globally
 - MediaRecorder now routes Tone.js audio via MediaStreamDestination node
 - Audio-visual atoms produce WebM files with both VP9 video and Opus audio streams
@@ -156,6 +161,7 @@ Phase 3 ████████████ (5/5 reqs: VID-01, VID-02, VID-03, 
 | 2026-01-30 | Never retry auth errors (401/403) | Auth failures require user action, retrying wastes time, faster error feedback |
 | 2026-01-30 | Global exposure of AudioContext for capture | window.__TONE_CONTEXT__ and __TONE_DESTINATION__ enable capture scripts to access module-scoped audio infrastructure |
 | 2026-01-30 | MediaStreamDestination for audio routing | Web Audio API node creates MediaStream from Tone.js output for MediaRecorder capture |
+| 2026-01-30 | Telethon verification required for chat-post tasks | Ensures future chat-post GSD tasks include Telethon-based post verification |
 
 ### Active Todos
 - [x] Execute Plan 03-03: Distribution CLI (COMPLETE - OAuth2 auth + video publishing)
