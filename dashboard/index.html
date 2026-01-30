@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EOE Dashboard</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <header>
+    <h1>Engines of Experience</h1>
+    <p class="subtitle">Dev Dashboard</p>
+  </header>
+
+  <main id="gallery">
+    <p class="loading">Scanning atoms...</p>
+  </main>
+
+  <script type="module">
+    // In Vite dev mode, we can fetch the directory listing
+    async function loadAtoms() {
+      const gallery = document.getElementById('gallery');
+
+      try {
+        // Fetch the atoms directory listing via Vite's directory listing
+        const response = await fetch('/atoms/');
+        const html = await response.text();
+
+        // Vite directory listing returns HTML with links
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, 'text/html');
+        const links = [...doc.querySelectorAll('a')]
+          .map(a => a.textContent.replace('/', ''))
+          .filter(name => /^\d{4}-\d{2}-\d{2}-.+/.test(name));
+
+        if (links.length === 0) {
+          gallery.innerHTML = `
+            <div class="empty-state">
+              <p>No atoms yet</p>
+              <code>eoe create visual &lt;name&gt;</code>
+              <p class="hint">Then run <code>eoe dev &lt;atom&gt;</code> to start creating</p>
+            </div>
+          `;
+          return;
+        }
+
+        // Sort newest first
+        links.sort((a, b) => b.localeCompare(a));
+
+        gallery.innerHTML = links.map(atomName => {
+          const parts = atomName.match(/^(\d{4}-\d{2}-\d{2})-(.+)$/);
+          const date = parts ? parts[1] : '';
+          const name = parts ? parts[2] : atomName;
+
+          return `
+            <a href="/atoms/${atomName}/index.html" class="atom-card">
+              <div class="atom-preview">
+                <iframe
+                  src="/atoms/${atomName}/index.html"
+                  width="400"
+                  height="400"
+                  loading="lazy"
+                  title="${name}"
+                ></iframe>
+              </div>
+              <div class="atom-info">
+                <span class="atom-name">${name}</span>
+                <span class="atom-date">${date}</span>
+              </div>
+            </a>
+          `;
+        }).join('');
+
+      } catch (e) {
+        gallery.innerHTML = `
+          <div class="empty-state">
+            <p>No atoms yet</p>
+            <code>eoe create visual &lt;name&gt;</code>
+          </div>
+        `;
+      }
+    }
+
+    loadAtoms();
+  </script>
+</body>
+</html>
