@@ -131,7 +131,6 @@ export const captureCommand = new Command('capture')
       console.log(chalk.gray(`  Master:     videos/masters/${resolvedName}.webm`));
       if (!options.skipEncode) {
         console.log(chalk.gray(`  YouTube:    videos/youtube/${resolvedName}.mp4`));
-        console.log(chalk.gray(`  TikTok:     videos/tiktok/${resolvedName}.mp4`));
       }
       if (!options.skipThumbnails) {
         console.log(chalk.gray(`  Thumbnails: videos/thumbnails/${resolvedName}-*.jpg`));
@@ -141,7 +140,6 @@ export const captureCommand = new Command('capture')
       console.log();
       console.log(chalk.gray('Next steps:'));
       console.log(chalk.gray(`  YouTube: eoe publish videos/youtube/${resolvedName}.mp4 --platform youtube --title "Your Title"`));
-      console.log(chalk.gray(`  TikTok:  eoe publish videos/tiktok/${resolvedName}.mp4 --platform tiktok --title "Your Title"`));
 
     } catch (err) {
       console.error(chalk.red(`\nCapture failed: ${err.message}`));
