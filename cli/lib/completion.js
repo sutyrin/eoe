@@ -53,8 +53,15 @@ export async function setupCompletion(env) {
   if (atomCommands.includes(env.prev)) {
     // Smart completion: show short names by default, full names when user types a digit
     // This lets users search by name (my-first-sketch) or by date (2026-01-30...)
-    const current = env.curr || '';
-    const isDateSearch = /^\d/.test(current); // Starts with digit
+
+    // Get the current word being typed (the partial atom name)
+    // env.words is array like ['eoe', 'capture', '2']
+    // env.cword is the index of current word being completed
+    const currentWord = env.words && env.cword !== undefined
+      ? env.words[env.cword]
+      : '';
+
+    const isDateSearch = /^\d/.test(currentWord); // Starts with digit
 
     let suggestions;
     if (isDateSearch) {
