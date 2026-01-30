@@ -55,11 +55,11 @@ export async function setupCompletion(env) {
     // This lets users search by name (my-first-sketch) or by date (2026-01-30...)
 
     // Get the current word being typed (the partial atom name)
-    // env.words is array like ['eoe', 'capture', '2']
-    // env.cword is the index of current word being completed
-    const currentWord = env.words && env.cword !== undefined
-      ? env.words[env.cword]
-      : '';
+    // tabtab provides: env.words (array), env.cword (index), env.curr (current partial word)
+    const currentWord = env.curr || '';
+
+    // DEBUG: Log to help diagnose
+    console.error('DEBUG env:', { prev: env.prev, curr: env.curr, words: env.words, cword: env.cword });
 
     const isDateSearch = /^\d/.test(currentWord); // Starts with digit
 
