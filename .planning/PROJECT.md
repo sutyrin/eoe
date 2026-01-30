@@ -12,20 +12,22 @@ Consistent output of creative atoms that compound into a body of work, tools, an
 
 ### Validated
 
-(None yet — ship to validate)
+- ✓ Atom creation workflow — make creative code, music, and motion pieces in short bursts (10-15 min to 1h) — v1.0
+- ✓ Web-based playable contraptions — publish atoms as browser toys anyone can play with — v1.0
+- ✓ Portfolio website — dedicated site to host all pieces and serve as home base — v1.0
+- ✓ Content pipeline — produce YouTube videos from creative work via video capture — v1.0
+- ✓ Multi-platform publishing — distribute to YouTube with manual workflow — v1.0
+- ✓ CLI cockpit — terminal-based dashboard with create/dev/build/capture/publish commands — v1.0
+- ✓ Publishing — manual workflow validated (pain points documented for v2 automation) — v1.0
 
 ### Active
 
-- [ ] Atom creation workflow — make creative code, music, and motion pieces in short bursts (10-15 min to 1h)
 - [ ] Multi-device sync — work seamlessly across desktop, laptop, and mobile (commute with headphones)
-- [ ] Web-based playable contraptions — publish atoms as browser toys anyone can play with
-- [ ] Portfolio website — dedicated site to host all pieces and serve as home base
-- [ ] Content pipeline — produce YouTube videos, blog posts, and open source code from creative work
-- [ ] Multi-platform publishing — distribute to YouTube, Reddit, TikTok, and other channels with minimal friction
-- [ ] CLI cockpit — terminal-based dashboard for publishing, metrics, and feedback across all channels
-- [ ] LLM augmentation — GSD for foundational/structural work, lighter consoles for creative pair-creation
-- [ ] Streaming capability — host live sessions with guests, starting intimate and growing with community
-- [ ] Publishing automation — start manual, automate pain points as they emerge
+- [ ] Batch publishing automation — produce multiple videos from existing atoms
+- [ ] LLM augmentation — lighter consoles for in-the-moment creative pair-creation
+- [ ] Streaming capability — host live sessions with guests
+- [ ] Community features — GitHub organization, Discord, teaching content
+- [ ] Advanced creation — Three.js 3D, motion graphics, Blender integration
 
 ### Out of Scope
 
@@ -79,4 +81,4 @@ Consistent output of creative atoms that compound into a body of work, tools, an
 | Build own tooling from atoms | Practice what you preach — the tools ARE the creative output | — Pending |
 
 ---
-*Last updated: 2026-01-29 after initialization*
+*Last updated: 2026-01-30 after v1.0 milestone completion*
