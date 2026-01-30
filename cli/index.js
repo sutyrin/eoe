@@ -2,8 +2,6 @@
 import { program } from 'commander';
 import { createCommand } from './commands/create.js';
 import { devCommand } from './commands/dev.js';
-import { noteCommand } from './commands/note.js';
-import { statusCommand } from './commands/status.js';
 
 program
   .name('eoe')
@@ -12,7 +10,5 @@ program
 
 program.addCommand(createCommand);
 program.addCommand(devCommand);
-program.addCommand(noteCommand);
-program.addCommand(statusCommand);
 
 program.parse();
