@@ -54,13 +54,13 @@ export async function setupCompletion(env) {
     // Smart completion: show short names by default, full names when user types a digit
     // This lets users search by name (my-first-sketch) or by date (2026-01-30...)
 
-    // Get the current word being typed (the partial atom name)
-    // tabtab provides: env.words (array), env.cword (index), env.curr (current partial word)
-    const currentWord = env.curr || '';
+    // Parse the current word from COMP_LINE since env.curr is unreliable
+    // COMP_LINE contains the entire command line typed so far
+    const compLine = process.env.COMP_LINE || '';
+    const words = compLine.split(/\s+/);
+    const currentWord = words[words.length - 1]; // Last word (might be partial)
 
-    // DEBUG: Log to help diagnose
-    console.error('DEBUG env:', { prev: env.prev, curr: env.curr, words: env.words, cword: env.cword });
-
+    // Smart detection: if current word starts with digit, user is searching by date
     const isDateSearch = /^\d/.test(currentWord); // Starts with digit
 
     let suggestions;
