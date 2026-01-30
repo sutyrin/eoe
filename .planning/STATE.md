@@ -1,7 +1,7 @@
 # Project State: Engines of Experience
 
 **Last Updated:** 2026-01-30
-**Session:** Phase 2 COMPLETE - All 3 plans executed (02-01, 02-02, 02-03)
+**Session:** Phase 2 COMPLETE + Quick Task 001 (CLI atom lookup fix)
 
 ---
 
@@ -24,7 +24,13 @@ Phase 2 COMPLETE: Audio integration with Tone.js synthesis, audio-visual binding
 - Requirements: 8/8 fulfilled (AUD-01 to AUD-04, VIS-05 to VIS-08)
 
 ### Last Plan Completed
-**Plan 02-03: Composition Atoms & CLI Build** - COMPLETE (2026-01-30)
+**Quick Task 001: Fix eoe dev Atom Lookup** - COMPLETE (2026-01-30)
+- Short-name atom resolution in CLI commands
+- resolveAtomPath helper for dev, build, note commands
+- Exact match priority with suffix matching fallback
+- Ambiguity handling with clear error messages
+
+**Previous: Plan 02-03: Composition Atoms & CLI Build** - COMPLETE (2026-01-30)
 - CompositionManager for multi-atom orchestration
 - Composition atom template with lead + bass synths
 - `eoe build` command for production bundles
@@ -93,6 +99,7 @@ Phase 3 ░░░░░░░░░░░░ (0/5 reqs)
 | 2026-01-30 | Mix bus pattern for audio analysis | Single Gain node combines all audio sources before analysis for unified reactivity |
 | 2026-01-30 | Build from atom directory | Running `vite build` from atom dir makes index.html default entry, simpler than custom config |
 | 2026-01-30 | Type detection from config.json | Explicit "type" field with fallback to file structure detection for robustness |
+| 2026-01-30 | Short-name atom resolution | CLI commands accept short names (my-first-sketch) via suffix matching with exact-match priority for backward compatibility |
 
 ### Active Todos
 - [ ] Plan Phase 1 with `/gsd:plan-phase 1`
@@ -148,10 +155,14 @@ Comprehensive research completed 2026-01-29 covering creative coding ecosystem, 
 17. Verified full Phase 2 integration end-to-end
 18. Created 02-01-SUMMARY.md, 02-02-SUMMARY.md, and 02-03-SUMMARY.md
 19. Updated STATE.md to reflect Phase 2 COMPLETE
+20. Executed Quick Task 001: Fix eoe dev Atom Lookup
+21. Created resolveAtomPath helper for short-name atom resolution
+22. Updated dev, build, note commands to accept short names
+23. Fixed UX mismatch between eoe status and other commands
 
 ### Context for Next Session
-**Last session:** 2026-01-30 10:30 UTC
-**Stopped at:** Completed Plan 02-03: Composition Atoms & CLI Build - PHASE 2 COMPLETE
+**Last session:** 2026-01-30 12:22 UTC
+**Stopped at:** Completed Quick Task 001: Fix eoe dev Atom Lookup (CLI UX improvement)
 **Resume file:** None
 
 **Phase 2 Status:**
