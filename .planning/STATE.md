@@ -1,7 +1,7 @@
 # Project State: Engines of Experience
 
 **Last Updated:** 2026-01-30
-**Session:** Phase 3 COMPLETE + Quick Task 005 (Shell Completion Fixes)
+**Session:** Phase 3 COMPLETE + Quick Task 006 (Vite Preview Built Sketch Content)
 
 ---
 
@@ -24,7 +24,13 @@ Phase 3 COMPLETE: Full creation-to-distribution pipeline ready. Users can create
 - Requirements: 5/5 fulfilled (VID-01, VID-02, VID-03, VID-04, VID-05, CLI-04 all complete)
 
 ### Last Work Completed
-**Quick Task 005: Fix Shell Completion for All Commands** - COMPLETE (2026-01-30)
+**Quick Task 006: Fix Vite Preview Built Sketch Content** - COMPLETE (2026-01-30)
+- Build command now copies config.json and NOTES.md to dist output after Vite build
+- Built sketch previews can fetch runtime config instead of falling back to hardcoded defaults
+- Graceful handling for atoms without these files (no errors)
+- Verified with headless browser test: canvas renders and config.json served as JSON
+
+**Previous: Quick Task 005: Fix Shell Completion for All Commands** - COMPLETE (2026-01-30)
 - Added capture, auth, publish to shell completion atom list
 - All 10 commands now discoverable in tab completion
 - Atom list shows recent atoms first (reverse chronological)
@@ -121,6 +127,7 @@ Phase 3 ████████████ (5/5 reqs: VID-01, VID-02, VID-03, 
 | 2026-01-30 | Type detection from config.json | Explicit "type" field with fallback to file structure detection for robustness |
 | 2026-01-30 | Short-name atom resolution | CLI commands accept short names (my-first-sketch) via suffix matching with exact-match priority for backward compatibility |
 | 2026-01-30 | Short-name completion first | Shell completion suggests short names before full names to prioritize primary UX |
+| 2026-01-30 | Static asset copy after build | Runtime-fetched files (config.json, NOTES.md) copied to dist after Vite build completes |
 | 2026-01-30 | Playwright headless capture | Mature browser automation with GPU support for canvas rendering, reliable cleanup |
 | 2026-01-30 | MediaRecorder API for recording | Native browser API handles codec negotiation, high quality WebM VP9+Opus output |
 | 2026-01-30 | Temporary Vite server per capture | Reuses dev infrastructure, ensures consistent environment, auto-cleanup |
@@ -212,8 +219,8 @@ Comprehensive research completed 2026-01-29 covering creative coding ecosystem, 
 25. Updated STATE.md to reflect Phase 3 COMPLETE (all 3 plans done)
 
 ### Context for Next Session
-**Last session:** 2026-01-30 13:25 UTC
-**Stopped at:** Completed Plan 03-03: Video Publishing Pipeline (Phase 3 COMPLETE)
+**Last session:** 2026-01-30 10:56 UTC
+**Stopped at:** Completed Quick Task 006: Fix Vite Preview Built Sketch Content
 **Resume file:** None
 
 **Phase 3 Status:**
