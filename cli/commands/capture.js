@@ -8,6 +8,8 @@ export const captureCommand = new Command('capture')
   .option('-d, --duration <seconds>', 'Capture duration in seconds', '10')
   .option('--fps <rate>', 'Frame rate for capture', '30')
   .option('-o, --output <dir>', 'Output directory for master video', 'videos/masters')
+  .option('--skip-encode', 'Skip platform encoding (master WebM only)', false)
+  .option('--skip-thumbnails', 'Skip thumbnail extraction', false)
   .description('Record a running atom to video (canvas + audio)')
   .action(async (atomName, options) => {
     const result = await resolveAtomPath(atomName);
@@ -74,8 +76,72 @@ export const captureCommand = new Command('capture')
       console.log(chalk.gray(`  Size: ${sizeMB} MB`));
       console.log(chalk.gray(`  Duration: ${result.duration}s`));
       console.log(chalk.gray(`  Elapsed: ${elapsed}s`));
+
+      // --- Encoding Phase ---
+      if (!options.skipEncode) {
+        console.log(chalk.blue('\nEncoding for platforms...'));
+
+        const { encodeForAllPlatforms } = await import('../../lib/encoding/ffmpeg-encoder.js');
+        const videosDir = path.resolve('videos');
+
+        const encodingResults = await encodeForAllPlatforms(
+          result.outputPath,
+          videosDir,
+          resolvedName,
+          (platform, percent) => {
+            process.stdout.write(`\r  ${platform}: ${percent}%`);
+          }
+        );
+
+        console.log(); // Clear progress line
+        for (const enc of encodingResults) {
+          const sizeMB = (enc.fileSize / (1024 * 1024)).toFixed(2);
+          console.log(chalk.green(`  ${enc.platform} (${enc.aspect}): ${enc.outputPath} (${sizeMB} MB)`));
+        }
+      }
+
+      // --- Thumbnail Extraction ---
+      if (!options.skipThumbnails) {
+        console.log(chalk.blue('\nExtracting thumbnails...'));
+
+        const { extractThumbnails, extractBestThumbnail } = await import('../../lib/encoding/thumbnail.js');
+        const videosDir = path.resolve('videos');
+
+        const thumbPaths = await extractThumbnails(
+          result.outputPath,
+          videosDir,
+          resolvedName,
+          { duration }
+        );
+
+        const bestThumb = await extractBestThumbnail(
+          result.outputPath,
+          videosDir,
+          resolvedName
+        );
+
+        console.log(chalk.green(`  ${thumbPaths.length} thumbnails + 1 best frame extracted`));
+        for (const thumbPath of [...thumbPaths, bestThumb]) {
+          console.log(chalk.gray(`    ${thumbPath}`));
+        }
+      }
+
+      // Summary
+      console.log(chalk.blue('\n--- Output Summary ---'));
+      console.log(chalk.gray(`  Master:     videos/masters/${resolvedName}.webm`));
+      if (!options.skipEncode) {
+        console.log(chalk.gray(`  YouTube:    videos/youtube/${resolvedName}.mp4`));
+        console.log(chalk.gray(`  TikTok:     videos/tiktok/${resolvedName}.mp4`));
+      }
+      if (!options.skipThumbnails) {
+        console.log(chalk.gray(`  Thumbnails: videos/thumbnails/${resolvedName}-*.jpg`));
+      }
+
+      // Publish guidance -- show suggested next commands
       console.log();
-      console.log(chalk.gray(`  Next: eoe encode ${resolvedName}`));
+      console.log(chalk.gray('Next steps:'));
+      console.log(chalk.gray(`  YouTube: eoe publish videos/youtube/${resolvedName}.mp4 --platform youtube --title "Your Title"`));
+      console.log(chalk.gray(`  TikTok:  eoe publish videos/tiktok/${resolvedName}.mp4 --platform tiktok --title "Your Title"`));
 
     } catch (err) {
       console.error(chalk.red(`\nCapture failed: ${err.message}`));
