@@ -51,11 +51,21 @@ export async function setupCompletion(env) {
 
   // Complete atom names for commands that accept atom arguments
   if (atomCommands.includes(env.prev)) {
-    const shortNames = await getShortNames();
+    // Smart completion: show short names by default, full names when user types a digit
+    // This lets users search by name (my-first-sketch) or by date (2026-01-30...)
+    const current = env.curr || '';
+    const isDateSearch = /^\d/.test(current); // Starts with digit
 
-    // Show only short names (unique, user-friendly)
-    // resolveAtomPath() CLI helper handles both short and full name resolution at runtime
-    return tabtab.log(shortNames);
+    let suggestions;
+    if (isDateSearch) {
+      // User typed a digit: show full date-prefixed names
+      suggestions = await getAtomNames();
+    } else {
+      // User typed empty or letter: show short names (user-friendly)
+      suggestions = await getShortNames();
+    }
+
+    return tabtab.log(suggestions);
   }
 
   // Complete command names at top level
