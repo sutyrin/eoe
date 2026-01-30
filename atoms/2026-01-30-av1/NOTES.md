@@ -28,6 +28,9 @@ What audio-visual relationship am I exploring? What should the viewer feel?
 - Why these mappings?
 - Smoothing/easing choices:
 
+## Published
+- **YouTube:** https://www.youtube.com/watch?v=JD9yX-VWWxI (2026-01-30 12:59:26)
+
 ## Session Log
 
 ### 2026-01-30 14:05
