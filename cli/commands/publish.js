@@ -6,7 +6,7 @@ import { resolveAtomPath } from '../lib/resolve-atom.js';
 
 export const publishCommand = new Command('publish')
   .argument('<video>', 'Path to video file (e.g., videos/youtube/2026-01-30-my-sketch.mp4)')
-  .requiredOption('-p, --platform <platform>', 'Target platform (youtube, tiktok)')
+  .requiredOption('-p, --platform <platform>', 'Target platform (youtube)')
   .requiredOption('-t, --title <title>', 'Video title')
   .option('--description <text>', 'Video description')
   .option('--tags <tags>', 'Comma-separated tags', '')
@@ -24,7 +24,7 @@ export const publishCommand = new Command('publish')
     }
 
     // Validate platform
-    const validPlatforms = ['youtube', 'tiktok'];
+    const validPlatforms = ['youtube'];
     if (!validPlatforms.includes(options.platform)) {
       console.error(chalk.red(`Platform "${options.platform}" not supported. Available: ${validPlatforms.join(', ')}`));
       process.exit(1);
@@ -50,40 +50,24 @@ export const publishCommand = new Command('publish')
     console.log();
 
     try {
-      let result;
-
-      if (options.platform === 'youtube') {
-        const { uploadToYouTube } = await import('../../lib/platforms/youtube-client.js');
-        result = await uploadToYouTube({
-          videoPath,
-          title: options.title,
-          description: options.description || '',
-          tags,
-          privacyStatus: options.privacy,
-          thumbnailPath: options.thumbnail ? path.resolve(options.thumbnail) : undefined,
-          onProgress: (uploaded, total, message) => {
-            if (message) {
-              console.log(chalk.yellow(`  ${message}`));
-            }
+      const { uploadToYouTube } = await import('../../lib/platforms/youtube-client.js');
+      const result = await uploadToYouTube({
+        videoPath,
+        title: options.title,
+        description: options.description || '',
+        tags,
+        privacyStatus: options.privacy,
+        thumbnailPath: options.thumbnail ? path.resolve(options.thumbnail) : undefined,
+        onProgress: (uploaded, total, message) => {
+          if (message) {
+            console.log(chalk.yellow(`  ${message}`));
           }
-        });
+        }
+      });
 
-        console.log(chalk.green(`\nPublished to YouTube!`));
-        console.log(chalk.gray(`  Video ID: ${result.videoId}`));
-        console.log(chalk.blue(`  URL: ${result.url}`));
-
-      } else if (options.platform === 'tiktok') {
-        const { uploadToTikTok } = await import('../../lib/platforms/tiktok-client.js');
-        result = await uploadToTikTok({
-          videoPath,
-          title: options.title,
-          privacyLevel: options.privacy === 'public' ? 'PUBLIC_TO_EVERYONE' : 'SELF_ONLY'
-        });
-
-        console.log(chalk.green(`\nPublished to TikTok!`));
-        console.log(chalk.gray(`  Publish ID: ${result.publishId}`));
-        console.log(chalk.gray(`  Status: ${result.status}`));
-      }
+      console.log(chalk.green(`\nPublished to YouTube!`));
+      console.log(chalk.gray(`  Video ID: ${result.videoId}`));
+      console.log(chalk.blue(`  URL: ${result.url}`));
 
       // Track in NOTES.md if atom specified or derivable from video path
       const atomName = options.atom || deriveAtomName(videoPath);
@@ -134,8 +118,8 @@ async function trackPublication(atomName, platform, result) {
   let entry;
   if (platform === 'youtube') {
     entry = `- **YouTube:** ${result.url} (${timestamp})`;
-  } else if (platform === 'tiktok') {
-    entry = `- **TikTok:** publish_id:${result.publishId} (${timestamp})`;
+  } else {
+    return; // Only track YouTube in notes
   }
 
   // Find or create Published section
