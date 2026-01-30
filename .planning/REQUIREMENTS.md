@@ -103,18 +103,18 @@ Deferred to future release. Tracked but not in current roadmap.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| REPO-01 | Phase 1 | Pending |
-| REPO-02 | Phase 1 | Pending |
-| REPO-03 | Phase 1 | Pending |
-| REPO-04 | Phase 1 | Pending |
-| VIS-01 | Phase 1 | Pending |
-| VIS-02 | Phase 1 | Pending |
-| VIS-03 | Phase 1 | Pending |
-| VIS-04 | Phase 1 | Pending |
-| CLI-01 | Phase 1 | Pending |
-| CLI-02 | Phase 1 | Pending |
-| NOTE-01 | Phase 1 | Pending |
-| NOTE-02 | Phase 1 | Pending |
+| REPO-01 | Phase 1 | Complete |
+| REPO-02 | Phase 1 | Complete |
+| REPO-03 | Phase 1 | Complete |
+| REPO-04 | Phase 1 | Complete |
+| VIS-01 | Phase 1 | Complete |
+| VIS-02 | Phase 1 | Complete |
+| VIS-03 | Phase 1 | Complete |
+| VIS-04 | Phase 1 | Complete |
+| CLI-01 | Phase 1 | Complete |
+| CLI-02 | Phase 1 | Complete |
+| NOTE-01 | Phase 1 | Complete |
+| NOTE-02 | Phase 1 | Complete |
 | AUD-01 | Phase 2 | Pending |
 | AUD-02 | Phase 2 | Pending |
 | AUD-03 | Phase 2 | Pending |
