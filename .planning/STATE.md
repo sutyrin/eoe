@@ -1,7 +1,7 @@
 # Project State: Engines of Experience
 
 **Last Updated:** 2026-01-30
-**Session:** Phase 3 COMPLETE + Quick Task 006 (Vite Preview Built Sketch Content)
+**Session:** Phase 3 COMPLETE + Quick Task 008 (Fix Audio Capture in Audio-Visual Atoms)
 
 ---
 
@@ -24,7 +24,14 @@ Phase 3 COMPLETE: Full creation-to-distribution pipeline ready. Users can create
 - Requirements: 5/5 fulfilled (VID-01, VID-02, VID-03, VID-04, VID-05, CLI-04 all complete)
 
 ### Last Work Completed
-**Quick Task 006: Fix Vite Preview Built Sketch Content** - COMPLETE (2026-01-30)
+**Quick Task 008: Fix Audio Capture in Audio-Visual Atoms** - COMPLETE (2026-01-30)
+- Fixed audio capture by exposing window.__TONE_CONTEXT__ and __TONE_DESTINATION__ globally
+- MediaRecorder now routes Tone.js audio via MediaStreamDestination node
+- Audio-visual atoms produce WebM files with both VP9 video and Opus audio streams
+- Visual-only atoms still capture correctly (no regression)
+- Verified with ffmpeg: captured files contain audible audio track
+
+**Previous: Quick Task 006: Fix Vite Preview Built Sketch Content** - COMPLETE (2026-01-30)
 - Build command now copies config.json and NOTES.md to dist output after Vite build
 - Built sketch previews can fetch runtime config instead of falling back to hardcoded defaults
 - Graceful handling for atoms without these files (no errors)
@@ -147,12 +154,14 @@ Phase 3 ████████████ (5/5 reqs: VID-01, VID-02, VID-03, 
 | 2026-01-30 | TikTok defaults to SELF_ONLY privacy | Videos from unverified API clients require audit before public posting |
 | 2026-01-30 | Retry 3 times with exponential backoff (500ms, 1s, 2s) | Balances reliability with reasonable timeout, handles transient network errors |
 | 2026-01-30 | Never retry auth errors (401/403) | Auth failures require user action, retrying wastes time, faster error feedback |
+| 2026-01-30 | Global exposure of AudioContext for capture | window.__TONE_CONTEXT__ and __TONE_DESTINATION__ enable capture scripts to access module-scoped audio infrastructure |
+| 2026-01-30 | MediaStreamDestination for audio routing | Web Audio API node creates MediaStream from Tone.js output for MediaRecorder capture |
 
 ### Active Todos
 - [x] Execute Plan 03-03: Distribution CLI (COMPLETE - OAuth2 auth + video publishing)
+- [x] Verify audio-visual atom encoding (COMPLETE - Opus audio stream confirmed with ffmpeg)
+- [x] Investigate headed browser capture for reliable audio (RESOLVED - audio works in headless via Web Audio API routing)
 - [ ] Create 20+ visual atoms per Phase 1 quota (depth-before-breadth enforcement)
-- [ ] Verify audio-visual atom encoding (audio stream preservation through FFmpeg)
-- [ ] Investigate headed browser capture for reliable audio (or accept silent audio in headless mode)
 - [ ] Track creation vs. setup time (must stay below 20% setup)
 - [ ] Observe manual publishing pain points per project constraint (batch uploads, title derivation, analytics)
 
@@ -160,10 +169,7 @@ Phase 3 ████████████ (5/5 reqs: VID-01, VID-02, VID-03, 
 None identified. Phase 3 complete, all requirements fulfilled.
 
 ### Technical Debt
-- Audio capture in headless mode may be silent (Tone.js routing to non-existent audio output)
-  - Workaround: Accept current behavior as expected for headless capture
-  - Alternative: Use headed browser for audio verification
-  - Impact: LOW - video capture works correctly, audio stream is present in file
+None identified. Audio capture issue resolved (Quick Task 008).
 
 ---
 
@@ -217,10 +223,15 @@ Comprehensive research completed 2026-01-29 covering creative coding ecosystem, 
 23. Verified full creation-to-distribution pipeline end-to-end
 24. Created 03-03-SUMMARY.md documenting publishing pipeline
 25. Updated STATE.md to reflect Phase 3 COMPLETE (all 3 plans done)
+26. Fixed audio capture in audio-visual atoms (Quick Task 008)
+27. Exposed window.__TONE_CONTEXT__ and __TONE_DESTINATION__ globally in ensureAudioContext()
+28. Rewrote MediaRecorder injection to use MediaStreamDestination for audio routing
+29. Verified audio capture: Opus audio stream present in captured WebM files
+30. Verified no regression: Visual-only atoms still capture correctly
 
 ### Context for Next Session
-**Last session:** 2026-01-30 10:56 UTC
-**Stopped at:** Completed Quick Task 006: Fix Vite Preview Built Sketch Content
+**Last session:** 2026-01-30 11:13 UTC
+**Stopped at:** Completed Quick Task 008: Fix Audio Capture in Audio-Visual Atoms
 **Resume file:** None
 
 **Phase 3 Status:**
@@ -258,8 +269,6 @@ Comprehensive research completed 2026-01-29 covering creative coding ecosystem, 
   - Automated workflows (GitHub Actions)
 
 **Warning signs to watch:**
-- Audio capture silent in headless mode (may need headed browser workaround)
-- Audio-visual atom encoding verification needed (audio stream preservation)
 - Platform encoding specs may evolve (validate before uploads)
 
 ---
