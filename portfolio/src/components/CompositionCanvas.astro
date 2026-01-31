@@ -88,12 +88,20 @@ const { compositionId } = Astro.props;
         }));
       }, []);
 
+      // Node click handler - open detail sheet
+      const onNodeClick = React.useCallback((_event: any, node: any) => {
+        window.dispatchEvent(new CustomEvent('eoe:node-tapped', {
+          detail: { nodeId: node.id }
+        }));
+      }, []);
+
       return React.createElement(
         ReactFlow,
         {
           nodes: nodes,
           edges: edges,
           onNodeDragStop: onNodeDragStop,
+          onNodeClick: onNodeClick,
           nodeTypes: nodeTypes,
           // Mobile-optimized settings (from 05-RESEARCH.md)
           panOnDrag: [1],           // Single-finger pan on background

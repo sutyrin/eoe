@@ -2,6 +2,7 @@
 import MobileLayout from '../../layouts/MobileLayout.astro';
 import CompositionCanvas from '../../components/CompositionCanvas.astro';
 import AtomPickerSheet from '../../components/AtomPickerSheet.astro';
+import NodeDetailSheet from '../../components/NodeDetailSheet.astro';
 ---
 
 <MobileLayout title="Compose" showBack={true} backHref="/mobile/compositions">
@@ -14,6 +15,9 @@ import AtomPickerSheet from '../../components/AtomPickerSheet.astro';
 
   <!-- Atom picker bottom sheet -->
   <AtomPickerSheet />
+
+  <!-- Node detail bottom sheet -->
+  <NodeDetailSheet />
 </MobileLayout>
 
 <script>
@@ -25,7 +29,9 @@ import AtomPickerSheet from '../../components/AtomPickerSheet.astro';
     buildEdges,
     loadAtomsMap,
     updateNodePositions,
+    removeAtomFromComposition,
   } from '../../scripts/composition-store';
+  import { createRoute, deleteRoute } from '../../scripts/routing-engine';
   import {
     createEmptyComposition,
     MAX_ATOMS_PER_COMPOSITION,
@@ -130,6 +136,79 @@ import AtomPickerSheet from '../../components/AtomPickerSheet.astro';
       // Don't save on every drag - autosave in 05-04 handles this
     }
   });
+
+  // Handle node tap -> open detail sheet
+  window.addEventListener('eoe:node-tapped', ((e: CustomEvent) => {
+    const { nodeId } = e.detail;
+    window.dispatchEvent(new CustomEvent('eoe:open-node-detail', {
+      detail: {
+        nodeId,
+        composition: currentComposition,
+        atomsMap,
+      }
+    }));
+  }) as EventListener);
+
+  // Handle route creation
+  window.addEventListener('eoe:create-route', (async (e: CustomEvent) => {
+    const { sourceNodeId, sourceParam, targetNodeId, targetParam } = e.detail;
+
+    currentComposition = createRoute(
+      currentComposition,
+      sourceNodeId,
+      sourceParam,
+      targetNodeId,
+      targetParam,
+    );
+
+    await saveComposition(currentComposition);
+    await refreshCanvas();
+
+    // Notify detail sheet of updated composition
+    window.dispatchEvent(new CustomEvent('eoe:composition-updated', {
+      detail: { composition: currentComposition }
+    }));
+
+    // Find target atom name for toast
+    const targetAtom = currentComposition.atoms.find(a => a.nodeId === targetNodeId);
+    const targetName = targetAtom
+      ? atomsMap.get(targetAtom.atomSlug)?.title || targetAtom.atomSlug
+      : '???';
+    showToast(`Routed ${sourceParam} -> ${targetName}.${targetParam}`);
+  }) as EventListener);
+
+  // Handle route deletion
+  window.addEventListener('eoe:delete-route', (async (e: CustomEvent) => {
+    const { routeId } = e.detail;
+
+    currentComposition = deleteRoute(currentComposition, routeId);
+    await saveComposition(currentComposition);
+    await refreshCanvas();
+
+    window.dispatchEvent(new CustomEvent('eoe:composition-updated', {
+      detail: { composition: currentComposition }
+    }));
+
+    showToast('Route deleted');
+  }) as EventListener);
+
+  // Handle node removal
+  window.addEventListener('eoe:remove-node', (async (e: CustomEvent) => {
+    const { nodeId } = e.detail;
+
+    currentComposition = removeAtomFromComposition(currentComposition, nodeId);
+    await saveComposition(currentComposition);
+    await refreshCanvas();
+
+    showToast('Atom removed');
+  }) as EventListener);
+
+  // Handle composition state request (from detail sheet after changes)
+  window.addEventListener('eoe:request-composition-state', (() => {
+    window.dispatchEvent(new CustomEvent('eoe:composition-updated', {
+      detail: { composition: currentComposition }
+    }));
+  }) as EventListener);
 
   // Initialize
   initComposition();
