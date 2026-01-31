@@ -19,12 +19,7 @@ import '../styles/canvas.css';
   import React from 'react';
   import ReactDOM from 'react-dom/client';
   import { ReactFlow, Background, useNodesState, useEdgesState, type Node, type Edge } from 'reactflow';
-  import AtomNode from '../scripts/atom-node';
-
-  // Custom node types
-  const nodeTypes = {
-    atomNode: AtomNode,
-  };
+  import { nodeTypes } from '../scripts/atom-node';
 
   // Canvas React component
   function CanvasApp() {
