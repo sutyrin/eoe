@@ -1,0 +1,104 @@
+---
+export interface Props {
+  slug: string;
+  title: string;
+  date: string;
+  type: string;
+  stage: string;
+}
+
+const { slug, title, date, type, stage } = Astro.props;
+
+// Type badge colors
+const typeColors: Record<string, string> = {
+  visual: '#6bb5ff',
+  audio: '#ff6b9d',
+  'audio-visual': '#b56bff',
+  composition: '#6bffb5'
+};
+const badgeColor = typeColors[type] || '#888';
+---
+
+<a href={`/mobile/${slug}`} class="list-item atom-list-item" data-slug={slug} data-title={title}>
+  <div class="atom-thumb" style={`border-color: ${badgeColor}`}>
+    <span class="atom-type-icon">{type === 'visual' ? 'V' : type === 'audio' ? 'A' : type === 'audio-visual' ? 'AV' : 'C'}</span>
+  </div>
+  <div class="atom-info">
+    <span class="atom-title">{title}</span>
+    <span class="atom-meta">
+      {date}
+      <span class="atom-type-badge" style={`color: ${badgeColor}`}>{type}</span>
+      <span class="atom-stage">{stage}</span>
+    </span>
+  </div>
+</a>
+
+<style>
+  .atom-list-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    min-height: 64px;
+    border-bottom: 1px solid #1a1a1a;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .atom-list-item:active {
+    background: #1a1a1a;
+  }
+
+  .atom-thumb {
+    width: 48px;
+    height: 48px;
+    border-radius: 8px;
+    background: #151515;
+    border: 2px solid #333;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .atom-type-icon {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #888;
+  }
+
+  .atom-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0; /* Allow text truncation */
+  }
+
+  .atom-title {
+    color: #fff;
+    font-weight: 600;
+    font-size: 0.95rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .atom-meta {
+    color: #666;
+    font-size: 0.8rem;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .atom-type-badge {
+    font-weight: 600;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+  }
+
+  .atom-stage {
+    color: #555;
+    font-size: 0.7rem;
+  }
+</style>

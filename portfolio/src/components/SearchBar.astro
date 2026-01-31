@@ -1,0 +1,32 @@
+---
+// SearchBar: Text input for filtering atoms by name
+// Dispatches 'eoe:search' custom event on input
+---
+<div class="search-container">
+  <input
+    type="search"
+    id="atom-search"
+    class="search-bar"
+    placeholder="Search atoms..."
+    autocomplete="off"
+    autocapitalize="none"
+    spellcheck="false"
+  />
+</div>
+
+<script>
+  const input = document.getElementById('atom-search') as HTMLInputElement;
+  if (input) {
+    input.addEventListener('input', () => {
+      window.dispatchEvent(new CustomEvent('eoe:search', {
+        detail: { query: input.value.trim() }
+      }));
+    });
+  }
+</script>
+
+<style>
+  .search-container {
+    padding: 0 0 16px 0;
+  }
+</style>

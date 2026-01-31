@@ -1,0 +1,80 @@
+---
+import MobileLayout from '../../layouts/MobileLayout.astro';
+import AtomListItem from '../../components/AtomListItem.astro';
+import SearchBar from '../../components/SearchBar.astro';
+import fs from 'node:fs';
+import path from 'node:path';
+
+// Read pre-generated metadata at build time
+const metadataPath = path.resolve('./public/atom-metadata.json');
+let atoms = [];
+if (fs.existsSync(metadataPath)) {
+  atoms = JSON.parse(fs.readFileSync(metadataPath, 'utf8'));
+}
+---
+
+<MobileLayout title="Gallery">
+  <SearchBar />
+
+  <div id="atom-list">
+    {atoms.length === 0 && (
+      <p style="color: #666; text-align: center; padding: 2rem;">
+        No atoms yet. Create one on desktop with <code style="color: #6bb5ff;">eoe create visual &lt;name&gt;</code>
+      </p>
+    )}
+
+    {atoms.map((atom: any) => (
+      <AtomListItem
+        slug={atom.slug}
+        title={atom.title}
+        date={atom.date}
+        type={atom.type}
+        stage={atom.stage}
+      />
+    ))}
+  </div>
+
+  <div id="no-results" style="display: none; color: #666; text-align: center; padding: 2rem;">
+    No atoms match your search.
+  </div>
+
+  <script>
+    import { saveAllAtomMetadata } from '../../scripts/db';
+
+    // Populate IndexedDB with atom data on first visit (enables offline gallery)
+    async function populateOfflineData() {
+      try {
+        const response = await fetch('/atom-metadata.json');
+        if (response.ok) {
+          const atoms = await response.json();
+          await saveAllAtomMetadata(atoms);
+          console.log(`[gallery] Cached ${atoms.length} atoms to IndexedDB`);
+        }
+      } catch (err) {
+        console.log('[gallery] Offline or fetch failed, using cached data');
+      }
+    }
+
+    populateOfflineData();
+
+    // Search filtering
+    window.addEventListener('eoe:search', (e: CustomEvent) => {
+      const query = e.detail.query.toLowerCase();
+      const items = document.querySelectorAll('.atom-list-item');
+      const noResults = document.getElementById('no-results');
+      let visibleCount = 0;
+
+      items.forEach((item: HTMLElement) => {
+        const title = (item.dataset.title || '').toLowerCase();
+        const slug = (item.dataset.slug || '').toLowerCase();
+        const matches = !query || title.includes(query) || slug.includes(query);
+        item.style.display = matches ? 'flex' : 'none';
+        if (matches) visibleCount++;
+      });
+
+      if (noResults) {
+        noResults.style.display = (query && visibleCount === 0) ? 'block' : 'none';
+      }
+    });
+  </script>
+</MobileLayout>
