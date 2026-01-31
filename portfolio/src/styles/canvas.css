@@ -1,11 +1,42 @@
 /* Composition canvas styles */
 
+/* iOS Safari fixes for canvas */
+
+/* Prevent grey highlight rectangles on touch (iOS Safari bug) */
+/* Reference: https://cables.gl/docs/faq/embedding/mobile_grey_rects/grey_rectangles_on_ios */
+.react-flow,
+.react-flow *,
+.canvas-container,
+.canvas-container * {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+}
+
 /* React Flow container: fill viewport below header and toolbar */
 .canvas-container {
   width: 100%;
   height: calc(100vh - 48px - 40px); /* header (48px) + toolbar (40px) */
   position: relative;
   background: #0a0a0a;
+  /* iOS Safari fixes */
+  touch-action: none;
+  overflow: hidden;
+  overscroll-behavior: none;
+  -webkit-overflow-scrolling: auto; /* Disable momentum scroll on canvas */
+}
+
+/* Prevent 300ms tap delay on iOS */
+.react-flow__node,
+.react-flow__edge,
+.compose-fab,
+.toolbar-btn,
+.picker-atom-item {
+  touch-action: manipulation;
+}
+
+/* Fix for iOS Safari zoom on double-tap */
+.react-flow__pane {
+  touch-action: none;
 }
 
 /* Enlarge handle touch targets to 48px (Apple HIG minimum) */

@@ -111,6 +111,7 @@ const { compositionId } = Astro.props;
           zoomOnDoubleClick: false, // Disable (accidental taps on mobile)
           nodesDraggable: true,     // Drag nodes with finger
           nodesConnectable: false,  // Disable drag-to-connect (use dropdown routing in 05-03)
+          selectNodesOnDrag: false, // Prevent selection UI flicker during drag on mobile
           minZoom: 0.5,
           maxZoom: 2,
           defaultViewport: { x: 0, y: 0, zoom: 1 },
