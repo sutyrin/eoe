@@ -1,8 +1,10 @@
 import { defineConfig } from 'astro/config';
 import AstroPWA from '@vite-pwa/astro';
+import react from '@astrojs/react';
 
 export default defineConfig({
   integrations: [
+    react(),
     AstroPWA({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.ico'],

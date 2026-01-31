@@ -10,11 +10,19 @@
     "transcribe": "node scripts/transcribe-server.js"
   },
   "dependencies": {
+    "@astrojs/react": "^4.4.2",
     "@vite-pwa/astro": "^1.2.0",
     "astro": "^5.16.11",
     "fs-extra": "^11.0.0",
     "idb": "^8.0.3",
     "openai": "^6.17.0",
-    "prismjs": "^1.30.0"
+    "prismjs": "^1.30.0",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "reactflow": "^11.11.4"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.10",
+    "@types/react-dom": "^19.2.3"
   }
 }
