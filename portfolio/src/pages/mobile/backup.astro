@@ -1,5 +1,7 @@
 ---
 import MobileLayout from '../../layouts/MobileLayout.astro';
+import RestoreModal from '../../components/RestoreModal.astro';
+import ConflictResolver from '../../components/ConflictResolver.astro';
 ---
 
 <MobileLayout title="Backup" showBack={true} backHref="/mobile/gallery">
@@ -36,6 +38,12 @@ import MobileLayout from '../../layouts/MobileLayout.astro';
       </div>
     </section>
   </div>
+
+  <!-- Restore modal (shared across backup items) -->
+  <RestoreModal />
+
+  <!-- Conflict resolver (shown during restore if conflicts found) -->
+  <ConflictResolver />
 </MobileLayout>
 
 <script>
@@ -151,6 +159,34 @@ import MobileLayout from '../../layouts/MobileLayout.astro';
 
   // Initial load
   loadBackupList();
+
+  // Handle conflict resolution
+  window.addEventListener('eoe:apply-conflict-resolution', (async (e: CustomEvent) => {
+    const { type, data } = e.detail;
+    const { getDB } = await import('../../scripts/db');
+    const db = await getDB();
+
+    try {
+      switch (type) {
+        case 'atom':
+          await db.put('atoms', data);
+          break;
+        case 'composition':
+          await db.put('compositions', data);
+          break;
+        case 'snapshot':
+          await db.put('snapshots', data);
+          break;
+      }
+    } catch (err) {
+      console.error('[conflict] Failed to apply resolution:', err);
+    }
+  }) as EventListener);
+
+  // After all conflicts resolved, refresh
+  window.addEventListener('eoe:conflicts-resolved', () => {
+    window.location.reload();
+  });
 </script>
 
 <style>
