@@ -24,16 +24,16 @@ Consistent output of creative atoms that compound into a body of work, tools, an
 - Requirements: 13 total (all mobile/composition/backup focused)
 
 ### Current Phase
-**Phase 4: Mobile Gallery & Ideation Tools** - In progress (Plan 02 of 05 complete)
+**Phase 4: Mobile Gallery & Ideation Tools** - In progress (Plan 03 of 05 complete)
 - Goal: Establish mobile as accessible companion, enable voice/visual capture
 - Requirements: MOB-01 through IDEA-04
 - Estimated: 3-4 weeks
-- **Last activity:** 2026-01-31 - Completed 04-02-PLAN.md (Mobile Gallery & Code Viewer)
+- **Last activity:** 2026-01-31 - Completed 04-03-PLAN.md (Parameter Tweaking UI)
 
 ### Status
-v1.0 COMPLETE (shipped 2026-01-30). v1.1 Phase 4 in progress (2/5 plans complete).
+v1.0 COMPLETE (shipped 2026-01-30). v1.1 Phase 4 in progress (3/5 plans complete).
 
-**Progress:** ████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 2/13 plans (15.4%)
+**Progress:** ████████████░░░░░░░░░░░░░░░░░░░░░░░░ 3/13 plans (23.1%)
 
 ---
 
@@ -48,7 +48,7 @@ v1.0 COMPLETE (shipped 2026-01-30). v1.1 Phase 4 in progress (2/5 plans complete
 ### v1.1 Status (IN PROGRESS)
 - 3 phases planned (Phases 4-6)
 - 13/13 requirements scoped
-- 2/13 plans executed (Phase 4 Plans 01-02 complete)
+- 3/13 plans executed (Phase 4 Plans 01-03 complete)
 - Infrastructure research complete
 
 ---
@@ -74,6 +74,10 @@ v1.0 COMPLETE (shipped 2026-01-30). v1.1 Phase 4 in progress (2/5 plans complete
 | Build-time metadata generation | Single source of truth for SSG + client | atom-metadata.json enables offline gallery | 04-02 |
 | Code wrapping for mobile | Mobile UX > exact line structure | pre-wrap CSS, no horizontal scroll | 04-02 |
 | Inline notes editor | Minimal context switch | View/Edit toggle within Notes tab | 04-02 |
+| Heuristic range inference | No explicit min/max in config.json | Name and value-based slider ranges (hue: 0-360, etc.) | 04-03 |
+| Instant parameter persistence | Mobile autosave UX pattern | Changes save immediately to IndexedDB, no Save button | 04-03 |
+| Separate override storage | Easy reset and sync | Overrides stored separately from original config.json | 04-03 |
+| Defer live preview to Phase 5 | Mobile performance/battery constraints | "Preview on desktop" message, no canvas rendering on mobile | 04-03 |
 
 ### Known Constraints
 - **Mobile:** 6" phone screen, touch interaction, battery/bandwidth limits, iOS PWA limitations
@@ -94,29 +98,36 @@ None inherited from v1.0. v1.1 builds on proven v1.0 foundation (no refactoring 
 ### What We Accomplished This Session
 1. Executed Phase 4 Plan 01: PWA Foundation & Offline Infrastructure
 2. Executed Phase 4 Plan 02: Mobile Gallery & Code Viewer
-3. Created mobile gallery list view with search at /mobile/gallery
-4. Created atom detail view at /mobile/<slug> with syntax-highlighted code viewer
-5. Added Prism.js with selective language imports (JavaScript, JSON, Markdown)
-6. Implemented inline NOTES.md editor with View/Edit modes and IndexedDB persistence
-7. Created build-time metadata generator (atom-metadata.json)
-8. All mobile features work offline after first visit
+3. Executed Phase 4 Plan 03: Parameter Tweaking UI
+4. Created mobile gallery list view with search at /mobile/gallery
+5. Created atom detail view at /mobile/<slug> with syntax-highlighted code viewer
+6. Added Prism.js with selective language imports (JavaScript, JSON, Markdown)
+7. Implemented inline NOTES.md editor with View/Edit modes and IndexedDB persistence
+8. Created parameter tweaking UI with sliders and number inputs
+9. Heuristic range inference (hue: 0-360, size: 0-300, speed: 0-10, noiseScale: 0-1)
+10. Instant IndexedDB persistence for parameter changes
+11. Visual indicators for changed parameters (blue left border)
+12. Reset button to restore original config.json values
+13. Created build-time metadata generator (atom-metadata.json)
+14. All mobile features work offline after first visit
 
 ### Context for Next Session
 **Last session:** 2026-01-31
-**Stopped at:** Completed 04-02-PLAN.md (Mobile Gallery & Code Viewer)
+**Stopped at:** Completed 04-03-PLAN.md (Parameter Tweaking UI)
 **Resume file:** None
 
 **Phase 4 Status:**
 - ✓ Plan 01: PWA Foundation complete
 - ✓ Plan 02: Mobile Gallery & Code Viewer complete (8 min execution)
-- ⏳ Plan 03: Parameter Tweaking (next)
-- ⏳ Plan 04: Voice Notes
+- ✓ Plan 03: Parameter Tweaking complete (4 min execution)
+- ⏳ Plan 04: Voice Notes (next)
 - ⏳ Plan 05: Visual Annotations
 
 **Gallery ready:**
 - Gallery list view with search functional
 - Atom detail view with syntax-highlighted code
 - NOTES.md inline editor with IndexedDB persistence
+- Parameter tweaking UI with sliders and instant feedback
 - All features work offline after first visit
 
 **All artifacts in place:**
