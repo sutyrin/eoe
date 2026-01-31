@@ -24,16 +24,16 @@ Consistent output of creative atoms that compound into a body of work, tools, an
 - Requirements: 13 total (all mobile/composition/backup focused)
 
 ### Current Phase
-**Phase 4: Mobile Gallery & Ideation Tools** - In progress (Plan 01 of 05 complete)
+**Phase 4: Mobile Gallery & Ideation Tools** - In progress (Plan 02 of 05 complete)
 - Goal: Establish mobile as accessible companion, enable voice/visual capture
 - Requirements: MOB-01 through IDEA-04
 - Estimated: 3-4 weeks
-- **Last activity:** 2026-01-31 - Completed 04-01-PLAN.md (PWA Foundation)
+- **Last activity:** 2026-01-31 - Completed 04-02-PLAN.md (Mobile Gallery & Code Viewer)
 
 ### Status
-v1.0 COMPLETE (shipped 2026-01-30). v1.1 Phase 4 in progress (1/5 plans complete).
+v1.0 COMPLETE (shipped 2026-01-30). v1.1 Phase 4 in progress (2/5 plans complete).
 
-**Progress:** ████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 1/13 plans (7.7%)
+**Progress:** ████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 2/13 plans (15.4%)
 
 ---
 
@@ -48,7 +48,7 @@ v1.0 COMPLETE (shipped 2026-01-30). v1.1 Phase 4 in progress (1/5 plans complete
 ### v1.1 Status (IN PROGRESS)
 - 3 phases planned (Phases 4-6)
 - 13/13 requirements scoped
-- 1/13 plans executed (Phase 4 Plan 01 complete)
+- 2/13 plans executed (Phase 4 Plans 01-02 complete)
 - Infrastructure research complete
 
 ---
@@ -70,6 +70,10 @@ v1.0 COMPLETE (shipped 2026-01-30). v1.1 Phase 4 in progress (1/5 plans complete
 | 44px minimum tap targets | Apple HIG compliance for touch UI | All mobile buttons/links meet accessibility standard | 04-01 |
 | System fonts for mobile | Readability over code aesthetic | Better mobile UX, faster rendering | 04-01 |
 | Storage quota monitoring at 80% | iOS can evict data aggressively | Early warning prevents data loss | 04-01 |
+| Prism.js over Shiki | Mobile bundle size critical | ~30KB vs ~300KB, sufficient for atom code | 04-02 |
+| Build-time metadata generation | Single source of truth for SSG + client | atom-metadata.json enables offline gallery | 04-02 |
+| Code wrapping for mobile | Mobile UX > exact line structure | pre-wrap CSS, no horizontal scroll | 04-02 |
+| Inline notes editor | Minimal context switch | View/Edit toggle within Notes tab | 04-02 |
 
 ### Known Constraints
 - **Mobile:** 6" phone screen, touch interaction, battery/bandwidth limits, iOS PWA limitations
@@ -89,29 +93,31 @@ None inherited from v1.0. v1.1 builds on proven v1.0 foundation (no refactoring 
 
 ### What We Accomplished This Session
 1. Executed Phase 4 Plan 01: PWA Foundation & Offline Infrastructure
-2. Installed @vite-pwa/astro and idb packages for PWA capabilities
-3. Configured Workbox service worker with strategy-specific caching
-4. Created IndexedDB schema with 4 stores (atoms, voiceNotes, screenshots, configOverrides)
-5. Implemented mobile layout infrastructure with 44px tap targets
-6. Added offline detection and storage quota monitoring
-7. Generated PWA manifest and icons for home screen installation
+2. Executed Phase 4 Plan 02: Mobile Gallery & Code Viewer
+3. Created mobile gallery list view with search at /mobile/gallery
+4. Created atom detail view at /mobile/<slug> with syntax-highlighted code viewer
+5. Added Prism.js with selective language imports (JavaScript, JSON, Markdown)
+6. Implemented inline NOTES.md editor with View/Edit modes and IndexedDB persistence
+7. Created build-time metadata generator (atom-metadata.json)
+8. All mobile features work offline after first visit
 
 ### Context for Next Session
 **Last session:** 2026-01-31
-**Stopped at:** Completed 04-01-PLAN.md (PWA Foundation & Offline Infrastructure)
-**Resume file:** None (continue with `/gsd:execute-phase` for 04-02)
+**Stopped at:** Completed 04-02-PLAN.md (Mobile Gallery & Code Viewer)
+**Resume file:** None
 
 **Phase 4 Status:**
-- ✓ Plan 01: PWA Foundation complete (5 min execution)
-- ⏳ Plan 02: Mobile Gallery (next)
-- ⏳ Plan 03: Code Viewer
+- ✓ Plan 01: PWA Foundation complete
+- ✓ Plan 02: Mobile Gallery & Code Viewer complete (8 min execution)
+- ⏳ Plan 03: Parameter Tweaking (next)
 - ⏳ Plan 04: Voice Notes
-- ⏳ Plan 05: Screenshots
+- ⏳ Plan 05: Visual Annotations
 
-**Foundation ready:**
-- Service worker caching atoms and thumbnails
-- IndexedDB schema ready for all Phase 4 features
-- Mobile layout components ready for gallery implementation
+**Gallery ready:**
+- Gallery list view with search functional
+- Atom detail view with syntax-highlighted code
+- NOTES.md inline editor with IndexedDB persistence
+- All features work offline after first visit
 
 **All artifacts in place:**
 - `.planning/REQUIREMENTS.md` — v1.1 + v1.2+ features
