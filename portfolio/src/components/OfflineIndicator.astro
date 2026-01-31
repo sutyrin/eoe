@@ -43,34 +43,99 @@
     if (indicator) indicator.style.display = 'flex';
   }
 
-  // Check unsynced compositions (Phase 6 preparation)
+  // Check unsynced compositions and snapshots (Phase 6)
   async function checkSyncStatus() {
     try {
       const { getUnsyncedCount } = await import('../scripts/composition-store');
-      const count = await getUnsyncedCount();
+      const compCount = await getUnsyncedCount();
+
+      // Also check unsynced snapshots
+      let snapCount = 0;
+      try {
+        const { getUnsyncedSnapshots } = await import('../scripts/db');
+        const unsynced = await getUnsyncedSnapshots();
+        snapCount = unsynced.length;
+      } catch { /* snapshots store may not exist */ }
+
+      const totalUnsynced = compCount + snapCount;
       const syncEl = document.getElementById('sync-status');
       const syncText = syncEl?.querySelector('.sync-text');
+      const syncDot = syncEl?.querySelector('.sync-dot') as HTMLElement;
 
       if (syncEl && syncText) {
-        if (count > 0) {
-          syncText.textContent = `${count} composition${count !== 1 ? 's' : ''} not synced`;
+        if (totalUnsynced > 0) {
+          syncText.textContent = `${totalUnsynced} item${totalUnsynced !== 1 ? 's' : ''} not backed up`;
+          if (syncDot) syncDot.style.background = '#ffb56b'; // Orange: pending
           syncEl.style.display = 'flex';
         } else {
-          syncEl.style.display = 'none';
+          syncText.textContent = 'All backed up';
+          if (syncDot) syncDot.style.background = '#6bff6b'; // Green: synced
+          syncEl.style.display = 'flex';
+          // Hide after 3 seconds when fully synced
+          setTimeout(() => {
+            if (syncEl) syncEl.style.display = 'none';
+          }, 3000);
         }
       }
     } catch {
-      // Composition store may not be initialized yet
+      // Stores may not be initialized yet
     }
   }
 
-  // Feature flag for Phase 5 (disabled by default, enable in Phase 6)
-  const SHOW_SYNC_STATUS = false; // Enable in Phase 6
+  // Feature flag for Phase 6 (enabled)
+  const SHOW_SYNC_STATUS = true; // Phase 6: enabled
   if (SHOW_SYNC_STATUS) {
     // Check sync status periodically (every 30 seconds)
     setInterval(checkSyncStatus, 30000);
     // Initial check after delay (let IndexedDB initialize)
     setTimeout(checkSyncStatus, 2000);
+
+    // Enable auto-backup on app close
+    import('../scripts/backup-client').then(({ enableAutoBackup }) => {
+      enableAutoBackup();
+      console.log('[sync] Auto-backup enabled');
+    }).catch(() => {
+      // Module not available yet
+    });
+
+    // Listen for backup status changes
+    window.addEventListener('eoe:backup-status', ((e: CustomEvent) => {
+      const syncEl = document.getElementById('sync-status');
+      const syncText = syncEl?.querySelector('.sync-text');
+      const syncDot = syncEl?.querySelector('.sync-dot') as HTMLElement;
+
+      if (!syncEl || !syncText) return;
+
+      const { status, lastBackupTime } = e.detail;
+
+      switch (status) {
+        case 'backing-up':
+          syncText.textContent = 'Backing up...';
+          if (syncDot) {
+            syncDot.style.background = '#6bb5ff'; // Blue: active
+            syncDot.classList.add('active');
+          }
+          syncEl.style.display = 'flex';
+          break;
+        case 'success':
+          syncText.textContent = 'Backup complete';
+          if (syncDot) {
+            syncDot.style.background = '#6bff6b'; // Green
+            syncDot.classList.remove('active');
+          }
+          syncEl.style.display = 'flex';
+          setTimeout(() => { syncEl.style.display = 'none'; }, 3000);
+          break;
+        case 'error':
+          syncText.textContent = 'Backup failed';
+          if (syncDot) {
+            syncDot.style.background = '#ff6b6b'; // Red
+            syncDot.classList.remove('active');
+          }
+          syncEl.style.display = 'flex';
+          break;
+      }
+    }) as EventListener);
   }
 </script>
 
@@ -127,6 +192,7 @@
     color: #aad;
     font-size: 0.75rem;
     z-index: 999;
+    transition: opacity 0.3s ease;
   }
 
   .sync-dot {
@@ -134,5 +200,15 @@
     height: 6px;
     border-radius: 50%;
     background: #ffb56b;
+    transition: background 0.3s ease;
+  }
+
+  @keyframes sync-pulse {
+    0%, 100% { opacity: 0.6; }
+    50% { opacity: 1; }
+  }
+
+  .sync-dot.active {
+    animation: sync-pulse 1.5s ease-in-out infinite;
   }
 </style>
