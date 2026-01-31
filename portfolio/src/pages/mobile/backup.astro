@@ -1,0 +1,321 @@
+---
+import MobileLayout from '../../layouts/MobileLayout.astro';
+---
+
+<MobileLayout title="Backup" showBack={true} backHref="/mobile/gallery">
+  <div class="backup-page">
+    <!-- Manual backup button -->
+    <section class="backup-section">
+      <button id="manual-backup-btn" class="backup-action-btn">
+        <span class="backup-action-icon">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M10 3v10M6 9l4 4 4-4"/>
+            <path d="M3 14v2a1 1 0 001 1h12a1 1 0 001-1v-2"/>
+          </svg>
+        </span>
+        <span>
+          <span class="backup-action-title">Back Up Now</span>
+          <span id="last-backup-time" class="backup-action-subtitle">Never backed up</span>
+        </span>
+      </button>
+    </section>
+
+    <!-- Backup status -->
+    <div id="backup-progress" class="backup-progress" style="display: none;">
+      <div class="backup-progress-bar">
+        <div id="progress-fill" class="backup-progress-fill"></div>
+      </div>
+      <span id="progress-text" class="backup-progress-text">Backing up...</span>
+    </div>
+
+    <!-- Available backups -->
+    <section class="backup-section">
+      <h2 class="section-heading">Available Backups</h2>
+      <div id="backup-list" class="backup-list">
+        <div class="backup-empty">Loading...</div>
+      </div>
+    </section>
+  </div>
+</MobileLayout>
+
+<script>
+  import { createBackup, listBackups, restoreFromBackup, getBackupStatus } from '../../scripts/backup-client';
+  import type { BackupSummary } from '../../scripts/backup-client';
+
+  const manualBtn = document.getElementById('manual-backup-btn')!;
+  const lastBackupEl = document.getElementById('last-backup-time')!;
+  const progressEl = document.getElementById('backup-progress')!;
+  const progressText = document.getElementById('progress-text')!;
+  const backupListEl = document.getElementById('backup-list')!;
+
+  // Manual backup
+  manualBtn.addEventListener('click', async () => {
+    manualBtn.setAttribute('disabled', 'true');
+    manualBtn.style.opacity = '0.5';
+    progressEl.style.display = 'flex';
+    progressText.textContent = 'Backing up...';
+
+    const result = await createBackup();
+
+    if (result) {
+      progressText.textContent = `Backup complete (${Math.round(result.size / 1024)}KB)`;
+      lastBackupEl.textContent = `Last: ${formatTime(result.timestamp)}`;
+
+      // Refresh backup list
+      await loadBackupList();
+    } else {
+      progressText.textContent = 'Backup failed. Tap to retry.';
+    }
+
+    manualBtn.removeAttribute('disabled');
+    manualBtn.style.opacity = '1';
+
+    // Hide progress after 3 seconds
+    setTimeout(() => {
+      progressEl.style.display = 'none';
+    }, 3000);
+  });
+
+  // Load backup list
+  async function loadBackupList() {
+    const backups = await listBackups();
+
+    if (backups.length === 0) {
+      backupListEl.innerHTML = '<div class="backup-empty">No backups yet. Tap "Back Up Now" to create one.</div>';
+      return;
+    }
+
+    backupListEl.innerHTML = '';
+
+    for (const backup of backups) {
+      const item = document.createElement('div');
+      item.className = 'backup-item';
+      item.innerHTML = `
+        <div class="backup-item-header">
+          <span class="backup-item-date">${formatTime(backup.timestamp)}</span>
+          <span class="backup-item-size">${formatSize(backup.size)}</span>
+        </div>
+        <div class="backup-item-counts">
+          ${backup.counts.atoms} atoms
+          · ${backup.counts.compositions} compositions
+          · ${backup.counts.snapshots} snapshots
+        </div>
+        <div class="backup-item-actions">
+          <button class="restore-btn" data-backup-id="${backup.id}">Restore</button>
+        </div>
+      `;
+      backupListEl.appendChild(item);
+    }
+
+    // Restore button handlers
+    backupListEl.querySelectorAll('.restore-btn').forEach(btn => {
+      btn.addEventListener('click', async (e) => {
+        const backupId = (e.target as HTMLElement).getAttribute('data-backup-id');
+        if (!backupId) return;
+
+        // Open restore modal
+        window.dispatchEvent(new CustomEvent('eoe:open-restore-modal', {
+          detail: { backupId }
+        }));
+      });
+    });
+  }
+
+  // Format helpers
+  function formatTime(isoString: string): string {
+    const date = new Date(isoString);
+    const now = new Date();
+    const diffMs = now.getTime() - date.getTime();
+    const diffMin = Math.floor(diffMs / 60000);
+
+    if (diffMin < 1) return 'Just now';
+    if (diffMin < 60) return `${diffMin}m ago`;
+
+    const diffHr = Math.floor(diffMin / 60);
+    if (diffHr < 24) return `${diffHr}h ago`;
+
+    return date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  }
+
+  function formatSize(bytes: number): string {
+    if (bytes < 1024) return `${bytes}B`;
+    if (bytes < 1024 * 1024) return `${Math.round(bytes / 1024)}KB`;
+    return `${(bytes / (1024 * 1024)).toFixed(1)}MB`;
+  }
+
+  // Show last backup time
+  const status = getBackupStatus();
+  if (status.lastBackupTime) {
+    lastBackupEl.textContent = `Last: ${formatTime(status.lastBackupTime)}`;
+  }
+
+  // Initial load
+  loadBackupList();
+</script>
+
+<style>
+  .backup-page {
+    padding: 16px;
+  }
+
+  .backup-section {
+    margin-bottom: 24px;
+  }
+
+  .section-heading {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 12px;
+  }
+
+  .backup-action-btn {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    padding: 16px;
+    background: #1a1a1a;
+    border: 1px solid #333;
+    border-radius: 12px;
+    color: #fff;
+    cursor: pointer;
+    text-align: left;
+    -webkit-tap-highlight-color: transparent;
+    min-height: 60px;
+  }
+
+  .backup-action-btn:active {
+    background: #222;
+  }
+
+  .backup-action-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background: #6bb5ff;
+    color: #0a0a0a;
+    border-radius: 10px;
+    flex-shrink: 0;
+  }
+
+  .backup-action-title {
+    display: block;
+    font-size: 1rem;
+    font-weight: 600;
+  }
+
+  .backup-action-subtitle {
+    display: block;
+    font-size: 0.8rem;
+    color: #666;
+    margin-top: 2px;
+  }
+
+  .backup-progress {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background: #1a3a1a;
+    border-radius: 8px;
+    margin-bottom: 16px;
+  }
+
+  .backup-progress-bar {
+    flex: 1;
+    height: 4px;
+    background: #333;
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .backup-progress-fill {
+    height: 100%;
+    background: #6bb5ff;
+    border-radius: 2px;
+    width: 100%;
+    animation: progress-pulse 1.5s ease-in-out infinite;
+  }
+
+  @keyframes progress-pulse {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 1; }
+  }
+
+  .backup-progress-text {
+    font-size: 0.8rem;
+    color: #6bff6b;
+    white-space: nowrap;
+  }
+
+  .backup-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .backup-empty {
+    padding: 24px;
+    text-align: center;
+    color: #555;
+    font-size: 0.9rem;
+  }
+
+  .backup-item {
+    padding: 14px 16px;
+    background: #1a1a1a;
+    border: 1px solid #222;
+    border-radius: 10px;
+  }
+
+  .backup-item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+  }
+
+  .backup-item-date {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #ccc;
+  }
+
+  .backup-item-size {
+    font-size: 0.8rem;
+    color: #666;
+  }
+
+  .backup-item-counts {
+    font-size: 0.8rem;
+    color: #888;
+    margin-bottom: 10px;
+  }
+
+  .backup-item-actions {
+    display: flex;
+    gap: 8px;
+  }
+
+  .restore-btn {
+    padding: 8px 16px;
+    background: #333;
+    border: none;
+    border-radius: 6px;
+    color: #6bb5ff;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    min-height: 36px;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .restore-btn:active {
+    background: #444;
+  }
+</style>
