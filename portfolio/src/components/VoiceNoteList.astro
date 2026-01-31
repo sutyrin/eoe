@@ -1,0 +1,133 @@
+---
+/**
+ * VoiceNoteList: Shows previously recorded voice notes for an atom.
+ * Each note has playback, transcript display, and delete option.
+ */
+export interface Props {
+  atomSlug: string;
+}
+
+const { atomSlug } = Astro.props;
+---
+
+<div class="voice-note-list" data-atom-slug={atomSlug}>
+  <h4 class="voice-notes-heading">Voice Notes</h4>
+  <div id="voice-notes-container">
+    <p class="loading-text">Loading voice notes...</p>
+  </div>
+</div>
+
+<script>
+  import { getVoiceNotesForAtom, type VoiceNote } from '../scripts/db';
+
+  async function loadVoiceNotes() {
+    const container = document.querySelector('.voice-note-list') as HTMLElement;
+    if (!container) return;
+
+    const atomSlug = container.dataset.atomSlug || '';
+    const notesContainer = document.getElementById('voice-notes-container')!;
+
+    async function render() {
+      const notes = await getVoiceNotesForAtom(atomSlug);
+
+      if (notes.length === 0) {
+        notesContainer.innerHTML = '<p class="empty-text">No voice notes yet. Tap record to start.</p>';
+        return;
+      }
+
+      notesContainer.innerHTML = '';
+      for (const note of notes.reverse()) { // Newest first
+        const el = createNoteElement(note);
+        notesContainer.appendChild(el);
+      }
+    }
+
+    function createNoteElement(note: VoiceNote): HTMLElement {
+      const div = document.createElement('div');
+      div.className = 'voice-note-item';
+
+      const date = new Date(note.createdAt);
+      const dateStr = date.toLocaleDateString(undefined, {
+        month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
+      });
+
+      // Audio playback
+      const audioUrl = URL.createObjectURL(note.audioBlob);
+
+      div.innerHTML = `
+        <div class="note-header">
+          <span class="note-date">${dateStr}</span>
+        </div>
+        <audio controls src="${audioUrl}" class="note-audio"></audio>
+        <p class="note-transcript">${note.transcript || '<em>No transcript</em>'}</p>
+      `;
+
+      return div;
+    }
+
+    // Initial load
+    await render();
+
+    // Re-render when new note saved
+    window.addEventListener('eoe:voice-notes-updated', async (e: Event) => {
+      const customEvent = e as CustomEvent;
+      if (customEvent.detail.atomSlug === atomSlug) {
+        await render();
+      }
+    });
+  }
+
+  loadVoiceNotes();
+</script>
+
+<style>
+  .voice-note-list {
+    padding: 16px 0;
+  }
+
+  .voice-notes-heading {
+    font-size: 0.95rem;
+    color: #fff;
+    margin-bottom: 12px;
+    font-weight: 600;
+  }
+
+  .loading-text,
+  .empty-text {
+    color: #555;
+    font-size: 0.85rem;
+    font-style: italic;
+  }
+
+  .voice-note-item {
+    background: #111;
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 12px;
+  }
+
+  .note-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+
+  .note-date {
+    font-size: 0.75rem;
+    color: #666;
+  }
+
+  .note-audio {
+    width: 100%;
+    height: 36px;
+    margin-bottom: 8px;
+  }
+
+  .note-transcript {
+    font-size: 0.85rem;
+    color: #ccc;
+    line-height: 1.5;
+    white-space: pre-wrap;
+  }
+</style>

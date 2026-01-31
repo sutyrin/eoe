@@ -1,0 +1,378 @@
+---
+/**
+ * VoiceRecorder: Tap to record, tap to stop, auto-transcribe with Whisper.
+ * Shows recording indicator, timer, and transcript review UI.
+ */
+export interface Props {
+  atomSlug: string;
+}
+
+const { atomSlug } = Astro.props;
+---
+
+<div class="voice-recorder" data-atom-slug={atomSlug}>
+  <!-- Record button -->
+  <button id="record-btn" class="record-btn tap-target" aria-label="Record voice note">
+    <span class="record-icon" id="record-icon"></span>
+    <span class="record-label" id="record-label">Tap to Record</span>
+  </button>
+
+  <!-- Recording indicator -->
+  <div id="recording-indicator" class="recording-indicator" style="display: none;">
+    <span class="recording-pulse"></span>
+    <span class="recording-timer" id="recording-timer">0:00</span>
+    <span class="recording-hint">Tap to stop</span>
+  </div>
+
+  <!-- Transcription state -->
+  <div id="transcribing-state" class="transcribing-state" style="display: none;">
+    <span class="transcribing-spinner"></span>
+    <span>Transcribing...</span>
+  </div>
+
+  <!-- Transcript review -->
+  <div id="transcript-review" class="transcript-review" style="display: none;">
+    <label class="transcript-label">Transcript (edit if needed):</label>
+    <textarea id="transcript-text" class="transcript-textarea" rows="4" placeholder="Transcript will appear here..."></textarea>
+    <div class="transcript-actions">
+      <button id="save-note" class="btn btn-primary" style="flex: 1;">Save</button>
+      <button id="discard-note" class="btn btn-secondary" style="flex: 1;">Discard</button>
+    </div>
+  </div>
+
+  <!-- Error display -->
+  <div id="recorder-error" class="recorder-error" style="display: none;">
+    <span id="error-message"></span>
+  </div>
+
+  <!-- Feature unavailable -->
+  <div id="recorder-unavailable" class="recorder-unavailable" style="display: none;">
+    Voice recording is not available on this device.
+  </div>
+</div>
+
+<script>
+  import { isRecordingAvailable, startRecording, stopRecording, formatDuration } from '../scripts/voice-recorder';
+  import { transcribeAudio } from '../scripts/whisper-client';
+  import { saveVoiceNote } from '../scripts/db';
+
+  async function initVoiceRecorder() {
+    const container = document.querySelector('.voice-recorder') as HTMLElement;
+    if (!container) return;
+
+    const atomSlug = container.dataset.atomSlug || '';
+
+    const recordBtn = document.getElementById('record-btn')!;
+    const recordIcon = document.getElementById('record-icon')!;
+    const recordLabel = document.getElementById('record-label')!;
+    const recordingIndicator = document.getElementById('recording-indicator')!;
+    const recordingTimer = document.getElementById('recording-timer')!;
+    const transcribingState = document.getElementById('transcribing-state')!;
+    const transcriptReview = document.getElementById('transcript-review')!;
+    const transcriptText = document.getElementById('transcript-text') as HTMLTextAreaElement;
+    const saveBtn = document.getElementById('save-note')!;
+    const discardBtn = document.getElementById('discard-note')!;
+    const recorderError = document.getElementById('recorder-error')!;
+    const errorMessage = document.getElementById('error-message')!;
+    const unavailable = document.getElementById('recorder-unavailable')!;
+
+    // Check device support
+    if (!isRecordingAvailable()) {
+      recordBtn.style.display = 'none';
+      unavailable.style.display = 'block';
+      return;
+    }
+
+    let isRecording = false;
+    let pendingAudioBlob: Blob | null = null;
+    let pendingMimeType = '';
+
+    // Record/stop toggle
+    recordBtn.addEventListener('click', async () => {
+      if (!isRecording) {
+        try {
+          recorderError.style.display = 'none';
+          transcriptReview.style.display = 'none';
+
+          await startRecording((state) => {
+            if (state.isRecording) {
+              recordingTimer.textContent = formatDuration(state.duration);
+            }
+            if (state.error) {
+              showError(state.error);
+            }
+          });
+
+          isRecording = true;
+          recordBtn.classList.add('recording');
+          recordIcon.classList.add('recording');
+          recordLabel.textContent = 'Tap to Stop';
+          recordingIndicator.style.display = 'flex';
+
+        } catch (err) {
+          showError(err instanceof Error ? err.message : 'Failed to start recording');
+        }
+      } else {
+        try {
+          const result = await stopRecording();
+
+          isRecording = false;
+          recordBtn.classList.remove('recording');
+          recordIcon.classList.remove('recording');
+          recordLabel.textContent = 'Tap to Record';
+          recordingIndicator.style.display = 'none';
+
+          pendingAudioBlob = result.blob;
+          pendingMimeType = result.mimeType;
+
+          // Auto-transcribe
+          transcribingState.style.display = 'flex';
+          const transcription = await transcribeAudio(result.blob, result.mimeType);
+          transcribingState.style.display = 'none';
+
+          if (transcription.error === 'offline') {
+            transcriptText.value = '[Offline - transcription will be available when online]';
+          } else if (transcription.error) {
+            transcriptText.value = `[Transcription unavailable: ${transcription.error}]`;
+          } else {
+            transcriptText.value = transcription.text;
+          }
+
+          transcriptReview.style.display = 'block';
+
+        } catch (err) {
+          showError(err instanceof Error ? err.message : 'Failed to stop recording');
+        }
+      }
+    });
+
+    // Save voice note
+    saveBtn.addEventListener('click', async () => {
+      if (!pendingAudioBlob) return;
+
+      await saveVoiceNote({
+        atomSlug,
+        audioBlob: pendingAudioBlob,
+        mimeType: pendingMimeType,
+        transcript: transcriptText.value,
+        createdAt: new Date().toISOString(),
+        synced: false
+      });
+
+      pendingAudioBlob = null;
+      transcriptReview.style.display = 'none';
+
+      // Reload voice notes list
+      window.dispatchEvent(new CustomEvent('eoe:voice-notes-updated', {
+        detail: { atomSlug }
+      }));
+    });
+
+    // Discard voice note
+    discardBtn.addEventListener('click', () => {
+      pendingAudioBlob = null;
+      transcriptReview.style.display = 'none';
+    });
+
+    function showError(message: string) {
+      errorMessage.textContent = message;
+      recorderError.style.display = 'block';
+      isRecording = false;
+      recordBtn.classList.remove('recording');
+      recordIcon.classList.remove('recording');
+      recordLabel.textContent = 'Tap to Record';
+      recordingIndicator.style.display = 'none';
+      transcribingState.style.display = 'none';
+    }
+  }
+
+  initVoiceRecorder();
+</script>
+
+<style>
+  .voice-recorder {
+    padding: 16px 0;
+  }
+
+  .record-btn {
+    width: 100%;
+    min-height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    background: #1a1a1a;
+    border: 2px solid #333;
+    border-radius: 12px;
+    color: #e0e0e0;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .record-btn:active {
+    background: #222;
+  }
+
+  .record-btn.recording {
+    border-color: #ff4444;
+    background: #1a0a0a;
+  }
+
+  .record-icon {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: #ff4444;
+    transition: all 0.2s;
+  }
+
+  .record-icon.recording {
+    border-radius: 4px;
+    width: 20px;
+    height: 20px;
+  }
+
+  .recording-indicator {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 12px;
+    margin-top: 12px;
+    background: #1a0a0a;
+    border-radius: 8px;
+    border: 1px solid #332222;
+  }
+
+  .recording-pulse {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #ff4444;
+    animation: pulse 1s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  .recording-timer {
+    font-family: 'SF Mono', monospace;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #ff4444;
+  }
+
+  .recording-hint {
+    font-size: 0.8rem;
+    color: #888;
+  }
+
+  .transcribing-state {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 16px;
+    margin-top: 12px;
+    color: #888;
+  }
+
+  .transcribing-spinner {
+    width: 16px;
+    height: 16px;
+    border: 2px solid #333;
+    border-top-color: #6bb5ff;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
+  .transcript-review {
+    margin-top: 16px;
+  }
+
+  .transcript-label {
+    display: block;
+    font-size: 0.85rem;
+    color: #888;
+    margin-bottom: 8px;
+  }
+
+  .transcript-textarea {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px; /* Prevents iOS zoom */
+    background: #1a1a1a;
+    border: 1px solid #333;
+    border-radius: 8px;
+    color: #e0e0e0;
+    resize: vertical;
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    line-height: 1.5;
+  }
+
+  .transcript-textarea:focus {
+    border-color: #6bb5ff;
+    outline: none;
+  }
+
+  .transcript-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 12px;
+  }
+
+  .btn {
+    min-height: 44px;
+    padding: 12px 16px;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-primary {
+    background: #6bb5ff;
+    color: #000;
+  }
+
+  .btn-primary:active {
+    background: #5aa5ef;
+  }
+
+  .btn-secondary {
+    background: #333;
+    color: #e0e0e0;
+  }
+
+  .btn-secondary:active {
+    background: #444;
+  }
+
+  .recorder-error {
+    margin-top: 12px;
+    padding: 12px;
+    background: #1a0a0a;
+    border: 1px solid #442222;
+    border-radius: 8px;
+    color: #ff6666;
+    font-size: 0.85rem;
+    text-align: center;
+  }
+
+  .recorder-unavailable {
+    padding: 16px;
+    text-align: center;
+    color: #555;
+    font-style: italic;
+  }
+</style>

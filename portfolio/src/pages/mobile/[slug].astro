@@ -3,6 +3,8 @@ import MobileLayout from '../../layouts/MobileLayout.astro';
 import CodeViewer from '../../components/CodeViewer.astro';
 import NotesEditor from '../../components/NotesEditor.astro';
 import ParamTweaker from '../../components/ParamTweaker.astro';
+import VoiceRecorder from '../../components/VoiceRecorder.astro';
+import VoiceNoteList from '../../components/VoiceNoteList.astro';
 import fs from 'node:fs';
 import path from 'node:path';
 
@@ -52,6 +54,7 @@ const codeFilename = codeFilenames[atom.type] || 'sketch.js';
     <button class="tab" data-tab="config">Config</button>
     <button class="tab" data-tab="notes">Notes</button>
     <button class="tab" data-tab="params">Params</button>
+    <button class="tab" data-tab="voice">Voice</button>
   </div>
 
   <!-- Code tab -->
@@ -80,6 +83,12 @@ const codeFilename = codeFilenames[atom.type] || 'sketch.js';
   <!-- Params tab -->
   <div class="tab-content" id="tab-params" style="display: none;">
     <ParamTweaker atomSlug={atom.slug} configJson={atom.configJson} />
+  </div>
+
+  <!-- Voice tab -->
+  <div class="tab-content" id="tab-voice" style="display: none;">
+    <VoiceRecorder atomSlug={atom.slug} />
+    <VoiceNoteList atomSlug={atom.slug} />
   </div>
 
   <script>
