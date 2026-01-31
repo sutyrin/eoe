@@ -11,6 +11,11 @@
   <span class="storage-text">Storage nearly full</span>
 </div>
 
+<div id="sync-status" class="sync-status" style="display: none;">
+  <span class="sync-dot"></span>
+  <span class="sync-text"></span>
+</div>
+
 <script>
   // Listen for offline status changes
   window.addEventListener('eoe:offline-status', (e: CustomEvent) => {
@@ -36,6 +41,36 @@
   if (!navigator.onLine) {
     const indicator = document.getElementById('offline-indicator');
     if (indicator) indicator.style.display = 'flex';
+  }
+
+  // Check unsynced compositions (Phase 6 preparation)
+  async function checkSyncStatus() {
+    try {
+      const { getUnsyncedCount } = await import('../scripts/composition-store');
+      const count = await getUnsyncedCount();
+      const syncEl = document.getElementById('sync-status');
+      const syncText = syncEl?.querySelector('.sync-text');
+
+      if (syncEl && syncText) {
+        if (count > 0) {
+          syncText.textContent = `${count} composition${count !== 1 ? 's' : ''} not synced`;
+          syncEl.style.display = 'flex';
+        } else {
+          syncEl.style.display = 'none';
+        }
+      }
+    } catch {
+      // Composition store may not be initialized yet
+    }
+  }
+
+  // Feature flag for Phase 5 (disabled by default, enable in Phase 6)
+  const SHOW_SYNC_STATUS = false; // Enable in Phase 6
+  if (SHOW_SYNC_STATUS) {
+    // Check sync status periodically (every 30 seconds)
+    setInterval(checkSyncStatus, 30000);
+    // Initial check after delay (let IndexedDB initialize)
+    setTimeout(checkSyncStatus, 2000);
   }
 </script>
 
@@ -76,5 +111,28 @@
     color: #ffcc00;
     font-size: 0.75rem;
     z-index: 1000;
+  }
+
+  .sync-status {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 6px;
+    background: #1a3a1a;
+    color: #aad;
+    font-size: 0.75rem;
+    z-index: 999;
+  }
+
+  .sync-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #ffb56b;
   }
 </style>
