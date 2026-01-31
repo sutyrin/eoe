@@ -1,0 +1,609 @@
+---
+/**
+ * NodeDetailSheet: Bottom sheet for viewing node parameters and creating routes.
+ *
+ * UI flow:
+ * 1. User taps a node on canvas
+ * 2. Sheet slides up showing: atom name, parameters, existing routes
+ * 3. Each parameter has a "+ Route" button
+ * 4. Tapping "+ Route" shows inline dropdown of compatible targets
+ * 5. Selecting target creates route and edge
+ * 6. Existing routes shown with delete button
+ *
+ * Events:
+ * - Listens: 'eoe:open-node-detail' (nodeId, composition, atomsMap)
+ * - Dispatches: 'eoe:create-route' (sourceNodeId, sourceParam, targetNodeId, targetParam)
+ * - Dispatches: 'eoe:delete-route' (routeId)
+ * - Dispatches: 'eoe:remove-node' (nodeId)
+ */
+---
+
+<div id="node-detail-backdrop" class="detail-backdrop" style="display: none;">
+  <div id="node-detail-sheet" class="detail-sheet">
+    <div class="detail-handle"></div>
+
+    <div class="detail-header">
+      <div>
+        <h3 class="detail-title" id="detail-title"></h3>
+        <span class="detail-type" id="detail-type"></span>
+      </div>
+      <div class="detail-header-actions">
+        <button id="detail-remove-btn" class="detail-remove-btn" title="Remove from canvas">Remove</button>
+        <button id="detail-close-btn" class="detail-close-btn">&times;</button>
+      </div>
+    </div>
+
+    <!-- Parameters section -->
+    <div class="detail-section">
+      <h4 class="detail-section-title">Parameters</h4>
+      <div id="detail-params" class="detail-params">
+        <!-- Populated dynamically -->
+      </div>
+    </div>
+
+    <!-- Existing routes section -->
+    <div class="detail-section">
+      <h4 class="detail-section-title">Active Routes</h4>
+      <div id="detail-routes" class="detail-routes">
+        <!-- Populated dynamically -->
+      </div>
+      <div id="detail-no-routes" class="detail-empty">
+        No routes yet. Tap "+ Route" on a parameter above.
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  import {
+    findCompatibleTargets,
+    getOutgoingRoutes,
+    getIncomingRoutes,
+    describeRoute,
+    getParamTypeColor,
+    type RoutableTarget,
+  } from '../scripts/routing-engine';
+  import {
+    parseAtomParameters,
+    type Composition,
+    type AtomParameter,
+  } from '../scripts/composition-types';
+  import type { AtomMetadata } from '../scripts/db';
+
+  const backdrop = document.getElementById('node-detail-backdrop')!;
+  const sheet = document.getElementById('node-detail-sheet')!;
+  const titleEl = document.getElementById('detail-title')!;
+  const typeEl = document.getElementById('detail-type')!;
+  const paramsEl = document.getElementById('detail-params')!;
+  const routesEl = document.getElementById('detail-routes')!;
+  const noRoutesEl = document.getElementById('detail-no-routes')!;
+  const closeBtn = document.getElementById('detail-close-btn')!;
+  const removeBtn = document.getElementById('detail-remove-btn')!;
+
+  let currentNodeId = '';
+  let currentComposition: Composition | null = null;
+  let currentAtomsMap: Map<string, AtomMetadata> = new Map();
+
+  // Open node detail
+  window.addEventListener('eoe:open-node-detail', ((e: CustomEvent) => {
+    const { nodeId, composition, atomsMap } = e.detail;
+    currentNodeId = nodeId;
+    currentComposition = composition;
+    currentAtomsMap = atomsMap;
+
+    renderNodeDetail();
+
+    backdrop.style.display = 'block';
+    requestAnimationFrame(() => {
+      backdrop.classList.add('open');
+      sheet.classList.add('open');
+    });
+  }) as EventListener);
+
+  // Close
+  function closeSheet() {
+    backdrop.classList.remove('open');
+    sheet.classList.remove('open');
+    setTimeout(() => {
+      backdrop.style.display = 'none';
+      currentNodeId = '';
+    }, 300);
+  }
+
+  closeBtn.addEventListener('click', closeSheet);
+  backdrop.addEventListener('click', (e) => {
+    if (e.target === backdrop) closeSheet();
+  });
+
+  // Remove node from canvas
+  removeBtn.addEventListener('click', () => {
+    if (currentNodeId && confirm('Remove this atom from the composition?')) {
+      window.dispatchEvent(new CustomEvent('eoe:remove-node', {
+        detail: { nodeId: currentNodeId }
+      }));
+      closeSheet();
+    }
+  });
+
+  function renderNodeDetail() {
+    if (!currentComposition || !currentNodeId) return;
+
+    const compAtom = currentComposition.atoms.find(a => a.nodeId === currentNodeId);
+    if (!compAtom) return;
+
+    const metadata = currentAtomsMap.get(compAtom.atomSlug);
+    const atomTitle = metadata?.title || compAtom.atomSlug;
+    const atomType = metadata?.type || 'unknown';
+
+    // Header
+    titleEl.textContent = atomTitle;
+    typeEl.textContent = atomType;
+    typeEl.style.color = ({
+      visual: '#6bb5ff',
+      audio: '#ff6b9d',
+      'audio-visual': '#b56bff',
+    } as Record<string, string>)[atomType] || '#888';
+
+    // Parameters
+    const params = metadata ? parseAtomParameters(metadata.configJson) : [];
+    const routableParams = params.filter(p => p.type !== 'object');
+
+    if (routableParams.length === 0) {
+      paramsEl.innerHTML = '<div class="detail-empty">No routable parameters</div>';
+    } else {
+      paramsEl.innerHTML = routableParams.map(param => {
+        const color = getParamTypeColor(param.type);
+        const displayValue = typeof param.value === 'number'
+          ? Math.round(param.value * 100) / 100
+          : String(param.value);
+
+        return `
+          <div class="param-row" data-param-name="${param.name}">
+            <div class="param-info">
+              <span class="param-dot" style="background: ${color}"></span>
+              <span class="param-name">${param.name}</span>
+              <span class="param-value">${displayValue}</span>
+              <span class="param-type-label" style="color: ${color}">${param.type}</span>
+            </div>
+            <button class="param-route-btn" data-param="${param.name}" data-param-type="${param.type}">
+              + Route
+            </button>
+            <div class="param-dropdown" data-param="${param.name}" style="display: none;">
+              <!-- Populated when + Route is tapped -->
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      // Attach "+ Route" handlers
+      paramsEl.querySelectorAll('.param-route-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const paramName = (btn as HTMLElement).dataset.param!;
+          const param = routableParams.find(p => p.name === paramName);
+          if (!param) return;
+
+          toggleDropdown(paramName, param);
+        });
+      });
+    }
+
+    // Existing routes
+    renderRoutes();
+  }
+
+  function toggleDropdown(paramName: string, param: AtomParameter) {
+    const dropdown = paramsEl.querySelector(`.param-dropdown[data-param="${paramName}"]`) as HTMLElement;
+    if (!dropdown || !currentComposition) return;
+
+    // Toggle visibility
+    const isVisible = dropdown.style.display !== 'none';
+    // Close all dropdowns first
+    paramsEl.querySelectorAll('.param-dropdown').forEach((d: Element) => {
+      (d as HTMLElement).style.display = 'none';
+    });
+
+    if (isVisible) return; // Was open, now closed
+
+    // Find compatible targets
+    const targets = findCompatibleTargets(
+      currentNodeId,
+      param,
+      currentComposition,
+      currentAtomsMap,
+    );
+
+    if (targets.length === 0) {
+      dropdown.innerHTML = '<div class="dropdown-empty">No compatible targets</div>';
+    } else {
+      dropdown.innerHTML = targets.map(t => {
+        const color = getParamTypeColor(t.paramType);
+        const displayValue = typeof t.currentValue === 'number'
+          ? Math.round((t.currentValue as number) * 100) / 100
+          : String(t.currentValue);
+
+        return `
+          <button class="dropdown-item"
+            data-target-node="${t.nodeId}"
+            data-target-param="${t.paramName}">
+            <span class="dropdown-atom-name">${t.atomTitle}</span>
+            <span class="dropdown-param-name">
+              <span class="param-dot" style="background: ${color}"></span>
+              ${t.paramName}
+              <span class="dropdown-param-value">(${displayValue})</span>
+            </span>
+          </button>
+        `;
+      }).join('');
+
+      // Attach selection handlers
+      dropdown.querySelectorAll('.dropdown-item').forEach(item => {
+        item.addEventListener('click', () => {
+          const targetNodeId = (item as HTMLElement).dataset.targetNode!;
+          const targetParam = (item as HTMLElement).dataset.targetParam!;
+
+          window.dispatchEvent(new CustomEvent('eoe:create-route', {
+            detail: {
+              sourceNodeId: currentNodeId,
+              sourceParam: paramName,
+              targetNodeId,
+              targetParam,
+            }
+          }));
+
+          dropdown.style.display = 'none';
+
+          // Refresh routes display after a tick (allow composition to update)
+          setTimeout(() => {
+            // Re-read composition from compose page
+            window.dispatchEvent(new CustomEvent('eoe:request-composition-state'));
+          }, 100);
+        });
+      });
+    }
+
+    dropdown.style.display = 'block';
+  }
+
+  // Listen for composition state updates (after route changes)
+  window.addEventListener('eoe:composition-updated', ((e: CustomEvent) => {
+    if (e.detail?.composition) {
+      currentComposition = e.detail.composition;
+      renderRoutes();
+    }
+  }) as EventListener);
+
+  function renderRoutes() {
+    if (!currentComposition || !currentNodeId) return;
+
+    const outgoing = getOutgoingRoutes(currentComposition, currentNodeId);
+    const incoming = getIncomingRoutes(currentComposition, currentNodeId);
+    const allRoutes = [...outgoing, ...incoming];
+
+    if (allRoutes.length === 0) {
+      routesEl.innerHTML = '';
+      noRoutesEl.style.display = 'block';
+      return;
+    }
+
+    noRoutesEl.style.display = 'none';
+
+    routesEl.innerHTML = allRoutes.map(route => {
+      const desc = describeRoute(route, currentComposition!, currentAtomsMap);
+      const isOutgoing = route.sourceNodeId === currentNodeId;
+
+      return `
+        <div class="route-item">
+          <span class="route-direction" style="background: ${isOutgoing ? '#6bb5ff20' : '#ff6b9d20'}; color: ${isOutgoing ? '#6bb5ff' : '#ff6b9d'};">${isOutgoing ? 'OUT' : 'IN'}</span>
+          <span class="route-desc">${desc}</span>
+          <button class="route-delete-btn" data-route-id="${route.id}" title="Delete route">&times;</button>
+        </div>
+      `;
+    }).join('');
+
+    // Delete route handlers
+    routesEl.querySelectorAll('.route-delete-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const routeId = (btn as HTMLElement).dataset.routeId!;
+        window.dispatchEvent(new CustomEvent('eoe:delete-route', {
+          detail: { routeId }
+        }));
+
+        // Refresh after deletion
+        setTimeout(() => {
+          window.dispatchEvent(new CustomEvent('eoe:request-composition-state'));
+        }, 100);
+      });
+    });
+  }
+</script>
+
+<style>
+  .detail-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0);
+    z-index: 200;
+    transition: background 300ms ease;
+  }
+
+  .detail-backdrop.open {
+    background: rgba(0, 0, 0, 0.5);
+  }
+
+  .detail-sheet {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    max-height: 75vh;
+    background: #111;
+    border-radius: 16px 16px 0 0;
+    padding: 0 16px 16px;
+    padding-bottom: calc(16px + env(safe-area-inset-bottom, 0));
+    transform: translateY(100%);
+    transition: transform 300ms ease;
+    z-index: 201;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .detail-sheet.open {
+    transform: translateY(0);
+  }
+
+  .detail-handle {
+    width: 32px;
+    height: 4px;
+    background: #444;
+    border-radius: 2px;
+    margin: 12px auto 8px;
+    flex-shrink: 0;
+  }
+
+  .detail-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 8px 0 16px;
+    flex-shrink: 0;
+  }
+
+  .detail-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #fff;
+    margin: 0 0 4px 0;
+  }
+
+  .detail-type {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .detail-header-actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .detail-remove-btn {
+    padding: 6px 12px;
+    border: 1px solid #ff444440;
+    background: none;
+    color: #ff6666;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+    min-height: 32px;
+  }
+
+  .detail-remove-btn:active {
+    background: #ff444420;
+  }
+
+  .detail-close-btn {
+    width: 36px;
+    height: 36px;
+    border: none;
+    background: #222;
+    color: #888;
+    border-radius: 18px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .detail-section {
+    margin-bottom: 20px;
+  }
+
+  .detail-section-title {
+    font-size: 0.8rem;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+    margin: 0 0 10px 0;
+    padding-bottom: 6px;
+    border-bottom: 1px solid #222;
+  }
+
+  .detail-empty {
+    color: #555;
+    font-size: 0.8rem;
+    padding: 8px 0;
+  }
+
+  /* Parameter rows */
+  .param-row {
+    padding: 6px 0;
+    border-bottom: 1px solid #1a1a1a;
+  }
+
+  .param-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 36px;
+  }
+
+  .param-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .param-name {
+    color: #ccc;
+    font-size: 0.85rem;
+    flex: 1;
+  }
+
+  .param-value {
+    color: #666;
+    font-size: 0.8rem;
+    font-family: 'SF Mono', monospace;
+  }
+
+  .param-type-label {
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+
+  .param-route-btn {
+    display: block;
+    width: 100%;
+    padding: 8px 12px;
+    margin-top: 4px;
+    border: 1px dashed #333;
+    background: none;
+    color: #6bb5ff;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-align: left;
+    min-height: 36px;
+  }
+
+  .param-route-btn:active {
+    background: #6bb5ff10;
+    border-color: #6bb5ff40;
+  }
+
+  /* Dropdown for target selection */
+  .param-dropdown {
+    margin-top: 4px;
+    border: 1px solid #333;
+    border-radius: 8px;
+    background: #1a1a1a;
+    overflow: hidden;
+  }
+
+  .dropdown-empty {
+    padding: 12px;
+    color: #555;
+    font-size: 0.8rem;
+    text-align: center;
+  }
+
+  .dropdown-item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    width: 100%;
+    padding: 10px 12px;
+    border: none;
+    background: none;
+    color: inherit;
+    text-align: left;
+    cursor: pointer;
+    border-bottom: 1px solid #222;
+    min-height: 48px;
+    font-family: inherit;
+  }
+
+  .dropdown-item:last-child {
+    border-bottom: none;
+  }
+
+  .dropdown-item:active {
+    background: #222;
+  }
+
+  .dropdown-atom-name {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #fff;
+  }
+
+  .dropdown-param-name {
+    font-size: 0.75rem;
+    color: #aaa;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .dropdown-param-value {
+    color: #666;
+    font-size: 0.7rem;
+  }
+
+  /* Route items */
+  .route-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 0;
+    border-bottom: 1px solid #1a1a1a;
+    min-height: 40px;
+  }
+
+  .route-direction {
+    font-size: 0.6rem;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 3px;
+    letter-spacing: 0.5px;
+    flex-shrink: 0;
+  }
+
+  .route-desc {
+    flex: 1;
+    font-size: 0.8rem;
+    color: #ccc;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .route-delete-btn {
+    width: 28px;
+    height: 28px;
+    border: none;
+    background: #1a1a1a;
+    color: #888;
+    border-radius: 14px;
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .route-delete-btn:active {
+    background: #ff444440;
+    color: #ff4444;
+  }
+</style>
