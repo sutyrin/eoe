@@ -28,6 +28,9 @@
   </div>
 
   <div class="toolbar-right">
+    <button id="save-snapshot-btn" class="toolbar-btn toolbar-primary" title="Save snapshot">
+      <span class="toolbar-btn-icon" style="font-size: 0.85rem;">&#128190;</span>
+    </button>
     <button id="comp-delete-btn" class="toolbar-btn toolbar-danger" title="Delete composition">
       <span class="toolbar-btn-icon" style="font-size: 0.85rem;">Del</span>
     </button>
@@ -42,6 +45,7 @@
   const nameBtn = document.getElementById('comp-name-btn')!;
   const nameText = document.getElementById('comp-name-text')!;
   const saveIndicator = document.getElementById('save-indicator')!;
+  const saveSnapshotBtn = document.getElementById('save-snapshot-btn')!;
   const deleteBtn = document.getElementById('comp-delete-btn')!;
 
   // Undo button
@@ -63,6 +67,12 @@
         detail: { name: newName.trim() }
       }));
     }
+  });
+
+  // Save snapshot
+  saveSnapshotBtn.addEventListener('click', async () => {
+    await flushAutosave(); // Ensure draft is saved first
+    window.dispatchEvent(new CustomEvent('eoe:save-snapshot'));
   });
 
   // Delete composition
@@ -160,6 +170,15 @@
 
   .toolbar-btn:active:not(:disabled) {
     background: #333;
+  }
+
+  .toolbar-primary {
+    border-color: #6bb5ff40;
+    color: #6bb5ff;
+  }
+
+  .toolbar-primary:active {
+    background: #6bb5ff20 !important;
   }
 
   .toolbar-danger {

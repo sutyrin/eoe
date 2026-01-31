@@ -44,6 +44,12 @@ import CompositionToolbar from '../../components/CompositionToolbar.astro';
   import type { Node, Edge } from 'reactflow';
   import { UndoRedoManager } from '../../scripts/undo-redo';
   import { scheduleAutosave, cancelAutosave } from '../../scripts/composition-autosave';
+  import {
+    createSnapshotFromComposition,
+    saveSnapshot,
+    formatSnapshotSize,
+    getSnapshotSize,
+  } from '../../scripts/composition-snapshot';
 
   let currentComposition = createEmptyComposition('Untitled Composition');
   let atomsMap = new Map();
@@ -239,6 +245,21 @@ import CompositionToolbar from '../../components/CompositionToolbar.astro';
     await deleteComposition(currentComposition.id);
     cancelAutosave();
     window.location.href = '/mobile/compositions';
+  });
+
+  // Save snapshot
+  window.addEventListener('eoe:save-snapshot', async () => {
+    try {
+      // Create snapshot with inline atom code
+      const snapshot = await createSnapshotFromComposition(currentComposition, atomsMap);
+      await saveSnapshot(snapshot);
+
+      const size = formatSnapshotSize(getSnapshotSize(snapshot));
+      showToast(`Snapshot saved (${size})`);
+    } catch (err) {
+      console.error('[compose] Failed to save snapshot:', err);
+      showToast('Failed to save snapshot');
+    }
   });
 
   // Update FAB state (disable at limit)
