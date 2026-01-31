@@ -20,22 +20,30 @@ Consistent output of creative atoms that compound into a body of work, tools, an
 - ✓ CLI cockpit — terminal-based dashboard with create/dev/build/capture/publish commands — v1.0
 - ✓ Publishing — manual workflow validated (pain points documented for v2 automation) — v1.0
 
-### Active
+### Active (v1.1)
 
-- [ ] Multi-device sync — work seamlessly across desktop, laptop, and mobile (commute with headphones)
-- [ ] Batch publishing automation — produce multiple videos from existing atoms
-- [ ] LLM augmentation — lighter consoles for in-the-moment creative pair-creation
+- [ ] Mobile creation tools — view code, tweak parameters, quick notes on commute
+- [ ] Ideation capture — voice notes, screenshot annotations, text notes
+- [ ] Composition & modular tools — combine atoms visually, route parameters, preview results
+- [ ] Cloud backup — simple one-way backup to enable multi-device recovery
+- [ ] LLM variations — Claude CLI-based parameter/color variations (planned v1.2)
+
+### Future (v1.2+)
+
+- [ ] Advanced sync — real-time Syncthing P2P + mobile PouchDB replication
+- [ ] Timeline sequencing — order atoms, set timing/duration, visual arrangement
+- [ ] Visual node graph — upgrade composition UI to node-based (Cables.gl-style)
 - [ ] Streaming capability — host live sessions with guests
 - [ ] Community features — GitHub organization, Discord, teaching content
 - [ ] Advanced creation — Three.js 3D, motion graphics, Blender integration
 
 ### Out of Scope
 
-- End-to-end paid creative suites — building own tooling from explored atoms instead
-- Native mobile apps — web-based approach, accessible from mobile browser
+- Code editing on mobile — too cumbersome, desktop sufficient
+- Native mobile apps — web PWA sufficient for v1.1, native path deferred
 - Full social media management platform — cockpit is for personal use, not a SaaS product
-- Premature automation — no building automation before manual process is proven painful
-- Deep tooling rabbit holes — atoms and contraptions first, infrastructure only as needed
+- Premature automation — validate manual workflows first
+- Deep tooling rabbit holes — atoms and creative output first, infrastructure only as needed
 
 ## Context
 
