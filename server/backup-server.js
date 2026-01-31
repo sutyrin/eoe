@@ -264,6 +264,79 @@ app.delete('/api/backup/:id', async (req, res) => {
 });
 
 /**
+ * GET /api/snapshot/:id
+ * Get a specific snapshot by ID from any backup.
+ * Searches through all backups to find the snapshot.
+ * Used by the shareable /c/[id] page.
+ */
+app.get('/api/snapshot/:id', async (req, res) => {
+  try {
+    const snapshotId = req.params.id;
+    const files = await readdir(DATA_DIR);
+    const backupFiles = files
+      .filter(f => f.startsWith('backup-') && f.endsWith('.json'))
+      .sort()
+      .reverse(); // Most recent first
+
+    // Search through backups
+    for (const file of backupFiles) {
+      const filepath = join(DATA_DIR, file);
+      const content = await readFile(filepath, 'utf-8');
+      const backup = JSON.parse(content);
+
+      if (backup.data && backup.data.snapshots) {
+        const snapshot = backup.data.snapshots.find(s => s.id === snapshotId);
+        if (snapshot) {
+          return res.json(snapshot);
+        }
+      }
+    }
+
+    // Also check standalone snapshot files
+    const standaloneFile = join(DATA_DIR, `snapshot-${snapshotId}.json`);
+    if (existsSync(standaloneFile)) {
+      const content = await readFile(standaloneFile, 'utf-8');
+      return res.json(JSON.parse(content));
+    }
+
+    return res.status(404).json({ error: 'Snapshot not found' });
+  } catch (err) {
+    console.error('[backup] Error fetching snapshot:', err);
+    res.status(500).json({ error: 'Failed to fetch snapshot' });
+  }
+});
+
+/**
+ * POST /api/snapshot
+ * Upload a single snapshot for sharing.
+ * This allows sharing without requiring a full backup.
+ *
+ * Body: CompositionSnapshot JSON
+ * Returns: { id, url }
+ */
+app.post('/api/snapshot', async (req, res) => {
+  try {
+    const snapshot = req.body;
+    if (!snapshot || !snapshot.id || !snapshot.atoms) {
+      return res.status(400).json({ error: 'Invalid snapshot data' });
+    }
+
+    // Store as a standalone snapshot file
+    const filepath = join(DATA_DIR, `snapshot-${snapshot.id}.json`);
+    await writeFile(filepath, JSON.stringify(snapshot, null, 2), 'utf-8');
+
+    console.log(`[backup] Shared snapshot: ${snapshot.id}`);
+    res.json({
+      id: snapshot.id,
+      url: `/c/${snapshot.id}`,
+    });
+  } catch (err) {
+    console.error('[backup] Error sharing snapshot:', err);
+    res.status(500).json({ error: 'Failed to share snapshot' });
+  }
+});
+
+/**
  * GET /api/health
  * Health check endpoint.
  */
