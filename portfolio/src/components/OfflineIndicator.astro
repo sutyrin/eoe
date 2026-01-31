@@ -1,0 +1,80 @@
+---
+// OfflineIndicator: Shows a small banner when device is offline
+// Listens for eoe:offline-status custom events from offline-status.ts
+---
+<div id="offline-indicator" class="offline-indicator" style="display: none;">
+  <span class="offline-dot"></span>
+  <span class="offline-text">Offline</span>
+</div>
+
+<div id="storage-warning" class="storage-warning" style="display: none;">
+  <span class="storage-text">Storage nearly full</span>
+</div>
+
+<script>
+  // Listen for offline status changes
+  window.addEventListener('eoe:offline-status', (e: CustomEvent) => {
+    const indicator = document.getElementById('offline-indicator');
+    if (indicator) {
+      indicator.style.display = e.detail.isOnline ? 'none' : 'flex';
+    }
+  });
+
+  // Listen for storage warnings
+  window.addEventListener('eoe:storage-status', (e: CustomEvent) => {
+    const warning = document.getElementById('storage-warning');
+    if (warning) {
+      warning.style.display = e.detail.warning ? 'flex' : 'none';
+      const text = warning.querySelector('.storage-text');
+      if (text) {
+        text.textContent = `Storage: ${e.detail.usageMB}MB / ${e.detail.quotaMB}MB`;
+      }
+    }
+  });
+
+  // Show initial offline state immediately (don't wait for event)
+  if (!navigator.onLine) {
+    const indicator = document.getElementById('offline-indicator');
+    if (indicator) indicator.style.display = 'flex';
+  }
+</script>
+
+<style>
+  .offline-indicator {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 8px;
+    background: #333;
+    color: #fff;
+    font-size: 0.8rem;
+    z-index: 1000;
+  }
+
+  .offline-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #ff6b6b;
+  }
+
+  .storage-warning {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px;
+    background: #553300;
+    color: #ffcc00;
+    font-size: 0.75rem;
+    z-index: 1000;
+  }
+</style>
