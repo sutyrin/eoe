@@ -38,6 +38,11 @@ if (fs.existsSync(metadataPath)) {
     No atoms match your search.
   </div>
 
+  <nav class="bottom-nav">
+    <a href="/mobile/gallery" class="bottom-nav-item active">Gallery</a>
+    <a href="/mobile/compose" class="bottom-nav-item">Compose</a>
+  </nav>
+
   <script>
     import { saveAllAtomMetadata } from '../../scripts/db';
 
@@ -78,3 +83,44 @@ if (fs.existsSync(metadataPath)) {
     });
   </script>
 </MobileLayout>
+
+<style>
+  .bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    background: #111;
+    border-top: 1px solid #222;
+    padding-bottom: env(safe-area-inset-bottom, 0);
+    z-index: 100;
+  }
+
+  .bottom-nav-item {
+    flex: 1;
+    padding: 12px;
+    text-align: center;
+    color: #666;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-decoration: none;
+    min-height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .bottom-nav-item.active {
+    color: #6bb5ff;
+  }
+
+  .bottom-nav-item:active {
+    background: #1a1a1a;
+  }
+
+  /* Add padding to content so it's not hidden by bottom nav */
+  #atom-list {
+    padding-bottom: calc(60px + env(safe-area-inset-bottom, 0));
+  }
+</style>

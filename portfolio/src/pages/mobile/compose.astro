@@ -7,11 +7,51 @@ import CompositionCanvas from '../../components/CompositionCanvas.astro';
   <div style="margin: -16px; margin-top: -16px;">
     <CompositionCanvas />
   </div>
+
+  <nav class="bottom-nav">
+    <a href="/mobile/gallery" class="bottom-nav-item">Gallery</a>
+    <a href="/mobile/compose" class="bottom-nav-item active">Compose</a>
+  </nav>
 </MobileLayout>
 
 <style>
+  /* Override MobileLayout padding for full-bleed canvas */
   :global(.mobile-main) {
     padding: 0 !important;
     max-width: none !important;
+  }
+
+  .bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    background: #111;
+    border-top: 1px solid #222;
+    padding-bottom: env(safe-area-inset-bottom, 0);
+    z-index: 100;
+  }
+
+  .bottom-nav-item {
+    flex: 1;
+    padding: 12px;
+    text-align: center;
+    color: #666;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-decoration: none;
+    min-height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .bottom-nav-item.active {
+    color: #6bb5ff;
+  }
+
+  .bottom-nav-item:active {
+    background: #1a1a1a;
   }
 </style>
