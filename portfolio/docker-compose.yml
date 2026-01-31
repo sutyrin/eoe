@@ -12,3 +12,26 @@ services:
       interval: 30s
       timeout: 5s
       retries: 3
+
+  eoe-backup:
+    build:
+      context: ..
+      dockerfile: server/Dockerfile
+    container_name: eoe-backup
+    restart: unless-stopped
+    ports:
+      - "3081:3081"
+    environment:
+      - PORT=3081
+      - DATA_DIR=/data/backups
+    volumes:
+      - backup-data:/data/backups
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3081/api/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+volumes:
+  backup-data:
+    driver: local
