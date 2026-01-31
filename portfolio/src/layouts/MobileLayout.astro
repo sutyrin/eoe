@@ -1,5 +1,6 @@
 ---
 import OfflineIndicator from '../components/OfflineIndicator.astro';
+import BackupStatusBadge from '../components/BackupStatusBadge.astro';
 import '../styles/mobile.css';
 
 export interface Props {
@@ -45,6 +46,9 @@ const { title, showBack = false, backHref = '/' } = Astro.props;
       </a>
     )}
     <span class="header-title">{title}</span>
+    <div class="header-right">
+      <BackupStatusBadge />
+    </div>
   </header>
 
   <main class="mobile-main mobile-container scroll-container">
@@ -82,6 +86,14 @@ const { title, showBack = false, backHref = '/' } = Astro.props;
       font-size: 1.1rem;
       font-weight: 600;
       color: #fff;
+      flex: 1;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-left: auto;
     }
 
     .mobile-main {
