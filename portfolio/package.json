@@ -6,13 +6,15 @@
   "scripts": {
     "dev": "node scripts/copy-atoms.js && node scripts/generate-metadata.js && astro dev",
     "build": "node scripts/copy-atoms.js && node scripts/generate-metadata.js && astro build",
-    "preview": "astro preview"
+    "preview": "astro preview",
+    "transcribe": "node scripts/transcribe-server.js"
   },
   "dependencies": {
     "@vite-pwa/astro": "^1.2.0",
     "astro": "^5.16.11",
     "fs-extra": "^11.0.0",
     "idb": "^8.0.3",
+    "openai": "^6.17.0",
     "prismjs": "^1.30.0"
   }
 }
