@@ -24,16 +24,16 @@ Consistent output of creative atoms that compound into a body of work, tools, an
 - Requirements: 13 total (all mobile/composition/backup focused)
 
 ### Current Phase
-**Phase 6: Composition Preview, Save, Cloud Backup** - COMPLETE (4/4 plans complete)
+**Phase 6: Composition Preview, Save, Cloud Backup** - COMPLETE (5/5 plans complete)
 - Goal: Enable real-time preview of compositions with parameter routing, save/load capability, and cloud backup
-- Requirements: COMP-04 (preview), COMP-05 (save/load), BACK-01 (cloud backup)
-- Delivered: Preview engine, immutable composition snapshots, cloud backup with auto-backup on app close, backup status UI and management
-- **Last activity:** 2026-01-31 - Completed Plan 06-04 (Backup Status UI & Management)
+- Requirements: COMP-04 (preview), COMP-05 (save/load), SYNC-01 (backup), SYNC-02 (status), SYNC-03 (restore)
+- Delivered: Preview engine, immutable composition snapshots, cloud backup with auto-backup on app close, backup status UI and management, shareable composition URLs
+- **Last activity:** 2026-02-01 - Completed Plan 06-05 (Shareable URLs & E2E Verification)
 
 ### Status
-v1.0 COMPLETE (shipped 2026-01-30). v1.1 COMPLETE (shipped 2026-02-01). All 13 plans executed.
+v1.0 COMPLETE (shipped 2026-01-30). v1.1 COMPLETE (shipped 2026-02-01). All 15 plans executed.
 
-**Progress:** █████████████████████████████████████ 13/13 plans (100%)
+**Progress:** █████████████████████████████████████ 15/15 plans (100%)
 
 ---
 
@@ -48,9 +48,10 @@ v1.0 COMPLETE (shipped 2026-01-30). v1.1 COMPLETE (shipped 2026-02-01). All 13 p
 ### v1.1 Status (COMPLETE)
 - 3 phases executed (Phases 4-6)
 - 13/13 requirements fulfilled
-- 13/13 plans executed (all phases complete)
+- 15/15 plans executed (all phases complete)
 - Full mobile-first creative workflow live
 - Cloud backup operational
+- Shareable composition URLs live
 
 ---
 
@@ -106,6 +107,9 @@ v1.0 COMPLETE (shipped 2026-01-30). v1.1 COMPLETE (shipped 2026-02-01). All 13 p
 | Selective restore | items filter in restore endpoint | User can restore atoms, compositions, snapshots independently | 06-03 |
 | visibilitychange over beforeunload | Use visibilitychange for auto-backup trigger | More reliable on mobile (iOS ignores beforeunload) | 06-03 |
 | 3-retry exponential backoff | 1s, 2s, 4s retry delays | Network resilience for backup uploads | 06-03 |
+| Query param shareable URLs | /c/?id=abc123 instead of /c/[id] dynamic route | Avoids Astro SSG complexity with runtime-generated IDs | 06-05 |
+| Dual snapshot storage | Snapshots in backups AND standalone files | Backups for restore, standalone for lightweight sharing | 06-05 |
+| Cross-backup search prioritization | Search most recent backups first | Performance optimization for typical sharing patterns | 06-05 |
 | Badge shows pending count from both stores | Users need total unsynced count | Aggregates compositions + snapshots for accurate badge | 06-04 |
 | Category-level restore checkboxes | v1.1 simplicity over per-item granularity | User selects atoms/compositions/snapshots categories | 06-04 |
 | ConflictResolver ready but not triggered in v1.1 | v1.1 uses last-write-wins, defer conflict detection | UI complete, awaits enhanced sync in v1.2 | 06-04 |
@@ -158,14 +162,16 @@ None inherited from v1.0. v1.1 builds on proven v1.0 foundation (no refactoring 
 22. All mobile features work offline after first visit (except transcription)
 
 ### Context for Next Session
-**Last session:** 2026-01-31
-**Stopped at:** Completed Phase 6 Plan 04 - Backup Status UI & Management
+**Last session:** 2026-02-01
+**Stopped at:** Completed Phase 6 Plan 05 - Shareable URLs & E2E Verification (v1.1 COMPLETE)
 **Resume file:** None
 
 **Phase 6 Status:**
 - ✓ Plan 01: Preview Engine complete (8 min execution)
 - ✓ Plan 02: Composition Snapshots complete (9 min execution)
 - ✓ Plan 03: Cloud Backup complete (5 min execution)
+- ✓ Plan 04: Backup Status UI & Management complete (6 min execution)
+- ✓ Plan 05: Shareable URLs & E2E Verification complete (8 min execution)
 - ✓ Plan 04: Backup Status UI & Management complete (5 min execution)
 
 **Phase 6 Progress:**
@@ -183,6 +189,13 @@ None inherited from v1.0. v1.1 builds on proven v1.0 foundation (no refactoring 
 - 3-retry exponential backoff for network resilience
 - Selective restore (atoms, compositions, snapshots)
 - Sync status indicator with real-time progress
+- Backup status badge with visual states (synced/pending/active/error)
+- RestoreModal with category checkboxes
+- ConflictResolver for per-item merge decisions
+- Shareable composition URLs at /c/?id=[id]
+- Read-only composition viewer with playback
+- Server snapshot endpoints (GET/POST /api/snapshot)
+- Share button with upload and clipboard integration
 - BackupStatusBadge in app header (synced/pending/active/error states)
 - /mobile/backup management page with manual trigger
 - RestoreModal with category-based selective restore
