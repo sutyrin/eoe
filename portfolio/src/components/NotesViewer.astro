@@ -1,0 +1,58 @@
+---
+/**
+ * NotesViewer: Renders NOTES.md content in a readable format.
+ * For Phase 4, this is a simple pre-formatted text display.
+ * Future: could use a markdown renderer (marked, remark) for rich formatting.
+ */
+export interface Props {
+  notes: string;
+}
+
+const { notes } = Astro.props;
+---
+
+{notes ? (
+  <div class="notes-viewer">
+    <h3 class="notes-heading">Notes</h3>
+    <pre class="notes-content">{notes}</pre>
+  </div>
+) : (
+  <div class="notes-viewer">
+    <h3 class="notes-heading">Notes</h3>
+    <p class="notes-empty">No notes for this atom.</p>
+  </div>
+)}
+
+<style>
+  .notes-viewer {
+    margin: 16px 0;
+  }
+
+  .notes-heading {
+    font-size: 1rem;
+    color: #fff;
+    margin-bottom: 12px;
+    font-weight: 600;
+  }
+
+  .notes-content {
+    padding: 16px;
+    background: #151515;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: #ccc;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    max-height: 400px;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .notes-empty {
+    color: #555;
+    font-size: 0.85rem;
+    font-style: italic;
+  }
+</style>

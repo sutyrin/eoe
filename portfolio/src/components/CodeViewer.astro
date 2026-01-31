@@ -1,0 +1,128 @@
+---
+/**
+ * CodeViewer: Syntax-highlighted code display using Prism.js.
+ * Optimized for mobile reading:
+ * - 16px font for readability on 6" screens
+ * - Code wraps to screen width (no horizontal scroll)
+ * - No line numbers (cleaner mobile look)
+ * - Dark theme (prism-tomorrow)
+ * - Only loads JavaScript, JSON, Markdown languages (keeps bundle <10KB)
+ */
+export interface Props {
+  code: string;
+  language?: string;
+  filename?: string;
+}
+
+const { code, language = 'javascript', filename = '' } = Astro.props;
+---
+
+<div class="code-viewer">
+  {filename && (
+    <div class="code-filename">{filename}</div>
+  )}
+  <pre class={`language-${language}`}><code class={`language-${language}`} id="code-block">{code}</code></pre>
+</div>
+
+<script>
+  import Prism from 'prismjs';
+  import 'prismjs/components/prism-javascript';
+  import 'prismjs/components/prism-json';
+  import 'prismjs/components/prism-markdown';
+
+  // Highlight all code blocks on page
+  Prism.highlightAll();
+</script>
+
+<style is:global>
+  /* Prism.js Tomorrow Night theme (adapted for mobile) */
+  code[class*="language-"],
+  pre[class*="language-"] {
+    color: #ccc;
+    background: none;
+    font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', Consolas, Monaco, monospace;
+    font-size: 14px;
+    line-height: 1.6;
+    text-align: left;
+    white-space: pre-wrap;    /* Wrap to screen width */
+    word-wrap: break-word;    /* Break long lines */
+    word-break: break-all;
+    tab-size: 2;
+    hyphens: none;
+  }
+
+  pre[class*="language-"] {
+    padding: 16px;
+    margin: 0;
+    overflow: visible;        /* No scroll, code wraps */
+    border-radius: 8px;
+    background: #151515;
+  }
+
+  .token.comment,
+  .token.block-comment,
+  .token.prolog,
+  .token.doctype,
+  .token.cdata { color: #999; }
+
+  .token.punctuation { color: #ccc; }
+
+  .token.tag,
+  .token.attr-name,
+  .token.namespace,
+  .token.deleted { color: #e2777a; }
+
+  .token.function-name { color: #6196cc; }
+
+  .token.boolean,
+  .token.number,
+  .token.function { color: #f08d49; }
+
+  .token.property,
+  .token.class-name,
+  .token.constant,
+  .token.symbol { color: #f8c555; }
+
+  .token.selector,
+  .token.important,
+  .token.atrule,
+  .token.keyword,
+  .token.builtin { color: #cc99cd; }
+
+  .token.string,
+  .token.char,
+  .token.attr-value,
+  .token.regex,
+  .token.variable { color: #7ec699; }
+
+  .token.operator,
+  .token.entity,
+  .token.url { color: #67cdcc; }
+
+  .token.important,
+  .token.bold { font-weight: bold; }
+
+  .token.italic { font-style: italic; }
+
+  .token.entity { cursor: help; }
+
+  .token.inserted { color: green; }
+</style>
+
+<style>
+  .code-viewer {
+    margin: 16px 0;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #151515;
+  }
+
+  .code-filename {
+    padding: 8px 16px;
+    font-size: 0.75rem;
+    color: #888;
+    background: #1a1a1a;
+    border-bottom: 1px solid #222;
+    font-family: 'SF Mono', monospace;
+  }
+</style>

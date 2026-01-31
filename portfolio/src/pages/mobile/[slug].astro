@@ -1,0 +1,168 @@
+---
+import MobileLayout from '../../layouts/MobileLayout.astro';
+import CodeViewer from '../../components/CodeViewer.astro';
+import NotesViewer from '../../components/NotesViewer.astro';
+import fs from 'node:fs';
+import path from 'node:path';
+
+// Generate static paths from atom-metadata.json
+export function getStaticPaths() {
+  const metadataPath = path.resolve('./public/atom-metadata.json');
+  if (!fs.existsSync(metadataPath)) return [];
+
+  const atoms = JSON.parse(fs.readFileSync(metadataPath, 'utf8'));
+  return atoms.map((atom: any) => ({
+    params: { slug: atom.slug },
+    props: { atom }
+  }));
+}
+
+const { atom } = Astro.props;
+
+// Parse display values
+const parts = atom.slug.match(/^(\d{4}-\d{2}-\d{2})-(.+)$/);
+const displayName = parts ? parts[2] : atom.slug;
+const displayDate = parts ? parts[1] : '';
+
+// Determine code filename for display
+const codeFilenames: Record<string, string> = {
+  visual: 'sketch.js',
+  audio: 'audio.js',
+  'audio-visual': 'sketch.js',
+  composition: 'composition.js'
+};
+const codeFilename = codeFilenames[atom.type] || 'sketch.js';
+---
+
+<MobileLayout title={displayName} showBack={true} backHref="/mobile/gallery">
+  <!-- Atom header -->
+  <div class="atom-header">
+    <span class="atom-date">{displayDate}</span>
+    <span class="atom-type-badge">{atom.type}</span>
+    <span class="atom-stage-badge">{atom.stage}</span>
+  </div>
+
+  <!-- Tab navigation -->
+  <div class="tab-nav" id="tab-nav">
+    <button class="tab active" data-tab="code">Code</button>
+    <button class="tab" data-tab="config">Config</button>
+    <button class="tab" data-tab="notes">Notes</button>
+  </div>
+
+  <!-- Code tab -->
+  <div class="tab-content active" id="tab-code">
+    {atom.code ? (
+      <CodeViewer code={atom.code} language="javascript" filename={codeFilename} />
+    ) : (
+      <p style="color: #555; padding: 16px;">No code file found.</p>
+    )}
+  </div>
+
+  <!-- Config tab -->
+  <div class="tab-content" id="tab-config" style="display: none;">
+    {atom.configJson ? (
+      <CodeViewer code={atom.configJson} language="json" filename="config.json" />
+    ) : (
+      <p style="color: #555; padding: 16px;">No config.json found.</p>
+    )}
+  </div>
+
+  <!-- Notes tab -->
+  <div class="tab-content" id="tab-notes" style="display: none;">
+    <NotesViewer notes={atom.notes} />
+  </div>
+
+  <script>
+    // Tab switching logic
+    const tabs = document.querySelectorAll('.tab');
+    const contents = document.querySelectorAll('.tab-content');
+
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        const target = (tab as HTMLElement).dataset.tab;
+
+        // Update tab active state
+        tabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+
+        // Show target content, hide others
+        contents.forEach(content => {
+          const el = content as HTMLElement;
+          if (el.id === `tab-${target}`) {
+            el.style.display = 'block';
+            el.classList.add('active');
+          } else {
+            el.style.display = 'none';
+            el.classList.remove('active');
+          }
+        });
+      });
+    });
+  </script>
+
+  <style>
+    .atom-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+
+    .atom-date {
+      color: #666;
+      font-size: 0.85rem;
+    }
+
+    .atom-type-badge {
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      color: #6bb5ff;
+      background: rgba(107, 181, 255, 0.1);
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+
+    .atom-stage-badge {
+      font-size: 0.7rem;
+      color: #888;
+      background: #1a1a1a;
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+
+    .tab-nav {
+      display: flex;
+      gap: 0;
+      border-bottom: 1px solid #222;
+      margin-bottom: 0;
+    }
+
+    .tab {
+      flex: 1;
+      padding: 12px 16px;
+      border: none;
+      background: none;
+      color: #666;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      min-height: 44px;
+    }
+
+    .tab.active {
+      color: #6bb5ff;
+      border-bottom-color: #6bb5ff;
+    }
+
+    .tab:active {
+      background: #1a1a1a;
+    }
+
+    .tab-content {
+      margin-top: 0;
+    }
+  </style>
+</MobileLayout>
