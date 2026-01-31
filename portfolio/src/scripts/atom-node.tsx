@@ -124,17 +124,17 @@ function AtomNodeComponent({ data }: NodeProps<AtomNodeData>) {
                 fontSize: 12,
               }}
             >
-              {/* Input handle (left) */}
+              {/* Input handle (left) - 48px touch target via CSS */}
               <Handle
                 type="target"
                 position={Position.Left}
                 id={`${handleId}-in`}
                 style={{
-                  width: 10,
-                  height: 10,
+                  width: 12,
+                  height: 12,
                   background: color,
                   border: '2px solid #0a0a0a',
-                  left: -5,
+                  left: -6,
                 }}
               />
 
@@ -143,17 +143,17 @@ function AtomNodeComponent({ data }: NodeProps<AtomNodeData>) {
                 {displayValue}
               </span>
 
-              {/* Output handle (right) */}
+              {/* Output handle (right) - 48px touch target via CSS */}
               <Handle
                 type="source"
                 position={Position.Right}
                 id={`${handleId}-out`}
                 style={{
-                  width: 10,
-                  height: 10,
+                  width: 12,
+                  height: 12,
                   background: color,
                   border: '2px solid #0a0a0a',
-                  right: -5,
+                  right: -6,
                 }}
               />
             </div>
