@@ -24,16 +24,16 @@ Consistent output of creative atoms that compound into a body of work, tools, an
 - Requirements: 13 total (all mobile/composition/backup focused)
 
 ### Current Phase
-**Phase 4: Mobile Gallery & Ideation Tools** - In progress (Plan 03 of 05 complete)
+**Phase 4: Mobile Gallery & Ideation Tools** - COMPLETE (All 5 plans complete)
 - Goal: Establish mobile as accessible companion, enable voice/visual capture
 - Requirements: MOB-01 through IDEA-04
 - Estimated: 3-4 weeks
-- **Last activity:** 2026-01-31 - Completed 04-03-PLAN.md (Parameter Tweaking UI)
+- **Last activity:** 2026-01-31 - Completed 04-05-PLAN.md (Screenshot Annotation Tool)
 
 ### Status
-v1.0 COMPLETE (shipped 2026-01-30). v1.1 Phase 4 in progress (3/5 plans complete).
+v1.0 COMPLETE (shipped 2026-01-30). v1.1 Phase 4 COMPLETE (5/5 plans). Phase 5 ready.
 
-**Progress:** ████████████░░░░░░░░░░░░░░░░░░░░░░░░ 3/13 plans (23.1%)
+**Progress:** ████████████████████░░░░░░░░░░░░░░░░ 5/13 plans (38.5%)
 
 ---
 
@@ -48,7 +48,7 @@ v1.0 COMPLETE (shipped 2026-01-30). v1.1 Phase 4 in progress (3/5 plans complete
 ### v1.1 Status (IN PROGRESS)
 - 3 phases planned (Phases 4-6)
 - 13/13 requirements scoped
-- 3/13 plans executed (Phase 4 Plans 01-03 complete)
+- 5/13 plans executed (Phase 4 COMPLETE, all 5 plans)
 - Infrastructure research complete
 
 ---
@@ -74,6 +74,11 @@ v1.0 COMPLETE (shipped 2026-01-30). v1.1 Phase 4 in progress (3/5 plans complete
 | Build-time metadata generation | Single source of truth for SSG + client | atom-metadata.json enables offline gallery | 04-02 |
 | Code wrapping for mobile | Mobile UX > exact line structure | pre-wrap CSS, no horizontal scroll | 04-02 |
 | Inline notes editor | Minimal context switch | View/Edit toggle within Notes tab | 04-02 |
+| Quadratic Bezier smoothing for pen | Smooth curves vs jagged lines on fast strokes | continueStroke uses quadraticCurveTo | 04-05 |
+| ImageData for undo/redo | Memory efficiency (10x vs base64) | History stores ImageData not toDataURL | 04-05 |
+| 20-state undo limit | Prevent mobile memory exhaustion | ~80MB max for 1080p canvas | 04-05 |
+| prompt() for text annotation | v1.1 simplicity over rich UI | Native dialog, defer custom modal to v1.2 | 04-05 |
+| Single color pen | Focus on core workflow | No color picker in v1.1, defer to v1.2 | 04-05 |
 | Heuristic range inference | No explicit min/max in config.json | Name and value-based slider ranges (hue: 0-360, etc.) | 04-03 |
 | Instant parameter persistence | Mobile autosave UX pattern | Changes save immediately to IndexedDB, no Save button | 04-03 |
 | Separate override storage | Easy reset and sync | Overrides stored separately from original config.json | 04-03 |
@@ -99,26 +104,39 @@ None inherited from v1.0. v1.1 builds on proven v1.0 foundation (no refactoring 
 1. Executed Phase 4 Plan 01: PWA Foundation & Offline Infrastructure
 2. Executed Phase 4 Plan 02: Mobile Gallery & Code Viewer
 3. Executed Phase 4 Plan 03: Parameter Tweaking UI
-4. Created mobile gallery list view with search at /mobile/gallery
-5. Created atom detail view at /mobile/<slug> with syntax-highlighted code viewer
-6. Added Prism.js with selective language imports (JavaScript, JSON, Markdown)
-7. Implemented inline NOTES.md editor with View/Edit modes and IndexedDB persistence
-8. Created parameter tweaking UI with sliders and number inputs
-9. Heuristic range inference (hue: 0-360, size: 0-300, speed: 0-10, noiseScale: 0-1)
-10. Instant IndexedDB persistence for parameter changes
-11. Visual indicators for changed parameters (blue left border)
-12. Reset button to restore original config.json values
-13. Created build-time metadata generator (atom-metadata.json)
-14. All mobile features work offline after first visit
+4. Executed Phase 4 Plan 04: Voice Notes with Whisper Transcription
+5. Executed Phase 4 Plan 05: Screenshot Annotation Tool
+6. Created mobile gallery list view with search at /mobile/gallery
+7. Created atom detail view at /mobile/<slug> with syntax-highlighted code viewer
+8. Added Prism.js with selective language imports (JavaScript, JSON, Markdown)
+9. Implemented inline NOTES.md editor with View/Edit modes and IndexedDB persistence
+10. Created parameter tweaking UI with sliders and number inputs
+11. Heuristic range inference (hue: 0-360, size: 0-300, speed: 0-10, noiseScale: 0-1)
+12. Instant IndexedDB persistence for parameter changes
+13. Visual indicators for changed parameters (blue left border)
+14. Reset button to restore original config.json values
+15. Integrated OpenAI Whisper API for voice note transcription
+16. Built voice recorder with MediaRecorder API (WebM/AAC capture)
+17. Created canvas annotation tool with quadratic Bezier smoothing
+18. ImageData-based undo/redo (20-state limit, memory-efficient)
+19. Text annotation with white background for readability
+20. WebP export to IndexedDB screenshots store
+21. Created build-time metadata generator (atom-metadata.json)
+22. All mobile features work offline after first visit (except transcription)
 
 ### Context for Next Session
 **Last session:** 2026-01-31
-**Stopped at:** Completed 04-03-PLAN.md (Parameter Tweaking UI)
+**Stopped at:** Completed Phase 4 (all 5 plans)
 **Resume file:** None
 
 **Phase 4 Status:**
 - ✓ Plan 01: PWA Foundation complete
-- ✓ Plan 02: Mobile Gallery & Code Viewer complete (8 min execution)
+- ✓ Plan 02: Mobile Gallery & Code Viewer complete
+- ✓ Plan 03: Parameter Tweaking complete
+- ✓ Plan 04: Voice Notes complete
+- ✓ Plan 05: Screenshot Annotation complete
+
+**PHASE 4 COMPLETE - All mobile ideation tools functional**
 - ✓ Plan 03: Parameter Tweaking complete (4 min execution)
 - ⏳ Plan 04: Voice Notes (next)
 - ⏳ Plan 05: Visual Annotations
