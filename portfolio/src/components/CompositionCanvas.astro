@@ -1,0 +1,88 @@
+---
+/**
+ * CompositionCanvas: Astro wrapper for React Flow canvas.
+ *
+ * Uses client:only='react' to render React Flow client-side only.
+ * Provides mobile-optimized touch controls (pan, pinch zoom).
+ */
+import '../styles/canvas.css';
+---
+
+<div id="composition-canvas-container" class="composition-canvas">
+  <!-- React Flow canvas rendered client-side -->
+</div>
+
+<!-- Toast notification -->
+<div id="canvas-toast" class="canvas-toast"></div>
+
+<script>
+  import React from 'react';
+  import ReactDOM from 'react-dom/client';
+  import { ReactFlow, Background, useNodesState, useEdgesState, type Node, type Edge } from 'reactflow';
+  import AtomNode from '../scripts/atom-node';
+
+  // Custom node types
+  const nodeTypes = {
+    atomNode: AtomNode,
+  };
+
+  // Canvas React component
+  function CanvasApp() {
+    const [nodes, setNodes, onNodesChange] = useNodesState([]);
+    const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+
+    // Expose setters to window for Astro script communication
+    React.useEffect(() => {
+      (window as any).__canvasSetNodes = setNodes;
+      (window as any).__canvasSetEdges = setEdges;
+      (window as any).__canvasGetNodes = () => nodes;
+      (window as any).__canvasGetEdges = () => edges;
+    }, [setNodes, setEdges, nodes, edges]);
+
+    // Node drag handler - dispatch positions to Astro
+    const onNodeDragStop = React.useCallback((_event: any, _node: any) => {
+      const currentNodes = (window as any).__canvasGetNodes?.() || [];
+      window.dispatchEvent(new CustomEvent('eoe:nodes-changed', {
+        detail: { nodes: currentNodes }
+      }));
+    }, []);
+
+    return React.createElement(
+      ReactFlow,
+      {
+        nodes,
+        edges,
+        onNodesChange,
+        onEdgesChange,
+        onNodeDragStop,
+        nodeTypes,
+        fitView: true,
+        fitViewOptions: {
+          padding: 0.2,
+          maxZoom: 1,
+        },
+        // Mobile-optimized controls
+        panOnDrag: [1], // Single finger pan
+        zoomOnPinch: true,
+        panOnScroll: false,
+        minZoom: 0.3,
+        maxZoom: 2,
+        defaultViewport: { x: 0, y: 0, zoom: 1 },
+        // Style
+        className: 'react-flow-canvas',
+      },
+      React.createElement(Background, {
+        color: '#333',
+        gap: 16,
+        size: 1,
+      })
+    );
+  }
+
+  // Mount React app
+  const container = document.getElementById('composition-canvas-container');
+  if (container) {
+    const root = ReactDOM.createRoot(container);
+    root.render(React.createElement(CanvasApp));
+  }
+</script>

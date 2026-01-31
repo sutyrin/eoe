@@ -1,0 +1,17 @@
+---
+import MobileLayout from '../../layouts/MobileLayout.astro';
+import CompositionCanvas from '../../components/CompositionCanvas.astro';
+---
+
+<MobileLayout title="Compose" showBack={true} backHref="/mobile/gallery">
+  <div style="margin: -16px; margin-top: -16px;">
+    <CompositionCanvas />
+  </div>
+</MobileLayout>
+
+<style>
+  :global(.mobile-main) {
+    padding: 0 !important;
+    max-width: none !important;
+  }
+</style>

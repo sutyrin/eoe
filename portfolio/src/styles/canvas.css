@@ -1,0 +1,198 @@
+/**
+ * Canvas styles for React Flow composition canvas.
+ * Mobile-first with dark theme.
+ */
+
+/* React Flow base styles */
+@import 'reactflow/dist/style.css';
+
+/* Canvas container */
+.composition-canvas {
+  width: 100%;
+  height: calc(100vh - 60px); /* Account for mobile header */
+  background: #0a0a0a;
+  position: relative;
+}
+
+/* React Flow dark theme overrides */
+.react-flow {
+  background: #0a0a0a;
+}
+
+.react-flow__background {
+  background: #0a0a0a;
+}
+
+.react-flow__background line {
+  stroke: #1a1a1a;
+}
+
+/* Disable default controls (too small for mobile) */
+.react-flow__controls {
+  display: none;
+}
+
+/* AtomNode component */
+.atom-node {
+  background: #111;
+  border: 2px solid #333;
+  border-radius: 12px;
+  padding: 12px 16px;
+  min-width: 180px;
+  max-width: 220px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.atom-node-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.atom-node-title {
+  color: #fff;
+  font-weight: 600;
+  font-size: 0.9rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 1;
+}
+
+.atom-node-type-badge {
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: #fff;
+  padding: 3px 6px;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+.atom-node-params {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.atom-node-param-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #888;
+  font-size: 0.75rem;
+}
+
+.atom-node-param-label-out {
+  justify-content: flex-end;
+}
+
+.param-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* Missing atom state */
+.atom-node-missing {
+  border-color: #ff4444;
+  opacity: 0.7;
+}
+
+.atom-node-missing-label {
+  color: #ff4444;
+  font-size: 0.7rem;
+  margin-top: 4px;
+  text-align: center;
+}
+
+/* Touch-friendly edges */
+.react-flow__edge-path {
+  stroke-width: 3px; /* Thicker for easier tap */
+}
+
+/* Selected node */
+.react-flow__node.selected .atom-node {
+  border-color: #6bb5ff;
+  box-shadow: 0 0 0 2px #6bb5ff40;
+}
+
+/* FAB button (add atom) */
+.compose-fab {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  width: 56px;
+  height: 56px;
+  border-radius: 28px;
+  background: #6bb5ff;
+  color: #fff;
+  border: none;
+  font-size: 1.8rem;
+  font-weight: 300;
+  box-shadow: 0 4px 12px rgba(107, 181, 255, 0.5);
+  cursor: pointer;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 100ms ease, box-shadow 100ms ease;
+}
+
+.compose-fab:active {
+  transform: scale(0.95);
+}
+
+.compose-fab.disabled {
+  background: #444;
+  color: #888;
+  box-shadow: none;
+  pointer-events: none;
+}
+
+/* Toast notification */
+.canvas-toast {
+  position: fixed;
+  bottom: 96px;
+  left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  background: #222;
+  color: #fff;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+  opacity: 0;
+  transition: opacity 200ms ease, transform 200ms ease;
+  pointer-events: none;
+  z-index: 150;
+}
+
+.canvas-toast.visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* Search bar in atom picker */
+.search-bar {
+  width: 100%;
+  padding: 10px 14px;
+  background: #1a1a1a;
+  border: 1px solid #333;
+  border-radius: 8px;
+  color: #fff;
+  font-size: 0.9rem;
+  font-family: inherit;
+  outline: none;
+}
+
+.search-bar:focus {
+  border-color: #6bb5ff;
+}
+
+.search-bar::placeholder {
+  color: #666;
+}
