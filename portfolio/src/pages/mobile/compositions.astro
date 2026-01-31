@@ -1,0 +1,215 @@
+---
+import MobileLayout from '../../layouts/MobileLayout.astro';
+---
+
+<MobileLayout title="Compositions">
+  <div id="comp-list" class="comp-list">
+    <!-- Populated from IndexedDB on client side -->
+  </div>
+
+  <div id="comp-empty" class="comp-empty" style="display: none;">
+    <div class="comp-empty-title">No Compositions Yet</div>
+    <div class="comp-empty-text">Create one by tapping the button below.</div>
+  </div>
+
+  <a href="/mobile/compose" class="btn btn-primary" id="new-comp-btn" style="width: 100%; margin-top: 16px;">
+    + New Composition
+  </a>
+
+  <!-- Bottom nav -->
+  <nav class="bottom-nav">
+    <a href="/mobile/gallery" class="bottom-nav-item">Gallery</a>
+    <a href="/mobile/compositions" class="bottom-nav-item active">Compose</a>
+  </nav>
+</MobileLayout>
+
+<script>
+  import { getAllCompositions, deleteComposition } from '../../scripts/composition-store';
+
+  async function loadCompositions() {
+    const listEl = document.getElementById('comp-list')!;
+    const emptyEl = document.getElementById('comp-empty')!;
+
+    const compositions = await getAllCompositions();
+
+    if (compositions.length === 0) {
+      listEl.innerHTML = '';
+      emptyEl.style.display = 'block';
+      return;
+    }
+
+    emptyEl.style.display = 'none';
+
+    listEl.innerHTML = compositions.map(comp => {
+      const atomCount = comp.atoms.length;
+      const routeCount = comp.routes.length;
+      const date = new Date(comp.updatedAt).toLocaleDateString('en-US', {
+        month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
+      });
+
+      return `
+        <a href="/mobile/compose?id=${comp.id}" class="comp-item">
+          <div class="comp-item-info">
+            <span class="comp-item-name">${comp.name}</span>
+            <span class="comp-item-meta">
+              ${atomCount} atom${atomCount !== 1 ? 's' : ''} &middot;
+              ${routeCount} route${routeCount !== 1 ? 's' : ''} &middot;
+              ${date}
+            </span>
+          </div>
+          <button class="comp-item-delete" data-id="${comp.id}" title="Delete">&times;</button>
+        </a>
+      `;
+    }).join('');
+
+    // Delete handlers
+    listEl.querySelectorAll('.comp-item-delete').forEach(btn => {
+      btn.addEventListener('click', async (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const id = (btn as HTMLElement).dataset.id;
+        if (id && confirm('Delete this composition?')) {
+          await deleteComposition(id);
+          loadCompositions(); // Refresh list
+        }
+      });
+    });
+  }
+
+  loadCompositions();
+</script>
+
+<style>
+  .comp-list {
+    margin-bottom: 16px;
+  }
+
+  .comp-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    border-bottom: 1px solid #1a1a1a;
+    text-decoration: none;
+    color: inherit;
+    min-height: 64px;
+  }
+
+  .comp-item:active {
+    background: #1a1a1a;
+  }
+
+  .comp-item-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+  }
+
+  .comp-item-name {
+    color: #fff;
+    font-weight: 600;
+    font-size: 0.95rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .comp-item-meta {
+    color: #666;
+    font-size: 0.8rem;
+  }
+
+  .comp-item-delete {
+    width: 36px;
+    height: 36px;
+    border: none;
+    background: #1a1a1a;
+    color: #888;
+    border-radius: 18px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .comp-item-delete:active {
+    background: #ff444440;
+    color: #ff4444;
+  }
+
+  .comp-empty {
+    text-align: center;
+    padding: 48px 24px;
+  }
+
+  .comp-empty-title {
+    color: #888;
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+
+  .comp-empty-text {
+    color: #555;
+    font-size: 0.85rem;
+  }
+
+  .btn {
+    padding: 14px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
+    border: none;
+    cursor: pointer;
+    font-size: 0.9rem;
+  }
+
+  .btn-primary {
+    background: #6bb5ff;
+    color: #0a0a0a;
+  }
+
+  .btn-primary:active {
+    opacity: 0.9;
+  }
+
+  .bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    background: #111;
+    border-top: 1px solid #222;
+    padding-bottom: env(safe-area-inset-bottom, 0);
+    z-index: 100;
+  }
+
+  .bottom-nav-item {
+    flex: 1;
+    padding: 12px;
+    text-align: center;
+    color: #666;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-decoration: none;
+    min-height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .bottom-nav-item.active {
+    color: #6bb5ff;
+  }
+
+  .bottom-nav-item:active {
+    background: #1a1a1a;
+  }
+</style>
