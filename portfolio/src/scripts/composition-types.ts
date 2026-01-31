@@ -144,6 +144,46 @@ export function createEmptyComposition(name: string): Composition {
 }
 
 /**
+ * Immutable composition snapshot.
+ *
+ * A snapshot captures EVERYTHING needed to replay a composition:
+ * - Full atom code (sketch.js, audio.js, config.json) inline
+ * - All parameter routes with values at time of save
+ * - Composition metadata (name, playback mode, viewport)
+ *
+ * Snapshots are immutable: once created, they never change.
+ * This ensures "lock in a moment" behavior -- even if original
+ * atoms evolve, the snapshot plays the exact code it captured.
+ */
+export interface CompositionSnapshot {
+  id: string;                        // UUID, suitable for /c/[id] URLs
+  compositionId: string;             // ID of source draft composition
+  name: string;                      // Inherited from composition name
+  createdAt: string;                 // ISO timestamp of snapshot creation
+  playbackMode: 'simultaneous' | 'sequential';
+  viewport: { x: number; y: number; zoom: number };
+  atoms: SnapshotAtom[];             // Full atom data captured at snapshot time
+  routes: ParameterRoute[];          // Routes at snapshot time
+  synced: boolean;                   // Cloud backup flag
+}
+
+/**
+ * Atom captured within a snapshot.
+ * Contains both the slug reference AND the inline code.
+ * Hybrid structure: slug for linkability, inline code for portability.
+ */
+export interface SnapshotAtom {
+  nodeId: string;                    // Position in the composition graph
+  atomSlug: string;                  // Original atom slug (for reference/linking)
+  position: { x: number; y: number };
+  title: string;                     // Atom title at snapshot time
+  type: string;                      // "visual" | "audio" | "audio-visual"
+  code: string;                      // sketch.js content (inline, immutable)
+  configJson: string;                // config.json content (full original config)
+  paramOverrides?: Record<string, number | string | boolean>;
+}
+
+/**
  * Preview playback state for UI binding.
  */
 export type PreviewState = 'stopped' | 'playing' | 'paused';
