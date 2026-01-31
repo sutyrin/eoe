@@ -97,21 +97,27 @@ import MobileLayout from '../../layouts/MobileLayout.astro';
         const size = formatSnapshotSize(getSnapshotSize(snapshot));
 
         return `
-          <a href="/mobile/compose?snapshot=${snapshot.id}" class="comp-item">
-            <div class="comp-item-info">
-              <span class="comp-item-name">
-                ${snapshot.name}
-                <span class="snapshot-badge">Snapshot</span>
-              </span>
-              <span class="comp-item-meta">
-                ${atomCount} atom${atomCount !== 1 ? 's' : ''} &middot;
-                ${routeCount} route${routeCount !== 1 ? 's' : ''} &middot;
-                ${size} &middot;
-                ${date}
-              </span>
+          <div class="comp-item-wrapper">
+            <a href="/mobile/compose?snapshot=${snapshot.id}" class="comp-item">
+              <div class="comp-item-info">
+                <span class="comp-item-name">
+                  ${snapshot.name}
+                  <span class="snapshot-badge">Snapshot</span>
+                </span>
+                <span class="comp-item-meta">
+                  ${atomCount} atom${atomCount !== 1 ? 's' : ''} &middot;
+                  ${routeCount} route${routeCount !== 1 ? 's' : ''} &middot;
+                  ${size} &middot;
+                  ${date}
+                </span>
+              </div>
+              <button class="comp-item-delete" data-id="${snapshot.id}" data-type="snapshot" title="Delete">&times;</button>
+            </a>
+            <div class="snapshot-actions">
+              <a href="/mobile/compose?snapshot=${snapshot.id}" class="snapshot-open-btn">Open</a>
+              <button class="snapshot-share-btn" data-snapshot-id="${snapshot.id}">Share</button>
             </div>
-            <button class="comp-item-delete" data-id="${snapshot.id}" data-type="snapshot" title="Delete">&times;</button>
-          </a>
+          </div>
         `;
       }).join('');
     }
@@ -131,6 +137,38 @@ import MobileLayout from '../../layouts/MobileLayout.astro';
           }
           loadCompositions(); // Refresh list
         }
+      });
+    });
+
+    // Share snapshot handlers
+    document.querySelectorAll('.snapshot-share-btn').forEach(btn => {
+      btn.addEventListener('click', async (e) => {
+        e.preventDefault();
+        const el = e.target as HTMLButtonElement;
+        const snapId = el.getAttribute('data-snapshot-id');
+        if (!snapId) return;
+
+        el.textContent = 'Uploading...';
+        el.disabled = true;
+
+        try {
+          const { shareSnapshot } = await import('../../scripts/composition-snapshot');
+          const url = await shareSnapshot(snapId);
+
+          if (url) {
+            await navigator.clipboard.writeText(window.location.origin + url);
+            el.textContent = 'Link copied!';
+          } else {
+            el.textContent = 'Share failed';
+          }
+        } catch {
+          el.textContent = 'Share failed';
+        }
+
+        setTimeout(() => {
+          el.textContent = 'Share';
+          el.disabled = false;
+        }, 2000);
       });
     });
   }
@@ -164,12 +202,15 @@ import MobileLayout from '../../layouts/MobileLayout.astro';
     font-size: 0.85rem;
   }
 
+  .comp-item-wrapper {
+    border-bottom: 1px solid #1a1a1a;
+  }
+
   .comp-item {
     display: flex;
     align-items: center;
     gap: 12px;
-    padding: 14px 16px;
-    border-bottom: 1px solid #1a1a1a;
+    padding: 14px 16px 8px;
     text-decoration: none;
     color: inherit;
     min-height: 64px;
@@ -307,5 +348,49 @@ import MobileLayout from '../../layouts/MobileLayout.astro';
 
   .bottom-nav-item:active {
     background: #1a1a1a;
+  }
+
+  .snapshot-actions {
+    display: flex;
+    gap: 8px;
+    padding: 0 16px 10px;
+  }
+
+  .snapshot-open-btn, .snapshot-share-btn {
+    padding: 6px 14px;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    min-height: 32px;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .snapshot-open-btn {
+    background: #333;
+    color: #6bb5ff;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .snapshot-open-btn:active {
+    background: #404040;
+  }
+
+  .snapshot-share-btn {
+    background: #222;
+    color: #ccc;
+    border: 1px solid #333;
+  }
+
+  .snapshot-share-btn:active {
+    background: #2a2a2a;
+  }
+
+  .snapshot-share-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
   }
 </style>

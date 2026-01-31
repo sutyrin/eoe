@@ -209,3 +209,30 @@ export function formatSnapshotSize(bytes: number): string {
   if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
 }
+
+// ---- Snapshot Sharing ----
+
+/**
+ * Upload a snapshot to the server for sharing.
+ * Returns the shareable URL path (e.g., /c/?id=abc123).
+ */
+export async function shareSnapshot(snapshotId: string): Promise<string | null> {
+  try {
+    const snapshot = await getSnapshot(snapshotId);
+    if (!snapshot) return null;
+
+    const res = await fetch('/api/snapshot', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(snapshot),
+    });
+
+    if (!res.ok) throw new Error(`Server returned ${res.status}`);
+
+    const data = await res.json();
+    return data.url || `/c/?id=${snapshot.id}`;
+  } catch (err) {
+    console.error('[snapshot] Share failed:', err);
+    return null;
+  }
+}
