@@ -1,0 +1,485 @@
+---
+/**
+ * Shareable Composition Viewer
+ *
+ * Read-only view of a composition snapshot at /c/?id=[id] or /c/[id] (via nginx).
+ * Fetches snapshot data from the server API, not from IndexedDB.
+ * Enables sharing compositions via URL without requiring the recipient
+ * to have local data.
+ *
+ * Features:
+ * - Composition name and metadata display
+ * - Atom list with parameters
+ * - Route visualization
+ * - Play button to preview the composition
+ * - No editing capabilities (read-only)
+ */
+import MobileLayout from '../../layouts/MobileLayout.astro';
+import '../../styles/canvas.css';
+---
+
+<MobileLayout title="Composition" showBack={true} backHref="/">
+  <div class="viewer-page">
+    <!-- Loading state -->
+    <div id="viewer-loading" class="viewer-loading">
+      <div class="viewer-spinner"></div>
+      <div>Loading composition...</div>
+    </div>
+
+    <!-- Error state -->
+    <div id="viewer-error" class="viewer-error" style="display: none;">
+      <div class="viewer-error-icon">?</div>
+      <div class="viewer-error-text">Composition not found</div>
+      <div class="viewer-error-sub">This composition may have been deleted or the link may be incorrect.</div>
+    </div>
+
+    <!-- Composition content -->
+    <div id="viewer-content" class="viewer-content" style="display: none;">
+      <!-- Header -->
+      <div class="viewer-header">
+        <h1 id="viewer-name" class="viewer-name"></h1>
+        <div id="viewer-meta" class="viewer-meta"></div>
+      </div>
+
+      <!-- Atoms list -->
+      <div class="viewer-section">
+        <h2 class="viewer-section-title">Atoms</h2>
+        <div id="viewer-atoms" class="viewer-atoms-list"></div>
+      </div>
+
+      <!-- Routes -->
+      <div class="viewer-section">
+        <h2 class="viewer-section-title">Routes</h2>
+        <div id="viewer-routes" class="viewer-routes-list"></div>
+      </div>
+
+      <!-- Preview area (hidden iframes) -->
+      <div id="preview-area" style="position: fixed; bottom: 0; left: 0; width: 0; height: 0; overflow: hidden;"></div>
+
+      <!-- Play button -->
+      <div class="viewer-play-section">
+        <button id="viewer-play-btn" class="viewer-play-btn">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M8 5v14l11-7z"/>
+          </svg>
+          <span id="play-label">Play Composition</span>
+        </button>
+      </div>
+
+      <!-- Share button -->
+      <div class="viewer-share-section">
+        <button id="viewer-share-btn" class="viewer-share-btn">
+          Copy Link
+        </button>
+      </div>
+    </div>
+  </div>
+</MobileLayout>
+
+<script>
+  // Extract composition ID from URL
+  // Supports both /c/?id=abc123 and /c/abc123 (if nginx rewrites)
+  let compositionId = '';
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.has('id')) {
+    compositionId = urlParams.get('id')!;
+  } else {
+    // Try path-based ID (if nginx rewrites /c/abc123 to /c/?id=abc123)
+    const pathParts = window.location.pathname.split('/').filter(p => p);
+    if (pathParts.length > 1) {
+      compositionId = pathParts[pathParts.length - 1];
+    }
+  }
+
+  const loading = document.getElementById('viewer-loading')!;
+  const error = document.getElementById('viewer-error')!;
+  const content = document.getElementById('viewer-content')!;
+  const nameEl = document.getElementById('viewer-name')!;
+  const metaEl = document.getElementById('viewer-meta')!;
+  const atomsEl = document.getElementById('viewer-atoms')!;
+  const routesEl = document.getElementById('viewer-routes')!;
+  const playBtn = document.getElementById('viewer-play-btn')!;
+  const playLabel = document.getElementById('play-label')!;
+  const shareBtn = document.getElementById('viewer-share-btn')!;
+
+  let snapshot: any = null;
+  let isPlaying = false;
+
+  async function loadComposition() {
+    if (!compositionId) {
+      showError();
+      return;
+    }
+
+    try {
+      // Try server first (shared snapshots)
+      const res = await fetch(`/api/snapshot/${compositionId}`);
+      if (res.ok) {
+        snapshot = await res.json();
+        renderSnapshot();
+        return;
+      }
+
+      // Try local IndexedDB (own snapshots)
+      try {
+        const { getSnapshot } = await import('../../scripts/composition-snapshot');
+        const localSnapshot = await getSnapshot(compositionId);
+        if (localSnapshot) {
+          snapshot = localSnapshot;
+          renderSnapshot();
+          return;
+        }
+      } catch { /* IndexedDB may not have this snapshot */ }
+
+      // Not found
+      showError();
+    } catch (err) {
+      console.error('[viewer] Failed to load:', err);
+      showError();
+    }
+  }
+
+  function showError() {
+    loading.style.display = 'none';
+    error.style.display = 'flex';
+  }
+
+  function renderSnapshot() {
+    loading.style.display = 'none';
+    content.style.display = 'block';
+
+    // Name and metadata
+    nameEl.textContent = snapshot.name;
+    const date = new Date(snapshot.createdAt).toLocaleDateString();
+    const atomCount = snapshot.atoms?.length || 0;
+    const routeCount = snapshot.routes?.length || 0;
+    metaEl.textContent = `${atomCount} atom${atomCount !== 1 ? 's' : ''} · ${routeCount} route${routeCount !== 1 ? 's' : ''} · ${date}`;
+
+    // Atoms list
+    atomsEl.innerHTML = '';
+    for (const atom of snapshot.atoms || []) {
+      const item = document.createElement('div');
+      item.className = 'viewer-atom-item';
+      item.innerHTML = `
+        <div class="viewer-atom-name">${atom.title || atom.atomSlug}</div>
+        <div class="viewer-atom-type">${atom.type || 'visual'}</div>
+      `;
+      atomsEl.appendChild(item);
+    }
+
+    // Routes list
+    routesEl.innerHTML = '';
+    for (const route of snapshot.routes || []) {
+      const sourceAtom = snapshot.atoms.find((a: any) => a.nodeId === route.sourceNodeId);
+      const targetAtom = snapshot.atoms.find((a: any) => a.nodeId === route.targetNodeId);
+      const sourceName = sourceAtom?.title || '?';
+      const targetName = targetAtom?.title || '?';
+
+      const item = document.createElement('div');
+      item.className = 'viewer-route-item';
+      item.innerHTML = `
+        <span class="route-source">${sourceName}.${route.sourceParam}</span>
+        <span class="route-arrow">&rarr;</span>
+        <span class="route-target">${targetName}.${route.targetParam}</span>
+      `;
+      routesEl.appendChild(item);
+    }
+
+    if ((snapshot.routes || []).length === 0) {
+      routesEl.innerHTML = '<div class="viewer-empty">No parameter routes</div>';
+    }
+  }
+
+  // Play/Stop toggle
+  playBtn.addEventListener('click', async () => {
+    if (!snapshot) return;
+
+    if (isPlaying) {
+      // Stop
+      window.dispatchEvent(new CustomEvent('eoe:preview-stop'));
+      playLabel.textContent = 'Play Composition';
+      isPlaying = false;
+      return;
+    }
+
+    // Play: use PreviewEngine with snapshot data
+    try {
+      const { PreviewEngine } = await import('../../scripts/preview-engine');
+      const { buildAtomsMapFromSnapshot } = await import('../../scripts/composition-snapshot');
+
+      const atomsMap = buildAtomsMapFromSnapshot(snapshot);
+
+      // Convert snapshot to composition-like object for preview engine
+      const composition = {
+        id: snapshot.compositionId || snapshot.id,
+        name: snapshot.name,
+        createdAt: snapshot.createdAt,
+        updatedAt: snapshot.createdAt,
+        atoms: snapshot.atoms.map((a: any) => ({
+          nodeId: a.nodeId,
+          atomSlug: a.atomSlug,
+          position: a.position,
+          paramOverrides: a.paramOverrides,
+        })),
+        routes: snapshot.routes,
+        viewport: snapshot.viewport || { x: 0, y: 0, zoom: 1 },
+        synced: true,
+        playbackMode: snapshot.playbackMode || 'simultaneous',
+      };
+
+      const engine = new PreviewEngine({
+        onStateChange: (state) => {
+          isPlaying = state === 'playing';
+          playLabel.textContent = isPlaying ? 'Stop' : 'Play Composition';
+        },
+        onRouteActive: () => {},
+        onAtomReady: () => {},
+        onAtomError: (nodeId, msg) => console.warn('[viewer] Atom error:', nodeId, msg),
+        onGlitch: () => console.warn('[viewer] Audio glitch detected'),
+      });
+
+      await engine.init(composition as any, atomsMap);
+      engine.play();
+      isPlaying = true;
+      playLabel.textContent = 'Stop';
+
+      // Store engine reference for cleanup
+      (window as any).__viewerEngine = engine;
+    } catch (err) {
+      console.error('[viewer] Failed to play:', err);
+      playLabel.textContent = 'Play failed';
+    }
+  });
+
+  // Share: copy URL to clipboard
+  shareBtn.addEventListener('click', async () => {
+    const url = `${window.location.origin}/c/?id=${compositionId}`;
+    try {
+      await navigator.clipboard.writeText(url);
+      shareBtn.textContent = 'Copied!';
+      setTimeout(() => { shareBtn.textContent = 'Copy Link'; }, 2000);
+    } catch {
+      // Fallback for older browsers
+      const input = document.createElement('input');
+      input.value = url;
+      document.body.appendChild(input);
+      input.select();
+      document.execCommand('copy');
+      document.body.removeChild(input);
+      shareBtn.textContent = 'Copied!';
+      setTimeout(() => { shareBtn.textContent = 'Copy Link'; }, 2000);
+    }
+  });
+
+  // Cleanup on navigation
+  window.addEventListener('beforeunload', () => {
+    const engine = (window as any).__viewerEngine;
+    if (engine) engine.cleanup();
+  });
+
+  // Load composition
+  loadComposition();
+</script>
+
+<style>
+  .viewer-page {
+    padding: 16px;
+    min-height: 60vh;
+  }
+
+  .viewer-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 48px;
+    color: #666;
+  }
+
+  .viewer-spinner {
+    width: 24px;
+    height: 24px;
+    border: 3px solid #333;
+    border-top-color: #6bb5ff;
+    border-radius: 50%;
+    animation: viewer-spin 0.8s linear infinite;
+  }
+
+  @keyframes viewer-spin {
+    to { transform: rotate(360deg); }
+  }
+
+  .viewer-error {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 48px;
+    text-align: center;
+  }
+
+  .viewer-error-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: #333;
+    color: #666;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    font-weight: 700;
+  }
+
+  .viewer-error-text {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #ccc;
+  }
+
+  .viewer-error-sub {
+    font-size: 0.85rem;
+    color: #666;
+    max-width: 280px;
+  }
+
+  .viewer-header {
+    margin-bottom: 24px;
+  }
+
+  .viewer-name {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #fff;
+    margin: 0 0 6px;
+  }
+
+  .viewer-meta {
+    font-size: 0.85rem;
+    color: #888;
+  }
+
+  .viewer-section {
+    margin-bottom: 20px;
+  }
+
+  .viewer-section-title {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin: 0 0 10px;
+  }
+
+  .viewer-atoms-list, .viewer-routes-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .viewer-atom-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 14px;
+    background: #1a1a1a;
+    border-radius: 8px;
+  }
+
+  .viewer-atom-name {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #ccc;
+  }
+
+  .viewer-atom-type {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #6bb5ff;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .viewer-route-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    background: #1a1a1a;
+    border-radius: 8px;
+    font-size: 0.85rem;
+  }
+
+  .route-source {
+    color: #6bb5ff;
+    font-weight: 600;
+  }
+
+  .route-arrow {
+    color: #444;
+  }
+
+  .route-target {
+    color: #6bff6b;
+    font-weight: 600;
+  }
+
+  .viewer-empty {
+    padding: 12px;
+    text-align: center;
+    color: #555;
+    font-size: 0.85rem;
+  }
+
+  .viewer-play-section {
+    margin: 24px 0 12px;
+  }
+
+  .viewer-play-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    padding: 16px;
+    background: #6bb5ff;
+    color: #0a0a0a;
+    border: none;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    min-height: 56px;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .viewer-play-btn:active {
+    background: #5aa0e8;
+  }
+
+  .viewer-share-section {
+    margin-bottom: 24px;
+  }
+
+  .viewer-share-btn {
+    display: block;
+    width: 100%;
+    padding: 14px;
+    background: #222;
+    color: #ccc;
+    border: 1px solid #333;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    min-height: 48px;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .viewer-share-btn:active {
+    background: #2a2a2a;
+  }
+</style>
