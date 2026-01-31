@@ -41,6 +41,9 @@ const codeFilename = codeFilenames[atom.type] || 'sketch.js';
     <span class="atom-date">{displayDate}</span>
     <span class="atom-type-badge">{atom.type}</span>
     <span class="atom-stage-badge">{atom.stage}</span>
+    <a href={`/mobile/annotate?atom=${atom.slug}`} class="annotate-link tap-target">
+      Annotate Screenshot
+    </a>
   </div>
 
   <!-- Tab navigation -->
@@ -137,6 +140,24 @@ const codeFilename = codeFilenames[atom.type] || 'sketch.js';
       background: #1a1a1a;
       padding: 2px 8px;
       border-radius: 4px;
+    }
+
+    .annotate-link {
+      font-size: 0.85rem;
+      padding: 8px 16px;
+      background: #1a1a1a;
+      color: #6bb5ff;
+      border: 1px solid #222;
+      border-radius: 6px;
+      margin-top: 8px;
+      width: 100%;
+      text-align: center;
+      display: inline-block;
+    }
+
+    .annotate-link:active {
+      background: #222;
+      opacity: 1;
     }
 
     .tab-nav {

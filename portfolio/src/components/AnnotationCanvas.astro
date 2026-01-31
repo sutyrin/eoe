@@ -1,0 +1,336 @@
+---
+/**
+ * AnnotationCanvas: Canvas drawing surface with toolbar for screenshot markup.
+ * Toolbar: Pen tool, Text tool, Stroke width slider, Undo, Redo, Save.
+ */
+export interface Props {
+  atomSlug: string;
+}
+
+const { atomSlug } = Astro.props;
+---
+
+<div class="annotation-wrapper" data-atom-slug={atomSlug}>
+  <!-- Image upload -->
+  <div id="upload-area" class="upload-area">
+    <label for="image-input" class="upload-label tap-target">
+      <span class="upload-icon">+</span>
+      <span class="upload-text">Tap to select image</span>
+      <span class="upload-hint">Photo, screenshot, or camera</span>
+    </label>
+    <input type="file" id="image-input" accept="image/*" capture="environment" style="display: none;" />
+  </div>
+
+  <!-- Canvas (hidden until image loaded) -->
+  <div id="canvas-area" class="canvas-area" style="display: none;">
+    <!-- Toolbar -->
+    <div class="annotation-toolbar" id="toolbar">
+      <button class="tool-btn active" id="pen-tool" title="Pen">
+        <span class="tool-icon">&#9998;</span>
+      </button>
+      <button class="tool-btn" id="text-tool" title="Text">
+        <span class="tool-icon">T</span>
+      </button>
+      <div class="toolbar-divider"></div>
+      <button class="tool-btn" id="undo-btn" title="Undo" disabled>
+        <span class="tool-icon">&#8617;</span>
+      </button>
+      <button class="tool-btn" id="redo-btn" title="Redo" disabled>
+        <span class="tool-icon">&#8618;</span>
+      </button>
+      <div class="toolbar-divider"></div>
+      <div class="stroke-width-control">
+        <label class="stroke-label">W:</label>
+        <input type="range" id="stroke-width" min="1" max="15" value="3" class="stroke-slider" />
+      </div>
+      <div class="toolbar-spacer"></div>
+      <button class="tool-btn save-btn" id="save-btn" title="Save">
+        <span class="tool-icon">&#10003;</span>
+      </button>
+    </div>
+
+    <!-- Canvas -->
+    <canvas id="annotation-canvas" class="annotation-canvas"></canvas>
+  </div>
+
+  <!-- Save confirmation -->
+  <div id="save-confirmation" class="save-confirmation" style="display: none;">
+    <span class="save-check">&#10003;</span>
+    <span>Annotation saved!</span>
+  </div>
+</div>
+
+<script>
+  import { AnnotationEngine } from '../scripts/annotation-engine';
+  import { saveScreenshot } from '../scripts/db';
+
+  async function initAnnotation() {
+    const wrapper = document.querySelector('.annotation-wrapper') as HTMLElement;
+    if (!wrapper) return;
+
+    const atomSlug = wrapper.dataset.atomSlug || '';
+
+    const uploadArea = document.getElementById('upload-area')!;
+    const canvasArea = document.getElementById('canvas-area')!;
+    const imageInput = document.getElementById('image-input') as HTMLInputElement;
+    const canvas = document.getElementById('annotation-canvas') as HTMLCanvasElement;
+    const penTool = document.getElementById('pen-tool')!;
+    const textTool = document.getElementById('text-tool')!;
+    const undoBtn = document.getElementById('undo-btn') as HTMLButtonElement;
+    const redoBtn = document.getElementById('redo-btn') as HTMLButtonElement;
+    const strokeWidth = document.getElementById('stroke-width') as HTMLInputElement;
+    const saveBtn = document.getElementById('save-btn')!;
+    const saveConfirmation = document.getElementById('save-confirmation')!;
+
+    let engine: AnnotationEngine | null = null;
+
+    // Handle image selection
+    imageInput.addEventListener('change', async () => {
+      const file = imageInput.files?.[0];
+      if (!file) return;
+
+      // Create engine and load image
+      engine = new AnnotationEngine({
+        canvas,
+        strokeWidth: parseInt(strokeWidth.value, 10)
+      });
+
+      // Subscribe to state changes
+      engine.onState((state) => {
+        undoBtn.disabled = !state.canUndo;
+        redoBtn.disabled = !state.canRedo;
+
+        penTool.classList.toggle('active', state.tool === 'pen');
+        textTool.classList.toggle('active', state.tool === 'text');
+      });
+
+      try {
+        await engine.loadImageFromFile(file);
+
+        // Show canvas, hide upload
+        uploadArea.style.display = 'none';
+        canvasArea.style.display = 'block';
+      } catch (err) {
+        alert('Failed to load image. Please try a different file.');
+      }
+    });
+
+    // Tool selection
+    penTool.addEventListener('click', () => engine?.setTool('pen'));
+    textTool.addEventListener('click', () => engine?.setTool('text'));
+
+    // Undo/Redo
+    undoBtn.addEventListener('click', () => engine?.undo());
+    redoBtn.addEventListener('click', () => engine?.redo());
+
+    // Stroke width
+    strokeWidth.addEventListener('input', () => {
+      engine?.setStrokeWidth(parseInt(strokeWidth.value, 10));
+    });
+
+    // Save
+    saveBtn.addEventListener('click', async () => {
+      if (!engine) return;
+
+      try {
+        const imageBlob = await engine.exportAsWebP();
+
+        await saveScreenshot({
+          atomSlug,
+          imageBlob,
+          createdAt: new Date().toISOString(),
+          synced: false
+        });
+
+        // Show confirmation
+        saveConfirmation.style.display = 'flex';
+        setTimeout(() => {
+          saveConfirmation.style.display = 'none';
+        }, 2000);
+
+        // Notify other components
+        window.dispatchEvent(new CustomEvent('eoe:screenshots-updated', {
+          detail: { atomSlug }
+        }));
+
+      } catch (err) {
+        alert('Failed to save annotation. Please try again.');
+      }
+    });
+  }
+
+  initAnnotation();
+</script>
+
+<style>
+  .annotation-wrapper {
+    padding: 0;
+  }
+
+  .upload-area {
+    padding: 32px 16px;
+  }
+
+  .upload-label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 48px 24px;
+    border: 2px dashed #333;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: border-color 0.2s;
+  }
+
+  .upload-label:active {
+    border-color: #6bb5ff;
+  }
+
+  .upload-icon {
+    font-size: 2rem;
+    color: #6bb5ff;
+  }
+
+  .upload-text {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #ccc;
+  }
+
+  .upload-hint {
+    font-size: 0.8rem;
+    color: #666;
+  }
+
+  .canvas-area {
+    position: relative;
+  }
+
+  .annotation-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 8px 12px;
+    background: #111;
+    border-bottom: 1px solid #222;
+    position: sticky;
+    top: 48px; /* Below mobile header */
+    z-index: 50;
+    flex-wrap: wrap;
+  }
+
+  .tool-btn {
+    min-width: 44px;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    background: #1a1a1a;
+    color: #888;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1.1rem;
+  }
+
+  .tool-btn:active {
+    background: #222;
+  }
+
+  .tool-btn.active {
+    background: #222;
+    color: #6bb5ff;
+    border: 1px solid #6bb5ff;
+  }
+
+  .tool-btn:disabled {
+    opacity: 0.3;
+    cursor: default;
+  }
+
+  .tool-btn.save-btn {
+    background: #1a2a1a;
+    color: #6bff6b;
+  }
+
+  .tool-btn.save-btn:active {
+    background: #2a3a2a;
+  }
+
+  .tool-icon {
+    font-size: 1.1rem;
+  }
+
+  .toolbar-divider {
+    width: 1px;
+    height: 28px;
+    background: #333;
+    margin: 0 4px;
+  }
+
+  .toolbar-spacer {
+    flex: 1;
+  }
+
+  .stroke-width-control {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .stroke-label {
+    font-size: 0.75rem;
+    color: #666;
+  }
+
+  .stroke-slider {
+    width: 60px;
+    height: 44px;
+    -webkit-appearance: none;
+    background: transparent;
+  }
+
+  .stroke-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #6bb5ff;
+    margin-top: -8px;
+  }
+
+  .stroke-slider::-webkit-slider-runnable-track {
+    height: 4px;
+    background: #333;
+    border-radius: 2px;
+  }
+
+  .annotation-canvas {
+    display: block;
+    width: 100%;
+    background: #0a0a0a;
+    touch-action: none; /* Prevent scroll while drawing */
+  }
+
+  .save-confirmation {
+    position: fixed;
+    bottom: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    background: #1a2a1a;
+    border: 1px solid #336633;
+    border-radius: 8px;
+    color: #6bff6b;
+    font-size: 0.9rem;
+    z-index: 200;
+  }
+
+  .save-check {
+    font-size: 1.2rem;
+  }
+</style>
