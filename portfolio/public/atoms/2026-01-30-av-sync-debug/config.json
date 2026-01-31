@@ -1,0 +1,28 @@
+{
+  "type": "audio-visual",
+  "synth": {
+    "type": "membrane",
+    "pitchDecay": 0.05,
+    "octaves": 3,
+    "envelope": {
+      "attack": 0.001,
+      "decay": 0.1,
+      "sustain": 0.0,
+      "release": 0.1
+    }
+  },
+  "sequence": {
+    "notes": ["C2", "C2", "C2", "C2", "C2", "C2", "C2", "C2", "C2", "C2"],
+    "duration": "16n",
+    "interval": "2n"
+  },
+  "transport": {
+    "bpm": 60
+  },
+  "analysis": {
+    "fftSize": 512,
+    "smoothing": 0.3,
+    "outputSmoothing": 0.1,
+    "beatThreshold": 0.3
+  }
+}

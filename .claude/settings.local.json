@@ -2,7 +2,10 @@
   "permissions": {
     "allow": [
       "Bash(ls:*)",
-      "WebSearch"
+      "WebSearch",
+      "Bash(git tag:*)",
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\nchore: complete v1.0 milestone\n\nArchived:\n- milestones/v1.0-ROADMAP.md \\(full phase details + decisions\\)\n- milestones/v1.0-REQUIREMENTS.md \\(25 requirements, all complete\\)\n- MILESTONES.md \\(historical record\\)\n\nDeleted \\(fresh for next milestone\\):\n- ROADMAP.md \\(collapsed to archive\\)\n- REQUIREMENTS.md \\(fresh requirements for v2\\)\n\nUpdated:\n- PROJECT.md \\(Validated section with 7 shipped requirements\\)\n- STATE.md \\(milestone completion status\\)\n\nTagged: v1.0\n\nDelivered: 28/28 requirements \\(3 phases, 10 plans\\)\n- Phase 1: Visual atoms foundation\n- Phase 2: Audio synthesis + audio-reactive compositions\n- Phase 3: Video capture + encoding + YouTube publishing\n\nCo-Authored-By: Claude Haiku 4.5 <noreply@anthropic.com>\nEOF\n\\)\")"
     ]
   }
 }
