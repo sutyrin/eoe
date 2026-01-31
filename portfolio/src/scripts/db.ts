@@ -11,7 +11,7 @@
 import { openDB, type IDBPDatabase } from 'idb';
 
 const DB_NAME = 'eoe-atoms';
-const DB_VERSION = 2;
+const DB_VERSION = 3;
 
 // ---- Types ----
 
@@ -99,6 +99,14 @@ export async function getDB(): Promise<IDBPDatabase> {
         compositionStore.createIndex('name', 'name');
         compositionStore.createIndex('updatedAt', 'updatedAt');
         compositionStore.createIndex('synced', 'synced');  // Phase 6 sync queries
+      }
+
+      // Snapshots store (Phase 6 - Plan 06-02)
+      if (!db.objectStoreNames.contains('snapshots')) {
+        const snapshotStore = db.createObjectStore('snapshots', { keyPath: 'id' });
+        snapshotStore.createIndex('compositionId', 'compositionId');  // Link to source composition
+        snapshotStore.createIndex('createdAt', 'createdAt');          // Sort by creation date
+        snapshotStore.createIndex('synced', 'synced');                // Cloud backup queries
       }
     }
   });
