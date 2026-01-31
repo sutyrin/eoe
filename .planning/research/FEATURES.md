@@ -1,751 +1,755 @@
-# Features Research: Engines of Experience
+# Research: Features for v1.1 (Mobile + LLM Workflows)
 
-**Research Date:** 2026-01-29
-**Milestone Context:** Greenfield research for creative coding + media publishing ecosystem
-**Research Foundation:** See research.md for intellectual foundation (expanding horizons, T-shaped development, cross-disciplinary learning)
+**Research Date:** 2026-01-31
+**Milestone Context:** v1.1 milestone adds mobile creation, LLM variation generation, and multi-device sync to v1.0
+**v1.0 Foundation:** Visual atoms (p5.js), audio atoms (Tone.js), video capture, manual YouTube publishing
+**Confidence:** MEDIUM (mobile realities verified, LLM patterns emerging, sync established practice)
 
 ---
 
 ## Executive Summary
 
-This document synthesizes feature research across 8 major dimensions of creative coding and media publishing ecosystems. Each category identifies:
-- **Table Stakes:** Features users expect or they'll leave
-- **Differentiators:** Features that provide competitive advantage
-- **Anti-Features:** Deliberate choices to NOT build certain capabilities
+This research examines the **HARD PARTS** of mobile creative coding and LLM-assisted variation workflows. The findings reveal that **mobile isn't desktop-lite** — it's a fundamentally different creative mode focused on ideation, exploration, and curation rather than full code editing. LLM variations must be **concrete and actionable** (not vague "AI assistance"), and multi-device sync requires **clear boundaries** about what syncs, what doesn't, and how conflicts resolve.
 
-The research draws from established platforms (p5.js, OpenProcessing, ShaderToy, Sonic Pi), modern web tools (Jitter, Pikimov), creator platforms (StreamYard, Buffer), and emerging 2026 trends (AI-powered analytics, browser-based collaboration, CLI-first workflows).
+**Key Reality Check:** p5.js sketches CAN run on mobile browsers but with **significant performance constraints** (30 FPS max, canvas size matters). Mobile workflow is NOT "write full code on phone" but rather "capture ideas, explore variations, review results" with desktop as the refinement environment.
 
----
-
-## 1. Atom Creation
-
-### Table Stakes
-
-**Creative Coding Environment:**
-- **Browser-based editor** with syntax highlighting and autocomplete (p5.js Editor standard)
-- **Live preview/hot reload** — see changes without manual refresh (industry standard by 2026)
-- **Error highlighting** with friendly error messages (p5.js philosophy: accessible to beginners)
-- **Save/load sketches** with cloud sync across devices
-- **Library management** — enable common libraries (p5.sound, ml5.js, etc.) with one click
-- **Export capabilities** — download sketch, export as standalone HTML
-- **Mobile-friendly** — at minimum, view and tweak values on mobile
-- **Complexity:** Medium (editor infrastructure, preview system, library loading)
-
-**Audio Creation for Non-Musicians:**
-- **Text-based composition** — Sonic Pi/TidalCycles model (code-as-score)
-- **Pattern-based syntax** — concise, expressive pattern description (TidalCycles strength)
-- **Live playback** — hear changes immediately while coding
-- **Simple sound library** — built-in synths and samples to start making noise quickly
-- **Export to audio files** — WAV/MP3 export for use in other contexts
-- **Complexity:** High (audio engine, real-time synthesis, timing/scheduling)
-
-**Motion Graphics:**
-- **Timeline-based or code-based** animation (hybrid approach winning in 2026)
-- **Shape primitives** — circles, rectangles, paths (Processing/p5.js model)
-- **Transform operations** — rotate, scale, translate with easing
-- **Export to video** — render to MP4/WebM (critical for YouTube pipeline)
-- **Complexity:** Medium-High (rendering pipeline, video encoding)
-
-### Differentiators
-
-**Cross-Pollination Features:**
-- **Audio-reactive visuals** — sync visual parameters to audio analysis (beat detection, FFT)
-- **Unified timeline** — compose tech + media atoms together
-- **Parameter mapping UI** — visual connection between audio patterns and visual transforms
-- **Complexity:** High (requires both audio and visual systems working together)
-
-**Short-Burst Workflow:**
-- **Session resumption** — pick up exactly where you left off (10-15 min sessions requirement)
-- **Quick templates** — start from patterns/sketches, not blank canvas
-- **Incremental saves** — autosave every change, never lose work
-- **Undo/redo with history browsing** — see all previous states
-- **Complexity:** Medium (state management, localStorage/cloud sync)
-
-**LLM Augmentation:**
-- **Structural scaffolding** — GSD/Claude Code generates boilerplate, sets up libraries
-- **Creative pair programming** — lighter console suggests variations, remixes ideas
-- **Code explanation** — understand what existing sketches do
-- **Split model strategy** — heavy for structure, light for creativity (per project constraints)
-- **Complexity:** Medium (API integration, prompt engineering, context management)
-
-**Educational Value:**
-- **Inline documentation** — hover for parameter explanations (ShaderToy model)
-- **Visual examples in docs** — every function shows what it does
-- **Progressive complexity** — simple functions first, advanced later
-- **Complexity:** Low-Medium (documentation infrastructure)
-
-### Anti-Features
-
-- ❌ **Full DAW capabilities** — not building Ableton Live; simple tunes only
-- ❌ **Professional video compositing** — not replacing After Effects; motion graphics only
-- ❌ **Native mobile apps** — web-based approach, accessible from mobile browser
-- ❌ **Custom plugin systems** — use mainstream libraries, avoid tooling rabbit holes
-- ❌ **Real-time collaboration on same canvas** — sharing and remixing, not Google Docs-style co-editing (p5.js has this as requested feature but not implemented)
-- ❌ **Version control inside editor** — Git handles this externally
-
-**Rationale:** Focus on creation of atoms, not professional production. Tools are output themselves (build own tooling from atoms). Avoid premature infrastructure complexity.
+**Strategic Direction for v1.1:**
+- Mobile = ideation + variation exploration + quick parameter tweaks (NOT full code editing)
+- LLM = generate concrete variations (color schemes, parameter ranges, alternative algorithms) with rapid feedback loop
+- Sync = lightweight source files + notes (NOT build artifacts, videos, or node_modules)
+- Publishing = queue requests on mobile, execute on desktop (NOT direct upload from phone)
 
 ---
 
-## 2. Web Contraptions (Playable Experiences)
+## 1. Mobile Creation Workflow
 
-### Table Stakes
+### Reality Check: What's Actually Feasible on Mobile
 
-**Browser Toy Fundamentals:**
-- **Embeddable player** — iframe or web component, drop anywhere
-- **Responsive layout** — works on desktop, tablet, mobile
-- **No install friction** — runs in browser, no plugins
-- **Shareable URL** — unique link per contraption
-- **Performance optimization** — 60fps target, efficient rendering
-- **Complexity:** Medium (packaging, CDN, responsive design)
+**Browser Performance (2026 State):**
+- p5.js sketches **CAN run** in mobile browsers without native apps
+- Performance ceiling: **~30 FPS** on modern phones (iPhone 6-era: ~20-25 FPS)
+- Canvas size **critically impacts performance** — larger canvases = exponential slowdown
+- **Workaround proven effective:** Render at moderate resolution (400x600), CSS-scale to full screen
+- **Touch interactions work** but require thoughtful hit targets (ShaderToy model: on-screen sliders)
 
-**Interactive Controls:**
-- **Mouse/touch input** — drag, click, tap, swipe
-- **Keyboard input** — for more complex interactions
-- **On-screen controls** — sliders, buttons for parameters (ShaderToy model)
-- **Mobile-first interactions** — touch-friendly hit targets
-- **Complexity:** Low-Medium (input handling, UI components)
+**Sources:**
+- [Optimizing p5.js Code for Performance](https://github.com/processing/p5.js/wiki/Optimizing-p5.js-Code-for-Performance)
+- [p5.js mobile performance issues](https://github.com/processing/p5.js/issues/4469)
+- [Frame rate thresholds on mobile](https://github.com/processing/p5.js/issues/570)
 
-**Discoverability:**
-- **Preview thumbnail** — static image or animated GIF
-- **Description/instructions** — what does this do, how to play
-- **Tags/categories** — generative art, audio-visual, game-like, etc.
-- **Complexity:** Low (metadata, image generation)
+**Code Editing on Mobile (2026 State):**
+- Mobile IDEs exist (AIDE-IDE, Codeit, SPCK) but are **NOT realistic for creative bursts**
+- Effective use cases: urgent bug fixes, quick prototyping, NOT 10-15 min creative sessions
+- **Keyboard friction** on phone makes typing code painful
+- **Screen real estate** insufficient for code + preview simultaneously
 
-### Differentiators
+**Sources:**
+- [Best AI Code Editors 2026](https://playcode.io/blog/best-ai-code-editors-2026)
+- [Best code editors for Android 2026](https://www.slant.co/topics/1662/~best-code-editors-for-android)
 
-**Progressive Enhancement:**
-- **Start simple, grow complex** — contraption v1 might be single atom, v10 combines many
-- **Composition history** — show how contraption evolved from atoms
-- **Learning pathway** — "start with this simple one, then try this more complex"
-- **Complexity:** Medium (versioning, relationship tracking)
+**What DOES Work on Mobile:**
+- **Voice notes for ideation** — proven workflow for commute capture
+- **Parameter tweaking via GUI** — lil-gui already touch-friendly
+- **Visual review** — see sketch running, decide if variation is good
+- **Quick notes/annotations** — NOTES.md updates via mobile editor
+- **Variation selection** — pick which LLM-generated variations to keep
 
-**Remixability:**
-- **Fork button** — start from someone else's contraption
-- **View source** — see the code, learn how it works (OpenProcessing model)
-- **Attribution chain** — show remix lineage
-- **Complexity:** Low-Medium (Git-like forking, metadata)
+**Sources:**
+- [Voice notes workflow 2026](https://www.kimklassen.com/blog/voice-note-idea-workflow)
+- [Wispr Flow AI voice keyboard](https://wisprflow.ai/post/best-voice-typing-app-android)
+- [Voice notes while commuting](https://voicetonotes.ai/blog/capture-ideas-driving-voice-to-notes/)
 
-**Community Features:**
-- **Like/favorite** — simple engagement metric
-- **Comments** — discussion per contraption
-- **Collections** — curate sets of related contraptions
-- **Complexity:** Medium (database, moderation, user accounts)
+### Concrete Mobile Use Cases for v1.1
 
-**Audio-Visual Unity:**
-- **Sound on by default** (with mute button) — contraptions can be musical instruments
-- **Visual music** — every contraption can be both eye and ear candy
-- **Complexity:** Low (player configuration)
+**Use Case 1: Commute Ideation (Offline → Sync Later)**
+- User on train, sees interesting color pattern in environment
+- Opens voice note app, records: "Atom idea: circular particles, purple-to-orange gradient, rotate based on audio bass"
+- OR takes photo of color inspiration
+- Later: syncs to desktop, LLM converts voice note → sketch scaffold
 
-### Anti-Features
+**Use Case 2: Variation Exploration (Phone Browser)**
+- User generated 5 color scheme variations of existing atom (via desktop LLM)
+- On commute, opens mobile browser → portfolio site → variation gallery
+- Taps through variations, heart/star favorites
+- Favorites metadata syncs back to desktop for refinement
 
-- ❌ **User accounts required to play** — anonymous play, account only for creating
-- ❌ **Social network features** — no feeds, no follows, no algorithmic timeline
-- ❌ **Monetization/marketplace** — not selling contraptions, all free/open
-- ❌ **Game leaderboards** — contraptions are toys, not competitive games
-- ❌ **Analytics tracking** — respect user privacy, minimal metrics
-- ❌ **NFT/Web3 integration** — avoid speculative hype (2026 trend: "digital collectibles" replacing NFT terminology, but still questionable fit)
+**Use Case 3: Quick Parameter Tweaks (Live Preview)**
+- Atom already exists on desktop
+- User on phone opens atom URL (via portfolio or direct link)
+- Sketch runs in browser, lil-gui controls visible
+- Tweaks bgHue, rotationSpeed, watches live
+- Clicks "Save config" → updates config.json remotely
 
-**Rationale:** Maximize accessibility and openness. Portfolio is home base, not social network. Anti-commercial to preserve creative freedom.
+**Use Case 4: Note Capture During Review**
+- User reviewing published YouTube video on phone
+- Notices audio-visual sync issue
+- Opens NOTES.md for that atom (via GitHub mobile or synced editor)
+- Adds session log entry: "2026-01-31 18:30 - A/V sync off by ~200ms, check MediaRecorder timing"
 
----
+**Use Case 5: Publishing Queue (Metadata Entry)**
+- Desktop captured video, encoded for YouTube
+- User on commute wants to queue publish request
+- Opens mobile app/CLI (via SSH or queue file)
+- Fills in: title, description (LLM-suggested), tags
+- Queues publish job → desktop cron job executes upload later
 
-## 3. Portfolio Site
+### Mobile-First Feature Requirements
 
-### Table Stakes
+**Table Stakes:**
+| Feature | Why Expected | Complexity | Implementation |
+|---------|--------------|------------|----------------|
+| View atoms in mobile browser | Must review work anywhere | Low | Portfolio site already responsive (v1.0) |
+| Touch-friendly parameter controls | Tweak sketches without keyboard | Low | lil-gui supports touch (verify hit targets) |
+| Voice note integration | Capture ideas during commute | Medium | Integrate voice-to-text app → NOTES.md |
+| Offline viewing | Sketches work without connectivity | Low | Service worker cache static assets |
+| Sync status visibility | Know what's synced vs. local-only | Medium | Git status indicator in mobile view |
 
-**Project Showcase:**
-- **Grid/list of contraptions** — visual browsing
-- **Detail pages** — per-project with embedded player, description, code
-- **Filtering/search** — by tag, date, complexity
-- **Responsive design** — mobile-friendly (72% of portfolio traffic from mobile in 2026)
-- **Performance optimized** — fast load times, lazy loading
-- **Complexity:** Medium (CMS, templating, optimization)
+**Differentiators:**
+| Feature | Value Proposition | Complexity | Notes |
+|---------|-------------------|------------|-------|
+| LLM variation gallery | Explore 5-10 versions of atom without coding | High | Generate variations, host in portfolio |
+| Favorite/rate variations | Curate best versions for refinement | Low | Star metadata in JSON, sync to desktop |
+| Photo → color palette extraction | Capture real-world inspiration | Medium | Mobile photo → palette API → config.json |
+| Voice → scaffold conversion | Speak sketch idea, get starter code | High | Voice-to-text → LLM → git commit |
+| Mobile publish queue | Queue YouTube uploads from phone | Medium | JSON queue file, desktop cron processor |
 
-**Content Types:**
-- **Contraptions** — embedded playable experiences
-- **Blog posts** — process, journey, learning angles
-- **Code repos** — links to GitHub, inline code snippets
-- **Videos** — embedded YouTube/TikTok content
-- **Complexity:** Low-Medium (content modeling, embeds)
-
-**Navigation:**
-- **Clear structure** — atoms, contraptions, blog, about
-- **Breadcrumbs** — show where you are in hierarchy
-- **Related content** — "if you liked this, try this"
-- **Complexity:** Low (sitemap, linking)
-
-### Differentiators
-
-**Narrative Experience (2026 Trend):**
-- **Story over grid** — "ditching the typical Hero-About-Projects grid"
-- **Interactive storytelling** — GSAP animations, scroll-based reveals
-- **Case study depth** — not just "what" but "why" and "how" (43% higher job offer rate)
-- **Process visibility** — show evolution, not just final result
-- **Complexity:** Medium-High (custom layouts, animations, narrative structure)
-
-**Cross-Disciplinary Showcase:**
-- **T-shaped presentation** — deep expertise (coding) + broad interests (music, motion, etc.)
-- **Journey documentation** — "what I'm learning" angle from research.md
-- **Connection mapping** — show how different atoms/contraptions relate
-- **Complexity:** Medium (relationship modeling, visualization)
-
-**Technical Execution:**
-- **WebGL/3D elements** — portfolio itself is creative coding (2026 trend: studios blending aesthetics, WebGL, 3D)
-- **Micro-animations** — subtle, intentional motion (2026 trend)
-- **Live prototypes** — embed Figma/code directly, not just screenshots
-- **Complexity:** High (advanced web tech, performance optimization)
-
-**Educational Transparency:**
-- **Code available** — view source for portfolio site itself
-- **Build in public** — portfolio documents its own creation
-- **Meta-commentary** — site explains its own design decisions
-- **Complexity:** Low (documentation, code hosting)
-
-### Anti-Features
-
-- ❌ **Generic portfolio builder** — custom site, not Wix/Squarespace template
-- ❌ **Client work showcase** — personal practice only, not freelance portfolio
-- ❌ **Resume/CV focus** — not job-hunting site, creative home base
-- ❌ **Analytics dashboards on public site** — metrics are private (CLI cockpit)
-- ❌ **Contact forms** — simple email link, no form spam
-
-**Rationale:** Portfolio is creative expression itself, not generic template. Focuses on practice and learning journey, not commercial presentation.
+**Anti-Features:**
+| Anti-Feature | Why Avoid | What to Do Instead |
+|--------------|-----------|-------------------|
+| Full code editor on mobile | Painful UX, slow workflow | Voice notes + LLM scaffold on desktop |
+| Mobile video capture | Phone storage, encoding complexity | Desktop-only capture (v1.0 pattern) |
+| Native mobile app | Development overhead, app store friction | Web-based, responsive, PWA if needed |
+| Complex touch gestures | Discoverability issues, learning curve | Simple taps, standard UI controls |
+| Mobile-only features | Fragments workflow, desktop confusion | Every mobile feature has desktop equivalent |
 
 ---
 
-## 4. Content Publishing Pipeline
+## 2. LLM Variation Features
 
-### Table Stakes
+### What "Variation" Actually Means
 
-**Multi-Platform Distribution:**
-- **YouTube** — video uploads with metadata (title, description, tags)
-- **TikTok/Shorts** — vertical video optimization
-- **Blog** — written content on portfolio site
-- **GitHub** — code repositories for open source
-- **Complexity:** Medium (platform APIs, format adaptation)
+**Variation Categories (Concrete, Not Vague):**
 
-**Format Adaptation:**
-- **Auto-resize** — 60s TikTok → YouTube Shorts → Instagram Reel dimensions
-- **Thumbnail generation** — per-platform specs
-- **Description templating** — adapt message to platform conventions
-- **Complexity:** Medium (video processing, templating)
+**1. Parameter Variations (Low Complexity)**
+- Generate 5 versions of existing atom with **different parameter ranges**
+- Example: bgHue variations (blue, purple, orange, green, red)
+- Example: Tempo variations (60 BPM, 90, 120, 140, 180)
+- LLM reads current config.json, generates 5 new config.json files
+- User reviews in browser, picks favorite(s)
+- **Confidence: HIGH** — simple JSON manipulation, proven LLM capability
 
-**Content Angles:**
-- **Output** — "Here's what I made" (demos, performances)
-- **Process** — "Here's how I made it" (tutorials, breakdowns)
-- **Journey** — "Here's what I'm learning" (experiments, growth)
-- **Complexity:** Low (categorization, templating)
+**2. Color Scheme Variations (Medium Complexity)**
+- Input: current sketch
+- LLM generates 5 **color palettes** (complementary, triadic, analogous, monochrome, random)
+- Each palette = updated bgHue, particle colors, gradient stops
+- User sees 5 versions running side-by-side (portfolio gallery view)
+- **Confidence: HIGH** — color theory is well-documented, LLM can apply
 
-### Differentiators
+**Sources:**
+- [Color schemes in design systems](https://programmingdesignsystems.com/color/color-schemes/index.html)
+- [Coolors palette generator](https://coolors.co/)
 
-**Creation-to-Published Speed:**
-- **Minimal friction path** — finish contraption → publish everywhere in <30 min
-- **Smart defaults** — pre-filled templates based on content type
-- **One command publish** — CLI triggers multi-platform distribution
-- **Complexity:** Medium (automation, APIs, CLI integration)
+**3. Algorithm Variations (High Complexity)**
+- Input: "circular particles with audio-reactive size"
+- LLM generates **3 different approaches**:
+  - Grid-based particles (not circular)
+  - Spiral pattern (not static ring)
+  - Random noise field (not structured)
+- Each variation is **structurally different code**, not just parameters
+- User compares algorithmic approaches, picks best
+- **Confidence: MEDIUM** — LLM code generation quality varies, needs validation
 
-**Code-Centric Workflow:**
-- **Embed contraption in video** — screen recording with interaction
-- **Code explanation overlays** — show code alongside output
-- **GitHub sync** — auto-create repo from contraption source
-- **Complexity:** Medium (video generation, code formatting, Git automation)
+**Sources:**
+- [AIDE: AI-Driven Exploration in Code Space](https://arxiv.org/html/2502.13138v1)
+- [LLM-supported Program Design Space](https://arxiv.org/abs/2503.06911)
 
-**AI-Assisted Publishing (2026):**
-- **Description generation** — LLM drafts platform-specific copy
-- **Tag suggestions** — analyze content, suggest relevant tags
-- **Thumbnail design** — AI-assisted composition from key frames
-- **67% of video creators using AI-assisted editing by Jan 2026**
-- **Complexity:** Medium (AI integration, prompt engineering)
+**4. Audio-Visual Mapping Variations (High Complexity)**
+- Input: audio atom + visual atom
+- LLM suggests **5 different mappings**:
+  - Bass → size, Mids → hue, Treble → rotation
+  - Bass → rotation, Mids → particle count, Treble → brightness
+  - Envelope → size, Beat → flash, Energy → color saturation
+- Each mapping creates different perceptual effect
+- User experiences variations, chooses most compelling
+- **Confidence: MEDIUM** — mapping creativity is subjective, LLM can suggest but not judge
 
-**Cross-Promotion:**
-- **Blog embeds contraption** — playable toy + written explanation
-- **Video links to code** — YouTube description → GitHub → portfolio
-- **Portfolio aggregates all** — single source of truth for body of work
-- **Complexity:** Low-Medium (metadata, linking, templating)
+**5. Text Description → New Atom (Very High Complexity)**
+- Input: Voice note transcript "circular particles, purple-to-orange gradient, rotate based on audio bass"
+- LLM generates **complete sketch scaffold** (sketch.js, config.json, NOTES.md)
+- User reviews generated code, tweaks, refines
+- **Confidence: LOW-MEDIUM** — LLM can scaffold, but will need human refinement
+- **Not table stakes** for v1.1 — defer to v1.2+
 
-### Anti-Features
+**Sources:**
+- [Best LLM for coding 2026](https://www.xavor.com/blog/best-llm-for-coding/)
+- [LLM coding workflow 2026](https://addyosmani.com/blog/ai-coding-workflow/)
 
-- ❌ **Premature automation** — start manual, automate pain points as they emerge
-- ❌ **Social media management SaaS** — personal use only, not building Buffer competitor
-- ❌ **Scheduled posting calendar** — publish when ready, not calendar-driven
-- ❌ **A/B testing** — not optimizing for engagement, authentic output
-- ❌ **Algorithmic optimization** — create what you want, not what algorithm wants
-- ❌ **Paid promotion** — organic reach only, no ads
+### LLM Variation Workflow (User Feedback Loop)
 
-**Rationale:** Focus on consistent creative output, not content marketing optimization. Manual process first to learn real pain points. Personal practice, not commercial growth hacking.
+**Step 1: Generate Variations**
+```
+User action: `eoe vary atom-name --type=color-scheme --count=5`
+LLM action: Read sketch.js, config.json → generate 5 variations
+Output: atoms/atom-name-var1/, atoms/atom-name-var2/, ... (sibling directories)
+```
 
----
+**Step 2: Preview Variations**
+```
+User action: `eoe preview-variations atom-name`
+Browser opens: Portfolio page with 5 variations in grid (all running simultaneously)
+Each variation shows: thumbnail, parameter diff from original, play button
+```
 
-## 5. CLI Cockpit
+**Step 3: Rate Variations**
+```
+User action: Click star icon on variation 2 and 4
+Metadata: atoms/atom-name/.variations.json updated with ratings
+```
 
-### Table Stakes
+**Step 4: Promote Variation to Main**
+```
+User action: `eoe promote atom-name-var2`
+Action: Copy variation 2 code → overwrites atom-name/ (git history preserves original)
+```
 
-**Terminal Dashboard:**
-- **TUI (Text User Interface)** — visual dashboard in terminal (not just commands)
-- **Real-time updates** — watch metrics update live
-- **Keyboard navigation** — arrow keys, vim bindings
-- **Color-coded status** — green/yellow/red for health indicators
-- **Complexity:** Medium (TUI framework, real-time data)
+**Step 5: Regenerate Based on Feedback**
+```
+User action: `eoe vary atom-name --type=color-scheme --count=5 --like=var2 --avoid=var5`
+LLM action: Read var2 (liked), var5 (disliked) → generate 5 NEW variations closer to var2 style
+```
 
-**Publishing Commands:**
-- **One-command publish** — `eoe publish contraption-name --platforms youtube,tiktok,blog`
-- **Preview before publish** — see what will be posted where
-- **Dry-run mode** — test without actually publishing
-- **Complexity:** Medium (CLI framework, API integration)
+### LLM Context Requirements
 
-**Metrics Aggregation:**
-- **Cross-platform stats** — views, engagement from YouTube, TikTok, blog, GitHub
-- **Unified dashboard** — one view for all channels
-- **Historical trends** — see growth over time
-- **Complexity:** Medium-High (API integration, data aggregation, storage)
+**What LLM Needs to Know (Minimum Context):**
+- Full source code of current atom (sketch.js, audio.js, config.json)
+- Type of variation requested (parameter, color, algorithm, mapping)
+- Variation count (default 5, max 10)
+- User constraints (optional): "keep BPM above 100", "no red colors", "simple geometry only"
 
-### Differentiators
+**What LLM Does NOT Need:**
+- Full codebase history (just current atom)
+- Other atoms (unless explicit remix request)
+- User's creative intent (unless provided in prompt)
+- Performance metrics (unless optimization variation)
 
-**Developer-First Experience (2026 Trend):**
-- **Terminal-native** — "living where developers spend most of their day"
-- **Composable commands** — Unix philosophy, pipe-able
-- **Scriptable** — integrate into existing workflows, cron jobs
-- **Configuration as code** — .toml files, version controlled
-- **Complexity:** Low-Medium (CLI design, config parsing)
+**Caching Strategy:**
+| Variation Type | Cache Duration | Why |
+|----------------|----------------|-----|
+| Parameter variations | Session-only | User might tweak and regenerate quickly |
+| Color scheme variations | 7 days | Reusable across multiple atoms |
+| Algorithm variations | Permanent (git) | Structurally different code = new atoms |
+| Mapping variations | Session-only | Highly context-specific |
 
-**AI-Powered CLI (2026 Innovation):**
-- **Natural language commands** — "publish my latest contraption to all platforms"
-- **Context awareness** — knows current state, recent work
-- **Smart suggestions** — "you haven't published in a week, ready to ship?"
-- **Qodo Command / GitHub Copilot CLI model** — .toml agent configuration
-- **Complexity:** Medium-High (AI integration, context management)
+### Table Stakes vs. Future
 
-**Feedback Loop:**
-- **Comment notifications** — see new comments across platforms
-- **Sentiment analysis** — AI-powered mood detection (positive/negative/neutral)
-- **Response suggestions** — draft replies to comments
-- **Complexity:** Medium-High (API polling, AI, notification system)
+**Table Stakes for v1.1:**
+- Generate parameter variations (config.json only, no code changes)
+- Generate color scheme variations (HSB hue/saturation updates)
+- Preview variations in portfolio grid view
+- Rate/favorite variations (star metadata)
+- Promote variation to replace original
 
-**Workflow Integration:**
-- **Git integration** — auto-commit when publishing, track versions
-- **Asset management** — see disk usage, clean up old renders
-- **Dependency health** — check for library updates, security issues
-- **Complexity:** Medium (Git hooks, filesystem operations, dependency checking)
+**Differentiators (v1.1 Nice-to-Have):**
+- Voice note → LLM scaffold (text description → starter code)
+- Algorithm variations (3 different structural approaches)
+- Audio-visual mapping suggestions (5 different parameter mappings)
 
-### Anti-Features
+**Future (v1.2+):**
+- LLM explains WHY variation works (educational value)
+- LLM suggests variations based on viewing metrics (data-driven creativity)
+- Variation lineage visualization (tree of explorations)
+- Collaborative variation (multiple users explore same atom's design space)
 
-- ❌ **Web-based dashboard** — terminal only, no GUI
-- ❌ **Mobile app** — desktop/laptop CLI, not mobile (align with workflow constraints)
-- ❌ **Real-time alerts** — batch notifications, not interrupt-driven
-- ❌ **Vanity metrics** — focus on creation count, not virality
-- ❌ **Comparison to others** — personal practice, not competitive
-- ❌ **Growth hacking features** — no "best time to post" optimization
-
-**Rationale:** Fits developer workflow (project constraints). Scriptable and composable (decision rationale). Focuses on creation output, not engagement optimization.
-
----
-
-## 6. Live Streaming / Performance
-
-### Table Stakes
-
-**Basic Streaming:**
-- **Browser-based streaming** — StreamYard model, no OBS complexity for simple streams
-- **Multi-platform output** — stream to YouTube, Twitch, etc. simultaneously
-- **Screen sharing** — show code editor, contraptions in action
-- **Audio input** — capture microphone, system audio (for music performance)
-- **Complexity:** Medium-High (WebRTC, platform APIs, audio routing)
-
-**Guest Support:**
-- **Multi-guest capability** — 2-10 guests on screen (StreamYard: 10 guests)
-- **Low friction invite** — guests join via browser link, no install
-- **Guest audio/video** — everyone can be heard and seen
-- **Complexity:** High (WebRTC, peer-to-peer networking, UI layout)
-
-**Recording:**
-- **Local recording** — save stream to disk (4K on StreamYard premium)
-- **Platform recording** — auto-save to YouTube/Twitch
-- **Separate audio tracks** — isolate guest audio for post-editing
-- **Complexity:** Medium (encoding, storage, multi-track audio)
-
-### Differentiators
-
-**Creative Coding Focus:**
-- **Code + output side-by-side** — show editor and running sketch simultaneously
-- **Live coding mode** — code changes appear in output in real-time (hot reload during stream)
-- **Visual music performance** — contraptions as instruments during stream
-- **Complexity:** High (custom layouts, hot reload infrastructure, performance)
-
-**Hybrid OBS + StreamYard Workflow:**
-- **OBS for complex scenes** — multiple cameras, advanced composition
-- **StreamYard for guests/multistream** — easier guest management, distribution
-- **RTMP bridge** — send OBS output to StreamYard for final distribution
-- **Complexity:** High (multiple tools, RTMP setup, workflow coordination)
-
-**Intimate to Growing Shows:**
-- **Start small** — 1-2 guests, simple setup (project requirement)
-- **Scale with community** — add complexity as audience grows
-- **Low barrier to join** — guests don't need technical setup
-- **Complexity:** Medium (progressive enhancement, scalable architecture)
-
-**Performance Features:**
-- **MIDI controller integration** — control contraptions with hardware during performance
-- **Parameter automation** — record and playback parameter changes
-- **Visual effects pipeline** — apply shaders/effects to stream output
-- **Complexity:** High (hardware integration, real-time effects)
-
-### Anti-Features
-
-- ❌ **Professional broadcast features** — not building vMix competitor
-- ❌ **Complex scene switching** — keep it simple, focus on content
-- ❌ **Chat overlays** — minimal distraction, not Twitch clone
-- ❌ **Donation/monetization** — streams are practice, not income
-- ❌ **Scheduled streaming calendar** — stream when inspired, not calendar-driven
-- ❌ **VOD editing suite** — post-process elsewhere if needed
-
-**Rationale:** Intimate jams → growing shows (requirement). Low complexity for guests (accessibility). Focus on creative performance, not broadcast production.
+**Anti-Features:**
+| Anti-Feature | Why Avoid | What to Do Instead |
+|--------------|-----------|-------------------|
+| Infinite variation generation | Choice paralysis, storage bloat | Cap at 5-10 variations, curate |
+| Auto-publish best variation | LLM can't judge "best" subjectively | Human always chooses |
+| Variation without attribution | Unclear what changed, why | Diff view, metadata explains changes |
+| Replace human creativity | LLM assists, doesn't replace | Variations are starting points, not finals |
 
 ---
 
-## 7. Community Building
+## 3. Multi-Device Sync & Handoff
 
-### Table Stakes
+### Sync Scope: What Syncs, What Doesn't
 
-**Platform Presence:**
-- **Discord server** — real-time chat, Q&A (industry standard for creative coding communities)
-- **GitHub organization** — open source code, contributions
-- **YouTube community tab** — updates, polls for video watchers
-- **Complexity:** Low (platform setup, moderation)
+**DO Sync (Git-Based):**
+| File Type | Size | Why Sync | Conflict Strategy |
+|-----------|------|----------|-------------------|
+| Source code (sketch.js, audio.js) | 2-10 KB | Core creative work | Last write wins (with warning) |
+| Config files (config.json) | 1-2 KB | Parameters define sketch | Last write wins |
+| Notes (NOTES.md) | 1-5 KB | Session logs, intent, ideas | Append-only (merge safe) |
+| Variation metadata (.variations.json) | <1 KB | Ratings, favorites | Merge ratings (union) |
+| Voice transcripts (.voice-notes/) | 1-10 KB | Ideation capture | Append-only |
+| Package manifests (package.json) | 1-2 KB | Dependencies | Last write wins (desktop authoritative) |
 
-**Contribution Pathways:**
-- **Remix/fork contraptions** — OpenProcessing model
-- **Submit to showcase** — community gallery of best work
-- **Bug reports/feature requests** — GitHub issues
-- **Complexity:** Low-Medium (submission system, moderation)
+**Total per atom:** ~20-30 KB (lightweight, mobile-friendly)
 
-**Documentation:**
-- **Getting started guide** — how to create first atom
-- **API reference** — all functions, parameters
-- **Examples library** — progressively complex samples
-- **Complexity:** Medium (documentation system, examples curation)
+**DO NOT Sync:**
+| File Type | Size | Why NOT Sync | How to Handle |
+|-----------|------|--------------|---------------|
+| node_modules/ | 50-200 MB | Regenerable, huge | .gitignore, npm install on each device |
+| dist/ | 1-5 MB | Build artifact | .gitignore, rebuild on desktop |
+| videos/ | 50-500 MB | Capture output | Desktop-only, upload to YouTube, delete local |
+| .variations/ (generated atoms) | 100-500 KB | Temporary exploration | Session-only, git clean after promote |
+| playwright-report/ | 1-10 MB | Test artifacts | .gitignore |
 
-### Differentiators
+**Sources:**
+- [Git LFS for large files](https://www.perforce.com/blog/vcs/how-git-lfs-works)
+- [Syncing code between devices](https://dev.to/daunderworks/how-to-use-git-between-devices-3ggo)
 
-**Audience Tiers (Project Requirement):**
-- **Creators** — use tools to make their own contraptions
-- **Consumers** — watch/listen to output (YouTube, TikTok)
-- **Participants** — guests in streams, perform and explain
-- **Multi-level engagement** — easy to move between tiers
-- **Complexity:** Low (conceptual model, clear pathways)
+### Sync Mechanisms (2026 Options)
 
-**Educational Focus:**
-- **Teaching platform** — OpenProcessing classroom features as inspiration
-- **Assignments/challenges** — weekly creative prompts
-- **Feedback loops** — showcase and critique community work
-- **Complexity:** Medium (classroom infrastructure, moderation, feedback system)
+**Option 1: Git + GitHub (Recommended for v1.1)**
+- **Pros:** Already using Git (v1.0), free, version history, conflict detection
+- **Cons:** Manual push/pull, merge conflicts possible, mobile Git clients needed
+- **Mobile Git apps:** Working Copy (iOS), mgit (Android)
+- **Workflow:** Desktop → git push → Mobile pulls → edits NOTES.md → git push → Desktop pulls
+- **Confidence: HIGH** — established practice, well-documented
 
-**Cross-Pollination:**
-- **Tech + media fusion** — encourage audio-visual combinations
-- **Skill sharing** — musicians teach coders, coders teach musicians
-- **Interdisciplinary showcases** — celebrate breadth (research.md values)
-- **Complexity:** Low (curation, showcasing)
+**Sources:**
+- [FIT: File gIT for mobile + desktop sync](https://github.com/joshuakto/fit)
+- [Obsidian sync via GitHub](https://medium.com/@proflead/sync-obsidian-notes-across-devices-for-free-using-github-mobile-pc-40db42eb91d0)
 
-**Open Source Ethos:**
-- **All tools public** — GitHub repos for everything
-- **Contributor recognition** — attribution, featured contributors
-- **Transparent development** — roadmap, decision-making visible
-- **Complexity:** Low (Git workflow, documentation)
+**Option 2: Syncthing + .stignore (Alternative)**
+- **Pros:** Automatic sync, no manual push/pull, offline-friendly
+- **Cons:** Another tool to install, not version-controlled, harder conflict resolution
+- **Use case:** If Git friction too high for non-technical users
+- **Confidence: MEDIUM** — works well, but adds complexity
 
-### Anti-Features
+**Sources:**
+- [Syncthing-code for dev files](https://github.com/117503145/syncthing-code)
+- [Syncing dev files constantly](https://dev.to/omarel/how-to-keep-all-dev-files-in-sync-when-switching-computers-constantly-42pg)
 
-- ❌ **Closed/exclusive community** — open to all, no gatekeeping
-- ❌ **NFT/token gating** — no Web3 gatekeeping (anti-commercial stance)
-- ❌ **Competition/rankings** — collaborative, not competitive
-- ❌ **Premium tiers** — all community features free
-- ❌ **Algorithm-driven discovery** — curated showcases, not algorithmic feeds
-- ❌ **User-generated ads** — no promotion, no self-promotion spam
+**Option 3: Cloud Storage + Selective Sync (NOT Recommended)**
+- **Pros:** Familiar (Dropbox, Google Drive), automatic
+- **Cons:** No version control, conflict files ("file (1).js"), not designed for code
+- **Why avoid:** No merge strategy, breaks Git workflow, node_modules sync disaster
 
-**Rationale:** Openness and accessibility (research.md values). Focus on learning and growth, not competition. Anti-commercial to preserve creative freedom.
+**Recommendation for v1.1:** **Git + GitHub** with mobile Git client OR simple sync script
 
----
+### Conflict Resolution Strategies
 
-## Feature Dependencies
+**Conflict Type 1: Simultaneous Code Edits (RARE on mobile)**
+- **Scenario:** User edits sketch.js on desktop, also on mobile (unlikely but possible)
+- **Detection:** Git merge conflict on pull
+- **Resolution:**
+  - **Automatic:** Last write wins (timestamp-based) with notification "Mobile changes overwritten"
+  - **Manual (better):** Show diff, let user choose (GitHub mobile supports basic conflict resolution)
+- **Prevention:** Mobile workflow discourages code editing (ideation/notes instead)
 
-### Critical Path (Must Build First)
+**Conflict Type 2: Config.json Parameter Changes (COMMON)**
+- **Scenario:** User tweaks bgHue on mobile, rotationSpeed on desktop
+- **Detection:** Git merge conflict (both changed config.json)
+- **Resolution:**
+  - **Automatic:** Merge non-conflicting keys (bgHue from mobile, rotationSpeed from desktop)
+  - **If same key changed:** Last write wins (or prompt user)
+- **Implementation:** Custom merge script for JSON (git mergetool)
 
-1. **Atom Creation Editor** (Foundation)
-   - Dependencies: None (greenfield)
-   - Enables: All contraptions, portfolio content, streaming demos
-   - Complexity: Medium
-   - **Start Here:** Without atoms, nothing else exists
+**Sources:**
+- [Offline-first conflict resolution 2026](https://dev.to/odunayo_dada/offline-first-mobile-app-architecture-syncing-caching-and-conflict-resolution-1j58)
+- [Last write wins pattern](https://www.adalo.com/posts/offline-vs-real-time-sync-managing-data-conflicts)
 
-2. **Web Contraption Player** (Core Output)
-   - Dependencies: Atoms must be exportable
-   - Enables: Portfolio embedding, sharing, community
-   - Complexity: Medium
-   - **Build Second:** Transform atoms into shareable experiences
+**Conflict Type 3: NOTES.md Append (SAFE)**
+- **Scenario:** User adds session log on desktop, also on mobile
+- **Detection:** Git merge conflict (both appended to NOTES.md)
+- **Resolution:**
+  - **Automatic:** Append both entries (chronological order)
+  - **No data loss:** Both notes preserved
+- **Implementation:** Git handles append-only files well (line-based merge)
 
-3. **Portfolio Site** (Home Base)
-   - Dependencies: Contraptions must be embeddable
-   - Enables: Content pipeline destination, portfolio showcase
-   - Complexity: Medium-High
-   - **Build Third:** Central hub for all output
+**Conflict Type 4: Variation Ratings (SAFE)**
+- **Scenario:** User stars var2 on mobile, var4 on desktop
+- **Detection:** Both modified .variations.json
+- **Resolution:**
+  - **Automatic:** Union merge (both var2 and var4 are starred)
+- **Implementation:** JSON merge script (union of arrays/objects)
 
-### Secondary Features (Enhance Core)
+### Multi-Device Workflow (End-to-End)
 
-4. **Content Publishing Pipeline**
-   - Dependencies: Portfolio site (content source), contraptions (content)
-   - Enables: Multi-platform reach, audience growth
-   - Complexity: Medium
-   - **Build Fourth:** Start distributing work
+**Scenario: Commute Ideation → Desktop Refinement → Mobile Review → Publish**
 
-5. **CLI Cockpit**
-   - Dependencies: Publishing pipeline (what to manage), portfolio (metrics source)
-   - Enables: Efficient workflow, automation
-   - Complexity: Medium-High
-   - **Build Fifth:** Streamline and automate
+**Step 1: Mobile Ideation (Offline)**
+- User on train (no WiFi)
+- Records voice note: "Idea: hexagon grid, bass makes them pulse, color shifts with mids"
+- Saves to `.voice-notes/2026-01-31-hexagons.m4a` (local only, not synced yet)
 
-### Advanced Features (Community & Growth)
+**Step 2: Sync to Desktop**
+- User arrives home, phone connects to WiFi
+- Git push from mobile (or Syncthing auto-sync)
+- Desktop pulls changes
 
-6. **Live Streaming**
-   - Dependencies: Atoms (content to show), contraptions (performances), audience (viewers)
-   - Enables: Real-time engagement, guest collaboration
-   - Complexity: High
-   - **Build Later:** After consistent content output established
+**Step 3: Desktop LLM Scaffold**
+- User runs: `eoe scaffold-from-voice .voice-notes/2026-01-31-hexagons.m4a`
+- LLM transcribes voice → text description
+- LLM generates scaffold: atoms/2026-01-31-hexagons/sketch.js (basic hex grid), config.json
+- User reviews, refines code, adds audio mappings
+- Git commit
 
-7. **Community Platform**
-   - Dependencies: All of the above (gives community something to do)
-   - Enables: Creators using tools, participants in streams
-   - Complexity: Medium
-   - **Build Last:** Community forms around existing work
+**Step 4: Desktop Variation Generation**
+- User runs: `eoe vary 2026-01-31-hexagons --type=color-scheme --count=5`
+- LLM generates 5 color variations
+- User previews in browser (desktop), picks 2 favorites
 
-### Parallel Development Opportunities
+**Step 5: Mobile Review (Commute Next Day)**
+- User on train, opens portfolio on phone
+- Navigates to hexagons atom → variation gallery
+- Sees 5 variations running (30 FPS, acceptable)
+- Stars variation 3 (best color balance)
+- Adds note in NOTES.md: "Var3 color works best, promote this"
 
-- **Audio atoms** can be developed parallel to **visual atoms** (shared editor infrastructure)
-- **Motion graphics** can be developed parallel to **interactive contraptions** (shared rendering)
-- **Blog content** can be developed parallel to **video content** (shared publishing pipeline)
-- **CLI commands** can be developed incrementally (scriptable, composable)
+**Step 6: Desktop Promotion**
+- User pulls mobile changes (starred var3)
+- Runs: `eoe promote 2026-01-31-hexagons-var3`
+- Variation 3 becomes main atom
+- Captures video, encodes, queues publish
 
-### Anti-Dependencies (Deliberate Decoupling)
+**Step 7: Mobile Publish Queue**
+- User on commute, fills in YouTube metadata on phone
+- Title: "Hexagon Pulse Grid - Generative Audio-Visual"
+- Description (LLM-suggested): "Bass-reactive hexagonal grid with dynamic color shifting based on mid-range frequencies"
+- Tags: generative art, p5.js, audio-visual, creative coding
+- Saves to `.publish-queue/hexagons.json`
 
-- **Portfolio site should NOT require user accounts** — anonymous viewing
-- **Contraptions should NOT require platform APIs** — standalone HTML/JS
-- **CLI cockpit should NOT require web dashboard** — terminal-only
-- **Streaming should NOT require contraptions** — can stream code editor directly
-- **Community should NOT gate content** — all work public before community forms
+**Step 8: Desktop Auto-Publish**
+- Desktop cron job (every 30 min) checks `.publish-queue/`
+- Finds hexagons.json, executes YouTube upload
+- Updates NOTES.md with published URL
+- Deletes queue file, commits
 
----
-
-## Complexity Assessment
-
-### Low Complexity (Weeks to MVP)
-
-- **Basic portfolio site** — Static site generator, embed contraptions
-- **Simple sharing** — URLs, metadata, thumbnails
-- **Discord setup** — Off-the-shelf platform
-- **GitHub presence** — Standard Git workflow
-- **Estimated effort:** 2-4 weeks per feature
-
-### Medium Complexity (Months to MVP)
-
-- **Creative coding editor** — Monaco/CodeMirror + p5.js + preview
-- **Contraption player** — Packaging, embedding, responsive design
-- **Publishing pipeline** — Platform APIs, format adaptation
-- **CLI cockpit** — TUI framework, commands, metrics
-- **Community features** — Submission system, moderation
-- **Estimated effort:** 1-3 months per feature
-
-### High Complexity (Multi-Month to MVP)
-
-- **Audio creation tools** — Audio engine, synthesis, timing (Sonic Pi complexity)
-- **Motion graphics** — Timeline, rendering, video export
-- **Live streaming** — WebRTC, multi-guest, recording
-- **AI integration** — Model integration, prompt engineering, context management
-- **Audio-visual cross-pollination** — Tight integration between audio and visual systems
-- **Estimated effort:** 3-6 months per feature
-
-### Very High Complexity (Major Undertakings)
-
-- **Full creative suite** — All atom types + contraptions + publishing + streaming
-- **Real-time collaboration** — Multiplayer editing, conflict resolution
-- **Professional production tools** — DAW-level audio or AE-level motion graphics
-- **Estimated effort:** 6+ months, possibly years
-
-### Recommended Build Order (By Complexity + Dependencies)
-
-**Phase 1: Core Creation (3-6 months)**
-1. Visual coding editor (Medium, 2-3 months)
-2. Contraption player (Medium, 1-2 months)
-3. Basic portfolio site (Low-Medium, 1 month)
-
-**Phase 2: Distribution (2-4 months)**
-4. Publishing pipeline (Medium, 2 months)
-5. CLI cockpit v1 (Medium, 2 months)
-
-**Phase 3: Audio Integration (3-6 months)**
-6. Audio creation tools (High, 3-4 months)
-7. Audio-visual fusion (High, 2-3 months)
-
-**Phase 4: Community & Performance (3-6 months)**
-8. Streaming setup (High, 2-3 months)
-9. Community platform (Medium, 2 months)
-10. Motion graphics (High, 3-4 months)
-
-**Total Estimated Timeline:** 12-24 months to full ecosystem
+**Total handoff points:** 4 syncs (mobile→desktop→mobile→desktop)
+**Offline periods:** 2 (ideation, review)
+**Online required:** LLM scaffold, publish
 
 ---
 
-## Strategic Recommendations
+## 4. Publishing from Mobile
 
-### 1. Start Minimal, Validate Fast
+### Table Stakes: Queue-Based Publishing
 
-**Ship atom editor + contraption player + simple portfolio first** (Phase 1). This validates:
-- Can you create atoms enjoyably in short bursts? (Core workflow)
-- Are contraptions engaging as playable toys? (Core value)
-- Does portfolio present work effectively? (Core distribution)
+**Why NOT Direct Upload from Mobile:**
+- **Video files too large** for mobile upload (50-500 MB)
+- **Mobile data caps** expensive for video uploads
+- **Battery drain** significant for encoding/upload
+- **Reliability** lower on mobile networks (interrupted uploads)
+- **Already encoded on desktop** (v1.0 FFmpeg pipeline)
 
-**3-6 month validation milestone:** If not creating consistently and enjoying the process, re-evaluate before building more.
+**Queue-Based Workflow (Realistic for v1.1):**
 
-### 2. Manual Before Automation
+**Step 1: Desktop Captures + Encodes**
+- User runs `eoe capture atom-name` on desktop (v1.0 workflow)
+- Output: `videos/atom-name-youtube.mp4` (encoded, ready)
+- State: Video ready but NOT published yet
 
-**Publish manually for first 10-20 pieces**. Learn:
-- What's actually painful? (Not what you assume)
-- What takes time? (Optimize real bottlenecks)
-- What's valuable? (Metrics that matter)
+**Step 2: Mobile Queues Publish Request**
+- User on phone, opens publish interface (web form OR CLI via SSH)
+- Fills metadata:
+  - Title (LLM-suggested, editable)
+  - Description (LLM-generated from NOTES.md, editable)
+  - Tags (LLM-suggested from config.json, editable)
+  - Publish date/time (now OR scheduled)
+- Saves to `.publish-queue/atom-name-publish.json`
+- Git commit + push (or sync)
 
-**Then build CLI cockpit** to automate proven pain points, not imagined ones.
+**Step 3: Desktop Executes Upload**
+- Cron job (every 30 min) OR manual `eoe publish-queue`
+- Reads queue files, executes YouTube API upload
+- Updates NOTES.md with published URL
+- Deletes queue file (or archives to `.publish-archive/`)
 
-### 3. Grow Complexity With Practice
+**Advantages:**
+- Mobile workflow lightweight (metadata only, <1 KB)
+- Desktop handles heavy lifting (video upload)
+- Offline-friendly (queue while offline, sync later)
+- Reliable (desktop network more stable)
 
-**Start with visual atoms only**. Audio is high complexity; defer until:
-- Visual workflow is smooth
-- You're creating consistently
-- You have mental model for composition
+### LLM-Assisted Metadata Generation
 
-**Then add audio** as enhancement, not foundation.
+**Auto-Derive from Atom:**
 
-### 4. Build Tools FROM Atoms
+**Title Generation:**
+```
+Input: config.json (bgHue: 240, bassSizeScale: 200), NOTES.md ("exploring bass-reactive pulsing")
+LLM output: "Blue Pulse Rings - Bass-Reactive Generative Art"
+User edits if needed
+```
 
-**Every infrastructure piece should be its own creative output**:
-- Portfolio site is a contraption (WebGL, animations)
-- CLI cockpit is a code project (open source, documented)
-- Publishing pipeline is a tutorial series ("how I automate")
+**Description Generation:**
+```
+Input: NOTES.md session log, config.json parameters
+LLM output: "An audio-reactive visualization featuring concentric circles that pulse and grow in response to bass frequencies. The blue-to-purple color palette shifts dynamically with mid-range audio, while rotation speed follows treble patterns. Created with p5.js and Tone.js."
+User edits if needed
+```
 
-**This aligns with project philosophy**: "Build own tooling from explored atoms."
+**Tag Suggestions:**
+```
+Input: config.json (audio-visual type), NOTES.md (p5.js, Tone.js mentioned)
+LLM output: ["generative art", "p5.js", "audio-visual", "creative coding", "javascript", "web audio"]
+User adds/removes tags
+```
 
-### 5. Community Forms Around Work
+**Confidence: HIGH** — LLM excels at summarization and tag extraction
 
-**Don't build community platform first**. Instead:
-- Create consistently for 6-12 months
-- Share work publicly (YouTube, GitHub, portfolio)
-- Let community emerge organically
-- Then formalize (Discord, classroom features)
+**Sources:**
+- [AI-assisted content creation 2026](https://influenceflow.io/resources/all-in-one-creator-tools-the-complete-2026-guide-to-streamlining-your-content-creation-workflow/)
+- [67% of creators using AI for editing in 2026](https://www.mobiloud.com/blog/ai-mobile-app-development-tools)
 
-**Premature community building = empty forums**. Content attracts community, not vice versa.
+### Mobile Publishing UI Options
 
-### 6. Avoid Feature Creep Traps
+**Option 1: Web Form (Easiest)**
+- Portfolio site includes `/publish` route (auth required)
+- User logs in on mobile browser
+- Form fields: atom selector, title, description, tags, schedule
+- Submit → writes to `.publish-queue/` via API
+- **Pros:** No app install, works on any mobile browser
+- **Cons:** Requires backend API, authentication
 
-**Each category has anti-features for a reason**. When tempted to add:
-- Social network features → Remember: portfolio is home base, not social network
-- Professional production tools → Remember: atoms and contraptions, not end-to-end suites
-- Monetization → Remember: anti-commercial to preserve creative freedom
-- Web3/NFT → Remember: 2026 trend shows this space still questionable fit
+**Option 2: Git-Based (No Backend)**
+- User edits `.publish-queue/atom-name-publish.json` directly on phone
+- Via GitHub mobile app OR Working Copy (iOS) OR mgit (Android)
+- Git commit + push
+- Desktop pulls + processes
+- **Pros:** No backend needed, uses existing Git workflow
+- **Cons:** Manual JSON editing (error-prone), less user-friendly
 
-**Refer back to anti-features** when scope creeps.
+**Option 3: SSH CLI (Power Users)**
+- User SSHs into desktop from phone (Termux on Android, Blink on iOS)
+- Runs `eoe queue-publish atom-name --title="..." --description="..."`
+- Queue file written on desktop directly
+- **Pros:** Fastest for power users, no sync lag
+- **Cons:** Requires SSH setup, not beginner-friendly
 
-### 7. Leverage 2026 Ecosystem
+**Recommendation for v1.1:** Start with **Option 2 (Git-based)** for simplicity, add **Option 1 (Web form)** in v1.2 if friction too high
 
-**Don't rebuild what exists**:
-- Streaming: Start with StreamYard (browser-based, low friction)
-- Community: Start with Discord (industry standard)
-- Publishing: Use platform APIs (YouTube, TikTok, GitHub)
-- AI: Integrate Claude/GPT APIs (don't build LLM)
+### Future: Direct Upload from Mobile (v1.2+)
 
-**Build the unique parts**: atom creation, contraption player, cross-pollination of tech + media.
-
----
-
-## Sources
-
-### Creative Coding Platforms
-- [OpenProcessing](https://openprocessing.org/)
-- [p5.js](https://p5js.org/)
-- [Comparing Top Generative Art Tools](https://visualalchemist.in/2024/08/31/comparing-top-generative-art-tools-processing-openframeworks-p5-js-and-more/)
-- [p5.js Web Editor](https://editor.p5js.org/)
-- [p5.js GitHub Repository](https://github.com/processing/p5.js-web-editor)
-
-### Interactive Web Experiences
-- [Top 21 Playable Interactive Websites](https://qodeinteractive.com/magazine/playable-interactive-websites/)
-- [20 Best Interactive Websites 2026](https://inkbotdesign.com/best-interactive-websites/)
-- [Create an Interactive Web Toy](https://www.creativebloq.com/character-design/create-interactive-web-toy-10079454)
-- [Digital Art Trends 2026](https://www.creativebloq.com/art/digital-art/digital-art-trends-2026-reveal-how-creatives-are-responding-to-ai-pressure)
-
-### Audio Creation for Coders
-- [Sonic Pi vs TidalCycles vs Strudel](https://creativecodingtech.com/music/live-coding/comparison/2024/10/22/sonic-pi-vs-tidalcycles-vs-strudel.html)
-- [Sonic Pi](https://sonic-pi.net/)
-- [Music Generation Using Code](https://www.nvisia.com/insights/music-generation-using-code)
-- [10 Best Sonic Pi Alternatives](https://jiyushe.com/producthunk/best-sonic-pi-alternatives-and-competitors.html)
-
-### Portfolio Platforms
-- [5 Best Portfolio Website Builders 2026](https://emergent.sh/learn/best-portfolio-website-builders)
-- [Top 100 Creative Portfolio Websites 2025](https://muz.li/blog/top-100-most-creative-and-unique-portfolio-websites-of-2025/)
-- [Digital Portfolio Platforms 2026 Guide](https://influenceflow.io/resources/digital-portfolio-platforms-the-complete-2026-guide-for-creators-freelancers-and-brands/)
-- [The Anthology of a Creative Developer: A 2026 Portfolio](https://dev.to/nk2552003/the-anthology-of-a-creative-developer-a-2026-portfolio-56jp)
-
-### Multi-Platform Publishing
-- [All-In-One Creator Tools 2026](https://influenceflow.io/resources/all-in-one-creator-tools-the-complete-2026-guide-to-streamlining-your-content-creation-workflow/)
-- [Content Creation Tools & Analytics 2026](https://influenceflow.io/resources/content-creation-tools-and-analytics-platforms-the-complete-guide-for-2026/)
-- [30+ Best TikTok Tools 2026](https://www.socialchamp.com/blog/tiktok-tools/)
-- [CreatorHub – Multi-Platform Analytics](https://creatorhubstudio.com/)
-
-### Live Streaming
-- [Streaming Software 2026 Comparison](https://streamyard.com/blog/streaming-software-2026-comparison)
-- [Best Streaming Software for YouTube 2026](https://streamyard.com/blog/best-streaming-software-for-youtube-live-streaming)
-- [What Is StreamYard? 2026 Review](https://www.learningrevolution.net/streamyard-review/)
-- [OBS vs Streamlabs Comparison](https://streamyard.com/blog/streaming-software-comparison-between-obs-and-streamlabs)
-
-### Community Platforms
-- [OpenProcessing Community](https://openprocessing.org/)
-- [Processing Discord Server Announcement](https://processing.org/)
-- [GitHub - Awesome Creative Coding](https://github.com/terkelg/awesome-creative-coding)
-- [GitHub - Creative Coding Minilist](https://github.com/CreativeCodeBerlin/creative-coding-minilist)
-
-### Shader Tools
-- [GLSL.app - Online WebGL Shader Editor](https://glsl.app/)
-- [Shader Playground GitHub](https://github.com/foltik/Shader-Playground)
-- [glsl-playground GitHub](https://github.com/ericjang/glsl-playground)
-- [Shadertoy Wikipedia](https://en.wikipedia.org/wiki/Shadertoy)
-
-### Development Workflows
-- [Top 10 Vibe Coding Tools 2026](https://www.nucamp.co/blog/top-10-vibe-coding-tools-in-2026-cursor-copilot-claude-code-more)
-- [Windsurf Review 2026](https://www.secondtalent.com/resources/windsurf-review/)
-- [Compose Hot Reload 1.0.0](https://blog.jetbrains.com/kotlin/2026/01/the-journey-to-compose-hot-reload-1-0-0/)
-- [Live++ Hot Reload](https://liveplusplus.tech/)
-
-### Web3 & Generative Art
-- [Digital Collectibles 2026](https://weandthecolor.com/nfts-are-dead-long-live-digital-collectibles-how-web3-ownership-is-quietly-redefining-design-and-art-in-2026/206559)
-- [What is Art Blocks NFT?](https://nftevening.com/art-blocks-a-new-approach-to-nfts-with-generative-art/)
-- [Generative Art NFT Introduction](https://supra.com/academy/history-of-generative-art-and-how-it-applies-to-nfts/)
-
-### Motion Graphics
-- [Jitter - Free Web-Based After Effects Alternative](https://jitter.video/after-effects-alternative/)
-- [12 Best Adobe After Effects Alternatives 2026](https://www.cyberlink.com/blog/cool-video-effects/82/best-free-after-effects-alternative)
-- [Motion Graphics Trends 2026](https://filtergrade.com/motion-graphics-trends-that-will-shape-2026-and-how-creators-can-prepare-their-templates-early/)
-
-### CLI Tools
-- [Top 5 CLI Coding Agents 2026](https://dev.to/lightningdev123/top-5-cli-coding-agents-in-2026-3pia)
-- [7 Modern CLI Tools 2026](https://medium.com/the-software-journal/7-modern-cli-tools-you-must-try-in-2026-c4ecab6a9928)
-- [GitHub Copilot CLI Enhanced Agents](https://github.blog/changelog/2026-01-14-github-copilot-cli-enhanced-agents-context-management-and-new-ways-to-install/)
-- [12 CLI Tools Redefining Developer Workflows](https://www.qodo.ai/blog/best-cli-tools/)
-
-### Version Control for Creative Work
-- [Git LFS Overview](https://www.perforce.com/blog/vcs/how-git-lfs-works)
-- [Understanding Git LFS](https://namastedev.com/blog/understanding-git-lfs-managing-large-files-in-version-control/)
-- [Mastering Git LFS for Game Developers](https://medium.com/@Brian_David/mastering-git-lfs-a-game-developers-guide-to-managing-large-assets-c3468551c398)
-- [Version Control for Artists - Anchorpoint](https://www.anchorpoint.app/)
-
-### Creator Analytics
-- [Analytics Dashboard for Creators 2026](https://influenceflow.io/resources/analytics-dashboard-for-creators-complete-guide-to-tracking-growing-monetizing-in-2026/)
-- [Creator Analytics and Performance Metrics 2026](https://influenceflow.io/resources/creator-analytics-and-performance-metrics-the-complete-2026-guide/)
-- [Creator Income Analytics 2026](https://influenceflow.io/resources/creator-income-analytics-master-your-earnings-in-2026/)
-- [Essential Creator Analytics Guide 2025](https://www.liveskillshub.com/knowledge-base/article/essential-creator-analytics-guide-2025)
+**IF mobile direct upload becomes feasible:**
+- **Scenario:** User has unlimited mobile data OR home WiFi
+- **Requirements:**
+  - Video already encoded on desktop (don't encode on phone)
+  - Rsync/upload from desktop storage to mobile (via local network)
+  - YouTube upload from mobile (using mobile YouTube API client)
+- **Complexity: HIGH** — file transfer, network reliability, battery management
+- **Decision:** Defer to v1.2+, validate queue-based workflow first
 
 ---
 
-**End of Features Research**
+## 5. Success Metrics: How We Know Mobile + LLM Works
+
+### Mobile Creation Metrics
+
+**Quantitative:**
+- **Mobile atom creation rate:** % of atoms that involve mobile workflow (target: 30%+)
+- **Voice note → scaffold conversion:** % of voice notes that become atoms (target: 50%+)
+- **Mobile parameter tweaks:** # of config.json updates via mobile per week (target: 5+)
+- **Mobile preview frequency:** # of times user views atoms on mobile browser per week (target: 10+)
+
+**Qualitative:**
+- **Friction points:** User reports where mobile workflow breaks down
+- **Commute productivity:** User feels mobile time is productive (not wasted)
+- **Idea capture rate:** User captures more ideas than pre-mobile (baseline comparison)
+
+### LLM Variation Metrics
+
+**Quantitative:**
+- **Variation generation rate:** # of variation batches generated per week (target: 3+)
+- **Variation promotion rate:** % of variations that become promoted atoms (target: 20%+)
+- **Iteration speed:** Time from variation generation → review → promote (target: <30 min)
+- **Variation types:** Distribution of parameter vs. color vs. algorithm variations (track trends)
+
+**Qualitative:**
+- **Variation quality:** User rates "how many variations were worth exploring?" (target: 60%+)
+- **Creative boost:** User feels LLM variations enhance creativity (not replace it)
+- **Learning value:** User learns new techniques from algorithm variations
+
+### Multi-Device Sync Metrics
+
+**Quantitative:**
+- **Sync frequency:** # of syncs per day (mobile ↔ desktop) (target: 3-5)
+- **Conflict rate:** % of syncs that result in conflicts (target: <5%)
+- **Conflict resolution time:** Minutes to resolve conflicts (target: <5 min)
+- **Sync data volume:** MB synced per day (should stay <10 MB with proper .gitignore)
+
+**Qualitative:**
+- **Sync confidence:** User trusts sync won't lose work
+- **Handoff smoothness:** User can seamlessly switch devices mid-workflow
+- **Conflict understanding:** User knows WHY conflicts happen, how to resolve
+
+### Publishing Workflow Metrics
+
+**Quantitative:**
+- **Queue-based publish rate:** % of publishes that use queue workflow (target: 50%+)
+- **Metadata automation:** % of title/description/tags auto-generated by LLM (target: 80%+ suggested, 50%+ accepted as-is)
+- **Mobile metadata entry time:** Minutes to fill publish queue on mobile (target: <5 min)
+- **Publish success rate:** % of queued publishes that execute without error (target: 95%+)
+
+**Qualitative:**
+- **Metadata quality:** User rates LLM-generated metadata as "good enough" vs. needs heavy editing
+- **Queue reliability:** User trusts queued publishes will execute (not lost)
+- **Mobile convenience:** User prefers mobile metadata entry over desktop-only
+
+---
+
+## 6. Feature Dependencies & Phasing
+
+### Phase 4: Mobile Viewing + Sync Foundation (v1.1 MVP)
+
+**Goal:** User can view atoms on mobile, sync notes/config, capture voice ideas
+
+**Features (Table Stakes):**
+1. Responsive portfolio (already exists in v1.0, verify mobile performance)
+2. Touch-friendly parameter controls (verify lil-gui works on mobile)
+3. Git-based sync setup (document workflow, test on mobile Git clients)
+4. Voice note capture integration (script to transcribe voice → NOTES.md)
+5. Mobile NOTES.md editing (via GitHub mobile or Working Copy)
+
+**Dependencies:**
+- v1.0 portfolio (exists)
+- Git workflow (exists)
+- Mobile browser (assumed)
+
+**Complexity:** Low-Medium (mostly workflow documentation, minimal new code)
+
+### Phase 5: LLM Parameter Variations (v1.1 Core)
+
+**Goal:** User can generate 5 parameter variations, preview in browser, promote favorite
+
+**Features (Table Stakes):**
+1. `eoe vary` command (LLM integration)
+2. Parameter variation generation (config.json only)
+3. Color scheme variation generation (HSB updates)
+4. Variation preview gallery (portfolio page)
+5. Variation rating/favoriting (metadata JSON)
+6. Variation promotion (`eoe promote` command)
+
+**Dependencies:**
+- Phase 4 (sync must work for variations to sync)
+- LLM API access (Claude or GPT)
+
+**Complexity:** Medium-High (LLM integration, variation storage strategy)
+
+### Phase 6: Queue-Based Publishing (v1.1 Polish)
+
+**Goal:** User can queue publish requests on mobile, desktop executes uploads
+
+**Features (Table Stakes):**
+1. Publish queue file format (JSON schema)
+2. LLM metadata generation (title, description, tags from NOTES.md + config)
+3. Mobile queue creation (Git-based initially)
+4. Desktop queue processor (cron job OR manual command)
+5. NOTES.md update with published URL
+
+**Dependencies:**
+- Phase 4 (sync must work for queue files)
+- Phase 5 (LLM already integrated, reuse for metadata)
+- v1.0 YouTube publishing (exists)
+
+**Complexity:** Medium (mostly workflow automation, minimal new API work)
+
+### Future Phases (v1.2+)
+
+**Phase 7: Algorithm Variations (Advanced LLM)**
+- Generate structurally different code (not just parameters)
+- Multiple algorithmic approaches (grid vs. spiral vs. noise)
+- Code explanation (why this variation works differently)
+
+**Phase 8: Voice → Scaffold (Full Ideation Pipeline)**
+- Voice note → LLM transcription → sketch scaffold
+- End-to-end: commute idea → running atom on desktop
+
+**Phase 9: Mobile Web Form Publishing**
+- Backend API for publish queue
+- Authentication for mobile
+- Web form UI (nicer than Git JSON editing)
+
+**Phase 10: Direct Mobile Upload (If Feasible)**
+- Local network file transfer (desktop → mobile)
+- YouTube upload from mobile app
+- Battery + data optimization
+
+---
+
+## 7. Anti-Features (What NOT to Build)
+
+| Anti-Feature | Why Avoid | Risk If Built |
+|--------------|-----------|---------------|
+| Full code editor on mobile | Painful UX, doesn't fit 10-15 min bursts | Time sink, user frustration, slow creation |
+| Mobile video capture | Phone storage, battery, encoding complexity | Data bloat, poor quality, crashes |
+| Native mobile app | App store friction, development overhead | Maintenance burden, platform lock-in |
+| Auto-publish LLM variations | LLM can't judge "best" subjectively | Bad content published, reputation damage |
+| Sync everything (including node_modules) | Massive data transfer, mobile storage limits | Sync failures, slow syncs, storage full |
+| Real-time collaborative editing | Complexity explosion, conflict nightmares | Months of dev time, fragile reliability |
+| LLM replaces human creativity | Defeats project purpose (expanding horizons) | Passive consumption, not active creation |
+| Infinite variations | Choice paralysis, storage bloat | Decision fatigue, cluttered repo |
+| Mobile-only features | Fragments workflow, desktop confusion | Inconsistent UX, user must remember which device for what |
+
+---
+
+## 8. Sources & Confidence Assessment
+
+### Mobile Creative Coding
+- **HIGH confidence:** [p5.js mobile performance issues](https://github.com/processing/p5.js/issues/4469), [Optimization guide](https://github.com/processing/p5.js/wiki/Optimizing-p5.js-Code-for-Performance)
+- **MEDIUM confidence:** Mobile workflow patterns (inferred from voice note apps + p5.js constraints)
+
+### LLM Variation Generation
+- **HIGH confidence:** [AIDE code exploration](https://arxiv.org/html/2502.13138v1), [Program design space](https://arxiv.org/abs/2503.06911)
+- **MEDIUM confidence:** Variation quality (LLM coding quality varies, needs validation)
+
+### Multi-Device Sync
+- **HIGH confidence:** [Git sync workflows](https://dev.to/daunderworks/how-to-use-git-between-devices-3ggo), [Offline-first patterns](https://dev.to/odunayo_dada/offline-first-mobile-app-architecture-syncing-caching-and-conflict-resolution-1j58)
+- **HIGH confidence:** Conflict resolution strategies (well-established patterns)
+
+### Voice Note Workflows
+- **HIGH confidence:** [Voice note creative workflow 2026](https://www.kimklassen.com/blog/voice-note-idea-workflow), [Wispr Flow](https://wisprflow.ai/post/best-voice-typing-app-android)
+
+### Publishing Automation
+- **HIGH confidence:** Queue-based patterns (standard practice)
+- **HIGH confidence:** [AI metadata generation (67% of creators using)](https://www.mobiloud.com/blog/ai-mobile-app-development-tools)
+
+---
+
+## 9. Roadmap Implications
+
+### Recommended Phase Structure for v1.1
+
+**Phase 4: Mobile Foundation (2-3 weeks)**
+- Verify mobile browser performance (test p5.js atoms on phones)
+- Document Git sync workflow (mobile Git client setup)
+- Add voice note capture script (voice-to-text → NOTES.md)
+- Verify portfolio responsiveness (touch targets, controls)
+
+**Phase 5: LLM Variations (3-4 weeks)**
+- Integrate LLM API (Claude or GPT)
+- Implement `eoe vary` command (parameter + color variations)
+- Build variation preview gallery (portfolio page)
+- Add variation rating/promotion workflow
+
+**Phase 6: Mobile Publishing (2-3 weeks)**
+- Define publish queue JSON schema
+- Implement LLM metadata generation (title/description/tags)
+- Build queue processor (desktop cron job)
+- Document mobile queue workflow (Git-based)
+
+**Total v1.1 timeline:** 7-10 weeks
+
+### Research Flags for Later Phases
+
+**Phase 7 (Algorithm Variations) will need:**
+- Deeper LLM code quality research (which models generate reliable p5.js?)
+- Variation validation (how to test generated code doesn't crash?)
+- Code diff visualization (how to show user what changed structurally?)
+
+**Phase 8 (Voice → Scaffold) will need:**
+- Voice transcription accuracy research (Whisper? Cloud API?)
+- Prompt engineering for scaffold generation (what context produces best scaffolds?)
+- Scaffold template library (common patterns to speed generation)
+
+**Phase 9 (Web Form Publishing) will need:**
+- Backend framework selection (Node.js? Deno?)
+- Authentication strategy (GitHub OAuth? JWT?)
+- API security (rate limiting, validation)
+
+---
+
+**End of v1.1 Features Research**

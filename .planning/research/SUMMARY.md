@@ -1,568 +1,330 @@
-# Project Research Summary
+# v1.1 Research Summary: Mobile Sync + LLM Integration
 
-**Project:** Engines of Experience (EoE)
-**Domain:** Creative Coding + Media Publishing Ecosystem
-**Researched:** 2026-01-29
+**Project:** Engines of Experience v1.1
+**Domain:** Creative coding workflow with distributed sync and AI assistance
+**Researched:** 2026-01-31
 **Confidence:** HIGH
 
 ## Executive Summary
 
-Engines of Experience is a vertically-integrated creative coding and media publishing platform designed for short-burst workflows (10-15 min to 1 hour). The research reveals a critical tension: building a T-shaped creative practice requires deep expertise in one domain (likely generative/creative coding) plus broad skills across audio, video, publishing, and community—but attempting all simultaneously is the project's primary risk. Experts in this space prioritize web-first creation using browser standards (p5.js, Three.js, Web Audio API, GLSL) over proprietary desktop tools, manual workflows before automation, and consistent output over perfect infrastructure.
+v1.1 adds two historically brittle capabilities to the proven v1.0 system: mobile-first workflow with P2P sync, and LLM-assisted sketch variation generation. Research reveals these are not "add a library and ship" features — they require architectural discipline to avoid data loss, cost explosions, and battery drain.
 
-The recommended approach is radical simplicity: establish a minimal creative coding environment first (Phase 1), ship 20+ sketches to validate the core workflow, then layer on complementary capabilities (audio, publishing automation, streaming) only after the vertical is proven. The stack prioritizes mainstream open-source tools over trendy alternatives, web standards over native apps, and CLI-first automation over GUI complexity. The architecture follows atomic design principles where every creative output is version-controlled, modular, composable, and independently deployable.
+**The core recommendation:** Hybrid sync architecture where Syncthing handles desktop/server file movement (proven P2P, block-level efficiency), PouchDB/CouchDB manages mobile metadata (offline-first, battle-tested), and a bridge daemon reconciles the two worlds. LLM invocations run server-side with aggressive prompt caching (90% cost reduction), DeepSeek fallback for simple variations, and hard budget caps to prevent runaway spending. Mobile workflow focuses on ideation and variation exploration — not full code editing — with manual sync triggers and selective asset downloading to preserve battery and bandwidth.
 
-The primary existential risk is the "Tooling Trap"—spending months researching and configuring the perfect environment instead of creating. This was explicitly identified by the creator as threat #1. Secondary risks include scope creep leading to burnout (typical solo developer death spiral), over-breadth without depth (becoming I-shaped rather than T-shaped), and premature automation before understanding real pain points. Prevention requires output-first mentality, weekly shipping quota, time-boxed exploration (1 hour research → 4+ hours creation), and ruthless MVP discipline.
+**Critical risks and mitigations:** Last-write-wins data loss (use CRDTs for structured data, explicit conflict UI for code), video sync bandwidth explosion (selective sync by device type, Wi-Fi-only for large files), LLM cost explosion (20 requests/month free tier, prompt optimization, semantic caching), sync loops (event source tagging, causal tracking, circuit breakers), mobile storage exhaustion (metadata-only default, LRU eviction, storage monitoring), battery drain (manual sync default, exponential backoff, push notifications instead of polling), prompt injection (input sanitization, output validation, sandboxed execution), offline edits lost (transactional sync, optimistic UI with pessimistic persistence), binary merge conflicts (content-addressable storage for assets), and mobile OS background restrictions (realistic expectations, foreground sync while app open).
 
 ## Key Findings
 
 ### Recommended Stack
 
-The research converges on a **web-first, open-source, CLI-centric** stack that minimizes setup friction while maximizing cross-platform compatibility. All tools align with the T-shaped development philosophy: deep expertise in creative coding while maintaining broad technical capabilities across the full publishing pipeline.
+**The hybrid sync strategy solves the fundamental tension:** desktops need version control (Git), mobile needs offline-first databases (PouchDB), and both need real-time file propagation (Syncthing). Trying to force one solution (Git LFS on mobile, or PouchDB everywhere) creates complexity that research shows leads to production failures.
 
 **Core technologies:**
 
-- **p5.js v1.9.4** (2D creative coding) — Gentle learning curve, browser-native, perfect for 10-15 min creative bursts
-- **Three.js r169** (3D/WebGL) — Industry standard for web 3D, GPU-accelerated, runs everywhere
-- **Tone.js v14.8.49** (browser audio) — Web Audio API wrapper with musician-friendly abstractions, works on mobile
-- **Astro v4.16** (static site) — Zero JavaScript by default, blazing fast, perfect for portfolio + embedding contraptions
-- **Cloudflare Pages** (hosting) — Unlimited bandwidth, global edge, git integration, generous free tier
-- **Syncthing v1.28** (multi-device sync) — P2P, zero cost, real-time sync across desktop/laptop/mobile without cloud lock-in
-- **n8n** (publishing automation) — Self-hosted, open-source workflow automation for YouTube/Reddit/TikTok distribution
-- **FFmpeg 7.1** (video processing) — Swiss Army knife for video, CLI-first, integrates with automation workflows
-- **Blender 4.3 LTS + Python** (3D/procedural) — Open-source, powerful scripting, geometry nodes for procedural generation
-- **Claude API + Ollama** (LLM augmentation) — Claude for structural work, local models (Qwen3-Coder, DeepSeek) for cost-effective iterations
+- **Syncthing v1.x** (desktop/server sync) — Open-source P2P file sync with block-level transfer, built-in encryption, and no licensing costs. Handles atom directories, videos, source code. Wins over Resilio Sync (proprietary, licensing) and Dropbox API (rate limits, vendor lock-in). Proven in production for 10+ years, active community, extensive documentation.
 
-**Anti-recommendations (avoid tooling rabbit holes):**
-- TouchDesigner, Max/MSP, Processing desktop — proprietary, steep learning curves, not web-compatible
-- Ableton Live — overkill for "simple tunes," desktop-only workflow
-- Unity/Unreal — massive learning curve for web contraptions
-- Vercel — expensive bandwidth overages vs. Cloudflare
-- Buffer/Hootsuite — SaaS vendor lock-in vs. self-hosted n8n
+- **PouchDB + CouchDB** (mobile/server sync) — Offline-first database with automatic replication, revision-based conflict detection, and native browser support (IndexedDB). Syncs atom metadata, NOTES.md content, config parameters (not videos or source code). Wins over file-based mobile sync (iOS PWA filesystem access limitations) and custom sync protocol (years of development, CRDT complexity). Battle-tested since 2012.
 
-**Confidence:** HIGH — All recommendations sourced from established creative coding communities (Processing Foundation, OpenProcessing, Creative Coding Berlin), verified with official documentation, and battle-tested by practitioners.
+- **Claude API (Sonnet 4.5 primary)** — Server-side LLM invocations for sketch variation generation with 200K token context window and 90% cost reduction via prompt caching. Pricing: Sonnet 4.5 at $3 input / $15 output per million tokens (balanced), Haiku 4.5 at $1 input / $5 output per million tokens (simple variations). Wins over client-side invocation (API key exposure, no cost control) and Ollama-only approach (quality gap on creative coding, setup complexity). DeepSeek fallback ($0.48/1M tokens) for cost-sensitive operations.
+
+- **SQLite (sync metadata)** — Device-local database tracking file hashes, sync timestamps, conflict state, and publishing status. Schema includes devices table (registry), file_sync_state (per-file hashes), atom_metadata (publishing URLs), conflicts log, and sync_events (observability). Separate database per device avoids sync complexity. Lightweight, single-file, crash-safe with WAL mode.
+
+- **Node.js + chokidar** (filesystem watcher) — Desktop/server daemon that detects Syncthing file changes, updates SQLite metadata, identifies conflicts, and triggers notifications. Not always-running (on-demand activation), minimal resource footprint. Integrates via new CLI commands (eoe sync, eoe ai).
+
+**Version-specific requirements:**
+- Syncthing: v1.x minimum (stable block exchange protocol)
+- PouchDB: v9.0.0+ (modern IndexedDB adapter)
+- Claude API: Sonnet 4.5 model (1M context in beta, 200K production)
+- SQLite: better-sqlite3 v9.x (Node.js binding with WAL support)
+- Node.js: v20 LTS minimum (async/await, top-level await)
 
 ### Expected Features
 
-Research across 8 dimensions (atom creation, web contraptions, portfolio, publishing, CLI, streaming, community) reveals clear patterns.
+**Mobile workflow is fundamentally different from desktop:** research shows p5.js sketches run at ~30 FPS on modern phones (acceptable for preview), but code editing on mobile is painful (keyboard friction, screen real estate). The proven pattern is ideation capture (voice notes, parameter tweaks, variation selection) on mobile, with refinement on desktop.
 
-**Must have (table stakes):**
+**Must have (table stakes for v1.1):**
 
-- **Browser-based creative coding editor** with live preview, hot reload, error highlighting — users expect p5.js Editor standard
-- **Shareable web contraptions** with embeddable player, unique URLs, no-install friction — industry baseline
-- **Portfolio site** with project showcase, filtering/search, responsive design — 72% of portfolio traffic is mobile in 2026
-- **Export capabilities** — download sketch, export as standalone HTML, render to video — required for distribution
-- **Multi-platform publishing** to YouTube, TikTok, Reddit, blog at minimum — table stakes for creator economy
-- **Cross-device sync** — desktop/laptop/mobile file synchronization — mandatory for short-burst workflow
-- **Git-based version control** with LFS for media assets — standard practice for code + creative work
+- **Atom viewing in mobile browser** — Portfolio site already responsive, verify touch-friendly controls (lil-gui supports touch, validate hit targets). Offline viewing via service worker cache. Users expect to review work anywhere.
 
-**Should have (competitive advantage):**
+- **Desktop/server Syncthing sync** — File-based P2P sync for atoms/, videos/masters/, .planning/. Selective sync rules exclude videos/encoded/, node_modules/, dist/. Conflict resolution via manual review (.sync-conflict files). Users need multi-device workflow.
 
-- **Audio-reactive visuals** — sync visual parameters to audio analysis (FFT, beat detection) — key differentiator for tech+media fusion
-- **Short-burst workflow optimizations** — session resumption, quick templates, autosave, undo history — aligns with 10-15 min constraint
-- **LLM creative assistance** — structural scaffolding (GSD), lighter console for variations — 67% of video creators using AI-assisted editing by Jan 2026
-- **CLI cockpit** with TUI dashboard — terminal-native metrics, publishing commands, developer-first experience — 2026 trend toward CLI tools
-- **Remixability** — fork button, view source, attribution chain — OpenProcessing model for community
-- **Platform-specific adaptation** — auto-resize for TikTok/Shorts, format adaptation per channel — beats generic cross-posting
-- **Narrative portfolio experience** — story over grid, case study depth, interactive storytelling with GSAP — 43% higher job offer rate per 2026 trends
+- **Parameter variation generation** — LLM reads config.json, generates 5 variations with different values (bgHue, rotationSpeed, etc.). Stored as Git branches (variations/v1, variations/v2, variations/v3). User reviews via git checkout, merges favorite. Users expect AI assistance for exploration.
+
+- **Mobile sync via PouchDB/CouchDB** — Metadata-only sync (atom titles, dates, stages, NOTES.md content, thumbnails). Manual sync trigger (not continuous background). Last-write-wins with timestamp tiebreaker for config conflicts, explicit resolution UI for code. Users need mobile note-taking and curation.
+
+- **LLM cost controls** — Hard budget limits (20 variations/month free, $5/month paid tier), prompt optimization (2K token input cap), semantic caching (73% cost reduction on repeated requests), rate limiting (5 variations/hour per user). Users need protection from surprise bills.
+
+**Should have (competitive differentiators):**
+
+- **Color scheme variations** — LLM generates 5 palettes (complementary, triadic, analogous, monochrome, random) from current sketch. Side-by-side gallery view for comparison. High confidence: color theory is well-documented, LLM can apply principles.
+
+- **Voice note integration** — Capture ideas during commute, transcribe to NOTES.md, optionally scaffold atom from description. Medium confidence: transcription quality varies, scaffolding needs validation.
+
+- **Publishing queue (metadata entry on mobile)** — User fills title/description/tags on phone, queues publish request, desktop executes YouTube upload. LLM-assisted metadata generation. Users want to utilize commute time productively.
+
+- **Variation rating/promotion** — Star favorite variations, promote to main atom, regenerate based on feedback (--like=var2 --avoid=var5). Users need curation tools for exploration.
 
 **Defer (v2+):**
 
-- Real-time collaboration on same canvas — Git workflow sufficient, CRDT complexity not justified
-- Full DAW/video compositing capabilities — focus on atoms/contraptions, not professional production
-- Native mobile apps — web-based approach, accessible from mobile browser is sufficient
-- Social network features — portfolio is home base, not social platform
-- Monetization/marketplace — anti-commercial stance to preserve creative freedom
-- NFT/Web3 integration — 2026 research shows space still questionable fit for creative practice
+- **Algorithm variations** — Structurally different code approaches (grid vs. spiral vs. noise). Medium confidence: LLM code generation quality varies, needs extensive validation. Complexity high, defer until parameter variations proven.
 
-**Confidence:** HIGH — Feature priorities validated across multiple sources (OpenProcessing community, ShaderToy patterns, Sonic Pi design, StreamYard UX, Buffer alternatives research).
+- **Native mobile app** — PWA sufficient for v1.1, defer native until user demand validated. Avoids app store friction, development overhead, platform lock-in.
+
+- **Direct mobile video upload** — Phone storage/battery/bandwidth constraints make this impractical. Queue-based workflow is realistic. Defer until user requests justify complexity.
+
+- **Ollama local LLM** — Quality gap vs. Claude for creative coding, setup complexity (GPU, Docker, 5-10GB models). Break-even at ~10K generations (unrealistic for solo dev). Defer until privacy/offline requests justify.
 
 ### Architecture Approach
 
-The architecture follows **atomic design meets Git-first workflow**. Every creative output is version-controlled, modular, composable, and deployable independently. The system is structured as a vertically-integrated pipeline from idea to feedback loop.
+**Integration strategy is orthogonal and additive:** sync and LLM are independent features, both integrate via CLI surface (eoe sync, eoe ai), both store state outside repo (~/.eoe/), both are opt-in (user must run init to activate), and both leverage existing infrastructure (Git for version control, filesystem for file storage). Zero changes to v1.0 atom structure, CLI commands, build pipeline, or publishing workflow.
+
+**The hybrid source of truth model eliminates complexity:** Git remains authoritative for code/config/docs (text files merge cleanly), Syncthing handles real-time file propagation (binary assets, build artifacts), and SQLite tracks device-local metadata (sync state, publishing status). Separation prevents sync complexity from polluting Git history and enables independent failure recovery (delete SQLite, re-initialize from filesystem).
 
 **Major components:**
 
-1. **Atom Workspace** — Git-based monorepo where individual sketches, audio, motion graphics are created. Each atom is self-contained directory (index.ts, config.json, README.md, assets) exporting standardized interface (init, update, draw, cleanup). Tooling: Vite for instant HMR, TypeScript for safety, p5.js/Three.js/Web Audio API for creation.
+1. **Sync daemon (desktop/server only)** — Node.js process with chokidar filesystem watcher. Detects Syncthing file changes, updates SQLite (file hashes, timestamps, conflict state), identifies .sync-conflict files, notifies user via eoe sync status. Not always-running (on-demand activation), minimal resource footprint. CLI commands: eoe sync status, eoe sync resolve, eoe sync init.
 
-2. **Composition Layer** — JSON/YAML manifests combine multiple atoms into richer pieces with timeline orchestration. Composition engine manages shared state, lifecycle, and reactive parameters (e.g., audio volume drives visual intensity).
+2. **LLM client (desktop CLI-triggered)** — Anthropic SDK wrapper with prompt caching, semantic caching, model routing (Haiku for simple, Sonnet for complex), cost tracking (~/.eoe/llm-costs.json), and Git branch storage for variations. Context window capped at 20K tokens input (prevents runaway costs). CLI commands: eoe ai sketch, eoe ai variations, eoe ai caption, eoe ai explain.
 
-3. **Web Runtime** — Static site generation (Vite builds) deployed to Cloudflare Pages. Each atom/composition gets unique URL (eoe.site/play/<id>) with embeddable iframe, query params for config, responsive canvas.
+3. **Mobile PWA (future Phase 6+)** — Astro portfolio becomes offline-capable PWA. PouchDB stores atom metadata locally (IndexedDB), syncs to CouchDB on server when online. Manual sync trigger (not background). Selective download for videos (opt-in, not default). Deferred to Phase 6+ until core sync proven.
 
-4. **Portfolio Site** — Astro-based showcase with auto-generated gallery from atom metadata, Markdown content, embedded contraptions. Git-based CMS—filesystem is database, build-time generation, Vercel deployment.
+4. **File watcher → CouchDB bridge (server)** — Node.js daemon watches atoms/ directory (Syncthing syncs here from desktops), parses atom metadata (NOTES.md, config.json), updates CouchDB when files change. Bridges file-based desktop workflow with database-based mobile workflow. Single source of truth: files on server, CouchDB mirrors metadata.
 
-5. **Publishing Pipeline** — Playwright captures canvas to video, FFmpeg encodes per platform (16:9 YouTube, 9:16 TikTok), LLM generates descriptions/tags, APIs upload to YouTube/Reddit/TikTok. n8n orchestrates multi-platform workflows.
-
-6. **CLI Cockpit** — oclif framework with commands (create, dev, build, publish, status, metrics). TUI dashboard (Ink/blessed) shows live metrics from YouTube/Reddit APIs, publishing queue, sync status. SQLite for state/cache.
-
-7. **Sync Layer** — Syncthing for P2P file sync (full repo on desktop/server, selective on mobile), rsync for backups, Git for version control (separate concerns—Syncthing moves files, Git tracks history).
-
-8. **LLM Integration** — Two-tier: Claude Code for structure/refactoring, Aider for sketch generation. CLI commands (eoe ai sketch "description", eoe ai caption <id>) generate code/content, human iterates with hot-reload.
-
-9. **Streaming Infrastructure** — OBS Studio with WebRTC/WHIP for low-latency (<100ms), VDO.Ninja for browser-based guest participation (up to 10 guests), multi-platform simulcast to Twitch/YouTube Live, local recording + VOD upload automation.
-
-**Data flow:** Idea → Atom creation (TypeScript/p5.js) → Composition (combine atoms) → Web runtime (browser contraptions) → Portfolio (showcase) → Publishing pipeline (YouTube/TikTok/Reddit) → CLI cockpit (metrics/feedback) → Iteration. LLM augments creation, sync enables multi-device work.
-
-**Build order:** Phase 1 (Foundation: atom workspace + CLI basics + first sketch) → Phase 2 (Web runtime + portfolio + embeds) → Phase 3 (Composition layer + sync) → Phase 4 (Publishing pipeline + video capture) → Phase 5 (LLM integration + streaming) → Phase 6 (Metrics dashboard + refinement). Each phase delivers shippable output.
-
-**Confidence:** HIGH — Architecture patterns validated from p5.js web editor source code, n8n workflow templates, atomic design methodology research, CLI TUI frameworks (blessed/Ink comparison), WebRTC/WHIP streaming guides, Syncthing setup documentation.
+**Data flow:** Mobile edits metadata → PouchDB (local) → CouchDB (server) → Bridge daemon detects change → Updates files → Syncthing propagates to desktop. Desktop creates atom → Git commit → Syncthing syncs to server → Bridge daemon extracts metadata → CouchDB updates → PouchDB replicates to mobile. Conflicts detected via content hashing (not timestamps), resolved via explicit UI (no silent overwrites).
 
 ### Critical Pitfalls
 
-Research identified 3 meta-risks and domain-specific pitfalls across creative coding, audio, publishing, portfolio, streaming, community, and LLM integration.
+Research identified 10 production failure modes observed in real systems (Syncthing conflicts, AWS Lambda recursion bills, mobile data loss). Top 5 by severity:
 
-**THE PRIMARY EXISTENTIAL RISK:**
+1. **Last-write-wins data loss** — Timestamp-based conflict resolution silently overwrites concurrent edits. Prevention: CRDT-based merge for config.json/NOTES.md (field-level preservation), explicit conflict UI for sketch.js (user chooses version), content-addressable storage for videos (both versions coexist with hash-based names). Detected via user reports of "my changes disappeared" or .sync-conflict files appearing. Phase 1 must implement CRDT layer before multi-device testing.
 
-1. **The Tooling Trap** — Getting sucked into endless learning, setup, configuration instead of producing actual creative output. This was explicitly identified by the creator as threat #1. Warning signs: spending days researching "the perfect stack," constant framework switching, more time in docs than creation, building elaborate dev environments instead of prototypes, "just one more tutorial" syndrome. Prevention: **Output-first mentality** (every tool/learning must lead to shipped output within 24-48 hours), **start manual then automate pain points** (project constraint), **time-box exploration** (1 hour research max → 4+ hours creation), **weekly output quota** (ship something every 7 days minimum), **track creation vs. setup hours** (setup never exceeds 20% of total time). Phase mapping: Phase 0 establishes bare minimum tooling only; Phase 1 manual workflows to discover pain; Phase 2+ automation of proven problems.
+2. **Video sync bandwidth explosion** — 2.4GB of video files syncing to mobile on cellular incurs $50 overage or throttling. Prevention: Selective sync by device type (desktop syncs everything, mobile syncs metadata + code only), Wi-Fi-only enforcement for files >10MB, progressive download (stream from server, download only on explicit user request), bandwidth monitoring with user prompts ("23 videos, 1.2GB, download on Wi-Fi?"). Phase 1 implements selective sync, Phase 3 adds mobile controls.
 
-**SECONDARY META-RISKS:**
+3. **LLM cost explosion** — 50 variation requests × 15K tokens × $0.015/1K = $225/month runaway spending. Prevention: Hard budget limits (20 variations/month free tier), prompt optimization (2K token input cap, strip comments/whitespace), semantic caching (LangCache 73% cost reduction), model routing (70% of requests use Haiku at $0.25/1M instead of Sonnet at $3/1M), rate limiting (5 requests/hour), circuit breaker (pause at $10/hour spike). Phase 4 implements routing and caching, Phase 5 adds budget dashboards.
 
-2. **Scope Creep → Burnout Spiral** — For solo developers, scope creep leads to burnout, burnout leads to project failure. Warning signs: "just one more feature" before launch, moving MVP finish line repeatedly, working on multiple features without finishing any, feeling overwhelmed, loss of excitement. Prevention: **Establish MVP ruthlessly** (define minimal viable product and focus only on what truly matters), **parking lot for ideas** (separate future features list), **learn to say no**, **one feature at a time** (finish and ship before starting next), **regular breaks mandatory** (mental health as important as code), **scope audit weekly** (review if current work aligns with original MVP).
+4. **Sync loop (infinite recursion)** — Desktop syncs atom → Server triggers LLM variation → Variation syncs to desktop → Desktop detects "new file" → Triggers local variation → Loop until rate limit/budget exhausted. AWS Lambda recursive loops cost thousands before detection added (stops after ~16 cycles). Prevention: Event source tagging (user/sync/llm/build origins), causal context tracking (generation counter, max depth 5), breadcrumb trails (UUID-based visited set), rate limiting across stack (10 variations per atom lifetime), circuit breakers (pause at >50 files/minute). Phase 1 implements event tagging, Phase 4 adds generation limits.
 
-3. **The T-Shaped Paradox** — Project embodies T-shaped development (deep expertise + broad knowledge) but risks becoming I-shaped (all breadth, no depth) by attempting creative coding + audio + video + web + streaming + community simultaneously. Warning signs: learning 5 frameworks without shipping anything, touching audio/video/3D/generative all in same week, following every trend without developing signature style, consuming more content about techniques than creating work. Prevention: **Define the vertical first** (choose ONE primary creative domain for 50-60% of time—likely generative/creative coding), **limit horizontal domains to 3-4 initially**, **seasonal focus** (dedicate months to specific domains, not days), **ship depth first** (demonstrate mastery before expanding), **signature over versatility** (build recognizable style before diversifying).
+5. **Mobile storage exhaustion** — 50 atoms × 240MB video each = 12GB download on 64GB phone with 45GB used. iOS kills app, corrupts IndexedDB. Prevention: Storage quota monitoring (navigator.storage.estimate() before sync), selective sync enforcement (metadata-only default, user opt-in for videos), progressive eviction (LRU cache, delete oldest videos when <500MB free), compression (gzip source code 60-70%, WebP thumbnails 30-50% smaller), graceful degradation (in-memory cache if quota exceeded, warn user). Phase 3 implements monitoring and eviction.
 
-**TOP DOMAIN-SPECIFIC PITFALLS:**
-
-4. **Tutorial purgatory (creative coding)** — Following endless tutorials without developing personal style, copy-pasting without understanding, relying on AI suggestions without grasping logic. Prevention: After each tutorial, create original variation immediately. Phase 0-1: break tutorial dependence early.
-
-5. **Gear obsession over skill (audio)** — Focusing on gear over skills, waiting for "right microphone" before recording. Prevention: Record with phone/basic tools first, upgrade only when hitting real limitations. Phase 0-1: prove need before buying.
-
-6. **Premature automation (publishing)** — Building perfect multi-platform pipeline before creating content. Prevention: Publish manually to 1-2 platforms first, understand what needs automation. Phase 0-1: manual first always.
-
-7. **Portfolio over-engineering (web)** — Spending 3-6 months on fancy website instead of simple MVP. Prevention: Ship basic portfolio in 1-2 short bursts, iterate based on feedback. Phase 0-1: get online fast.
-
-8. **No testing before live (streaming)** — Not testing setup leads to technical glitches during stream. Prevention: Dry runs before every stream, wired Ethernet always. Phase 2+ when starting streaming.
-
-9. **Vague prompts without planning (LLM)** — Diving into code generation with vague prompt instead of spec first. Security blindness: AI produces secure code only 56% of time. Prevention: Spec → plan → code, never deploy AI code without review. Phase 2+ when integrating AI.
-
-**Prevention strategies (universal):**
-- Output over input (80/20 rule: creation hours > learning hours)
-- Manual before automation (feel the pain first)
-- Ship regularly (weekly output quota non-negotiable)
-- Time-box everything (research 1h, features 2-4h bursts, explorations 1 day max)
-- MVP ruthlessly (define minimum, ship it, iterate based on real use)
-- One thing at a time (finish before starting next)
-- Embrace constraints (short bursts + limited time = forced prioritization)
-
-**Emergency reset protocol:** If caught in tooling trap or scope spiral: STOP all learning/setup → AUDIT what you've shipped vs. what you've built → RESET to absolute basics (one tool, one domain, one simple piece) → SHIP something in 1-2 bursts (2-4 hours max) → REFLECT on warning signs → GUARD with new rule → RESUME with focus on output.
-
-**Confidence:** HIGH — Pitfalls validated from solo developer survival guides (Wayline, Codecks), creative coding community mistakes (Processing forums), music production common errors (MI.edu, Hyperbits), content publishing failures (ActivePieces, Mixpost), LLM integration mistakes (Addy Osmani, Dark Reading security research), creator economy 2025 retrospectives (NetInfluencer, ExchangeWire).
+**Additional critical pitfalls:** Battery drain from background sync (manual sync default, exponential backoff, push notifications instead of polling), prompt injection (input sanitization, output validation, sandboxed iframe execution), offline edits lost during network partition (transactional sync, optimistic UI with pessimistic queue persistence), binary merge conflicts (content-addressable storage, Git LFS with custom merge driver), mobile OS background task restrictions (realistic expectations, foreground sync while app open, BGAppRefreshTask ~1/hour).
 
 ## Implications for Roadmap
 
-Based on research, the roadmap must prioritize **depth before breadth**, **output before infrastructure**, and **validation before expansion**. The critical path follows dependency chains from architecture research while respecting pitfall warnings about tooling traps and scope creep.
+Research suggests 3-phase delivery for v1.1, prioritizing sync foundation (avoids data loss pitfalls) before LLM integration (cost control easier once sync proven). Phase ordering prevents dependency conflicts and allows iterative validation.
 
-### Phase 0: Absolute Minimum (Week 1)
-**Rationale:** Establish bare essentials without falling into tooling trap. Research shows 20% of time maximum should be setup; this phase enforces that constraint by limiting to 1 week total.
+### Phase 4: Mobile Sync Foundation
 
-**Delivers:**
-- Terminal, code editor, git configured
-- ONE creative coding tool (p5.js) installed
-- First sketch created and running locally
-- Basic HTML export of sketch
-
-**Addresses:**
-- Pitfall #1 (Tooling Trap) by strict time limit and output requirement
-- Pitfall #3 (T-Shaped Paradox) by forcing choice of vertical domain
-- Stack recommendation: p5.js for gentle learning curve, instant browser gratification
-
-**Avoids:**
-- Setting up entire pipeline before creating anything
-- Learning multiple frameworks simultaneously
-- Building elaborate dev environments
-
-**Research flag:** SKIP RESEARCH — p5.js is well-documented with extensive tutorials, no deeper research needed.
-
-### Phase 1: Core Creation Loop (Weeks 2-8)
-**Rationale:** Validate the fundamental hypothesis before building anything else. Can you create consistently in short bursts and enjoy the process? If not, entire project fails. Architecture research shows atom workspace is foundation enabling all downstream components. Pitfall research demands 20+ pieces in vertical domain before expanding.
+**Rationale:** Establishes data sync infrastructure before adding LLM complexity. Desktop/server Syncthing sync validates hybrid model without mobile constraints. CouchDB setup provides future mobile backend. Testing conflict resolution early prevents data loss in later phases.
 
 **Delivers:**
-- Atom workspace structure (/atoms/sketches/, /atoms/audio/, /atoms/motion/)
-- Vite dev server with hot-reload
-- 20+ p5.js sketches shipped (proves consistency and validates workflow)
-- Each atom as self-contained module with standardized interface
-- CLI basics: `eoe create atom`, `eoe dev <atom>`, `eoe build <atom>`
-- Basic portfolio site (Astro) deployed to Cloudflare Pages with 5-10 best sketches
-- Manual publishing to 1-2 platforms (YouTube + Reddit) to discover pain points
+- Desktop ↔ Server Syncthing P2P sync (atoms/, videos/masters/, .planning/)
+- Selective sync rules (.stignore for videos/encoded/, node_modules/, dist/)
+- CouchDB installation on server (database ready for mobile)
+- File watcher → CouchDB bridge daemon (syncs atom metadata to database)
+- CLI command: eoe sync status (shows sync health, device list, conflicts)
+- CLI command: eoe sync resolve (interactive conflict resolution)
+- Conflict detection via content hashing (not timestamps)
+- SQLite metadata database schema (~/.eoe/sync.db)
 
-**Addresses:**
-- Features: Browser-based editor with live preview (table stakes)
-- Features: Export capabilities, shareable URLs (table stakes)
-- Architecture: Atom workspace + web runtime + basic portfolio
-- Pitfall #1 (Tooling Trap) by shipping volume weekly
-- Pitfall #2 (Scope Creep) by ruthless MVP focus
-- Pitfall #3 (T-Shaped Paradox) by establishing vertical depth
-- Pitfall #4 (Tutorial purgatory) by requiring original work
-- Pitfall #6 (Premature automation) by staying manual
-- Pitfall #7 (Portfolio over-engineering) by 1-2 burst limit on site
+**Addresses features:**
+- Desktop/server sync (table stakes)
+- Atom metadata in CouchDB (enables future mobile sync)
 
-**Uses:**
-- Stack: p5.js, Vite, TypeScript, Astro, Cloudflare Pages
-- Architecture: Atom workspace pattern, static site generation
+**Avoids pitfalls:**
+- Last-write-wins data loss (content hashing detects true conflicts)
+- Sync loop (event source tagging implemented)
+- Binary merge conflicts (content-addressable storage for videos)
 
-**Success criteria:**
-- Creating 2-3 sketches per week consistently
-- Enjoying the creative process
-- Portfolio live with embedded contraptions
-- Manual publishing workflow documented with pain points identified
+**Duration estimate:** 2-3 weeks
 
-**Research flag:** SKIP RESEARCH — All technologies well-documented. Focus is execution and validation, not learning new domains.
+**Research flags:** Standard Syncthing patterns, skip research-phase. Official docs comprehensive, active community. Minor unknowns in file watcher → CouchDB bridge (custom code, not off-the-shelf).
 
-### Phase 2: First Horizontal + Sync (Weeks 9-12)
-**Rationale:** After proving core creative coding workflow (vertical depth established), add first horizontal capability to enhance output. Research suggests audio as natural complement (audio-reactive visuals as differentiator from FEATURES.md). Sync infrastructure enables multi-device workflow (table stakes per project constraints). Order respects T-shaped balance: continue 50-60% creative coding while adding 40-50% new skills.
+### Phase 5: Mobile PWA Sync
+
+**Rationale:** Builds on Phase 4's proven sync infrastructure. Mobile-only constraints (battery, bandwidth, storage) tested in isolation before LLM added. Validates selective sync and manual triggers before complex features.
 
 **Delivers:**
-- Audio atoms: Tone.js integration, simple synth/pattern compositions
-- 5-10 audio pieces created
-- Audio-reactive sketches combining visual + audio atoms
-- Composition layer: JSON manifests, timeline orchestration
-- Syncthing configured across desktop/laptop/server
-- CLI: `eoe compose new`, `eoe sync` status command
-- Cross-device workflow validated (start on desktop, continue on laptop)
+- Mobile PWA with PouchDB + CouchDB replication (metadata-only sync)
+- Atom list view (thumbnails, titles, stages, offline-capable)
+- NOTES.md editor (markdown, syncs to CouchDB)
+- Manual sync trigger (prominent "Sync now" button)
+- Offline indicator (shows last sync time, pending changes)
+- Selective sync enforcement (videos opt-in, not default)
+- Storage quota monitoring (navigator.storage.estimate())
+- Testing on iOS Safari + Android Chrome
 
-**Addresses:**
-- Features: Audio creation for non-musicians (table stakes for "simple tunes")
-- Features: Audio-reactive visuals (differentiator)
-- Features: Cross-device sync (table stakes)
-- Architecture: Composition layer + sync layer
-- Pitfall #3 (T-Shaped Paradox) by adding one horizontal at a time
-- Pitfall #5 (Gear obsession) by starting with browser-based tools
-- Stack: Tone.js for browser audio, Syncthing for P2P sync
+**Addresses features:**
+- Mobile sync (table stakes)
+- Mobile note editing (table stakes)
+- Atom viewing in mobile browser (table stakes)
 
-**Uses:**
-- Stack: Tone.js v14.8.49, Web Audio API, Syncthing v1.28
-- Architecture: Composition layer orchestration pattern
+**Avoids pitfalls:**
+- Video bandwidth explosion (metadata-only default)
+- Mobile storage exhaustion (storage monitoring, selective sync)
+- Battery drain (manual sync, no background polling)
+- Mobile OS background restrictions (foreground sync while app open)
 
-**Research flag:** MEDIUM PRIORITY — May need deeper research on Web Audio API patterns and composition timing/synchronization. Tone.js is well-documented but audio-visual sync has complexity. Consider `/gsd:research-phase` if timeline orchestration proves difficult.
+**Duration estimate:** 3-4 weeks
 
-### Phase 3: Publishing Automation (Weeks 13-16)
-**Rationale:** By now you have 25-35 pieces (20+ sketches + 5-10 audio + 5-10 compositions) and manual publishing to 2 platforms. You've felt the real pain points. Now automate only what hurts, respecting "start manual, automate pain points" constraint. Architecture research shows publishing pipeline depends on web runtime (Phase 1 delivered) and composition layer (Phase 2 delivered).
+**Research flags:** Needs research-phase for iOS PWA limitations and IndexedDB quota handling (documented but nuanced). PouchDB/CouchDB sync patterns are standard, but mobile-specific constraints need validation.
 
-**Delivers:**
-- Video capture: Playwright scripts record canvas output
-- FFmpeg encoding profiles (YouTube 1080p 16:9, TikTok 9:16, thumbnail extraction)
-- Platform API integrations (YouTube Data API v3, Reddit API/PRAW)
-- CLI: `eoe publish <atom> --platforms youtube,reddit,tiktok` command
-- n8n self-hosted with workflows for multi-platform distribution
-- Publishing queue, status tracking (processing/live/failed)
-- Platform-specific adaptation (auto-resize, format conversion, metadata templating)
+### Phase 6: LLM Variation Generation
 
-**Addresses:**
-- Features: Multi-platform publishing (table stakes)
-- Features: Export to video (table stakes for YouTube pipeline)
-- Features: Platform-specific adaptation (competitive advantage)
-- Architecture: Publishing pipeline component
-- Pitfall #6 (Premature automation) avoided by doing Phase 1-2 manually first
-- Pitfall: Automation without monitoring by building status tracking from start
-- Stack: FFmpeg, n8n, Playwright for capture, platform APIs
-
-**Uses:**
-- Stack: Playwright, FFmpeg 7.1, n8n, YouTube API, Reddit API, TikTok API
-- Architecture: Publishing pipeline stages (capture → format → metadata → distribute)
-
-**Research flag:** HIGH PRIORITY — Publishing pipeline is high complexity with many API integrations, video encoding gotchas, platform-specific quirks. Recommend `/gsd:research-phase` to investigate:
-- Playwright canvas capture best practices (frame rate, quality settings)
-- FFmpeg encoding for web video (H.264 profiles, compression settings)
-- Platform API rate limits and error handling (YouTube quota management, Reddit rules)
-- n8n workflow patterns for multi-platform publishing
-- TikTok API access requirements (business account verification)
-
-### Phase 4: CLI Cockpit + Metrics (Weeks 17-20)
-**Rationale:** Publishing automation (Phase 3) creates need for monitoring and control. CLI cockpit centralizes management and closes feedback loop from distribution back to creation. Architecture research shows CLI depends on publishing pipeline (metrics source) and portfolio (content source). Features research emphasizes developer-first terminal-native experience as 2026 trend.
+**Rationale:** Sync proven in Phases 4-5, so LLM-generated variations can safely propagate across devices. Cost control mechanisms validated before user-facing features. Server-side invocation architecture prevents API key exposure.
 
 **Delivers:**
-- TUI dashboard (Ink or blessed) with live metrics display
-- Analytics aggregation from YouTube/Reddit APIs
-- SQLite database for metrics cache and history
-- Enhanced CLI commands: `eoe status`, `eoe metrics <atom>`, `eoe resolve-conflicts`
-- Real-time view counts, engagement metrics, comment aggregation
-- Publishing queue visualization
-- Sync status monitoring
+- Express server with /api/llm/variation endpoint (Anthropic SDK integration)
+- Prompt caching (90% cost reduction on p5.js docs context)
+- Rate limiting (20 requests/hour per user via express-rate-limit)
+- Budget tracking (SQLite database, monthly $10 cap)
+- CLI command: eoe ai variations (generates parameter/color variations)
+- CLI command: eoe ai caption (generates YouTube metadata)
+- Git branch storage (variations/v1, variations/v2, variations/v3)
+- Code validation (syntax check, API reference check)
+- Cost monitoring dashboard (eoe ai costs shows spending)
 
-**Addresses:**
-- Features: CLI cockpit with TUI dashboard (competitive advantage)
-- Features: Platform analytics tracking (table stakes for feedback loop)
-- Architecture: CLI cockpit component
-- Pitfall: Broadcasting without engagement by surfacing comments/feedback
-- Pitfall: No documentation by building history tracking from start
-- Stack: oclif, Ink/blessed, SQLite
+**Addresses features:**
+- Parameter variation generation (table stakes)
+- Color scheme variations (differentiator)
+- Publishing metadata generation (differentiator)
 
-**Uses:**
-- Stack: Node.js, TypeScript, oclif, Ink (React TUI) or blessed, SQLite
-- Architecture: CLI cockpit pattern, data aggregation from platform APIs
+**Avoids pitfalls:**
+- LLM cost explosion (budget limits, prompt optimization, semantic caching)
+- Prompt injection (input sanitization, output validation)
+- Sync loop (LLM-generated files tagged, max 5 variations per atom)
 
-**Research flag:** LOW PRIORITY — CLI frameworks well-documented (oclif docs, Ink examples, blessed tutorials). YouTube/Reddit APIs straightforward for read-only analytics. Standard patterns exist. SKIP deeper research unless hitting specific issues.
+**Duration estimate:** 3-4 weeks
 
-### Phase 5: LLM Augmentation (Weeks 21-24)
-**Rationale:** By this point you've created 30-40+ pieces manually, established workflows, identified creative bottlenecks. Now introduce AI assistance for acceleration without replacement. Pitfall research shows timing is critical: "code periodically without AI to keep raw skills sharp." Adding LLM after manual mastery prevents Dunning-Kruger effect and skill atrophy.
+**Research flags:** Standard Claude API integration, skip research-phase. Prompt engineering for p5.js variations needs experimentation (not research). Cost control patterns well-documented.
 
-**Delivers:**
-- Aider integration for terminal-based pair programming
-- CLI commands: `eoe ai sketch "description"`, `eoe ai caption <atom>`
-- Custom prompts for p5.js sketch generation
-- LLM-assisted platform caption/description generation
-- Two-tier strategy: Claude Code for structure, lighter model for variations
-- Documentation on when to use AI vs. manual creation
-
-**Addresses:**
-- Features: LLM creative assistance (competitive advantage)
-- Features: AI-assisted publishing metadata (67% of creators using by 2026)
-- Architecture: LLM integration component
-- Pitfall #9 (Vague prompts) by building structured prompt templates
-- Pitfall: Security blindness by enforcing human review always
-- Pitfall: Dunning-Kruger effect by adding AI after skill foundation
-- Pitfall: Creativity replacement by positioning AI as assistant not driver
-- Stack: Claude API, Ollama for local models, Aider
-
-**Uses:**
-- Stack: Aider, Claude API, Ollama (Qwen3-Coder, DeepSeek), custom prompts
-- Architecture: LLM integration pattern with two-tier strategy
-
-**Research flag:** MEDIUM PRIORITY — LLM integration for creative coding is emerging area. May need deeper research on:
-- Effective prompting for p5.js/Three.js code generation
-- AI Co-Artist approach for shader/generative art (research shows novice users created 4.2 shaders with AI vs 0.6 without)
-- Context management for creative coding (how much to show LLM)
-- Security practices for AI-generated code
-Consider `/gsd:research-phase` if going beyond basic integration.
-
-### Phase 6: Streaming Infrastructure (Weeks 25-28)
-**Rationale:** At this point you have substantial body of work (40-50+ pieces), automated publishing, metrics tracking. Ready to share process live. Architecture research shows streaming depends on atom workspace (content to show) and web runtime (contraptions for performance). Features research emphasizes starting simple (intimate jams → growing shows) to avoid complexity traps.
-
-**Delivers:**
-- OBS Studio configured with scenes (code editor, browser preview, camera)
-- WebRTC/WHIP for low-latency streaming
-- VDO.Ninja integration for browser-based guest participation
-- Stream targets: Twitch primary, YouTube Live secondary
-- Local recording to MKV with auto-remux to MP4
-- VOD upload automation to YouTube
-- CLI: `eoe stream start` command
-
-**Addresses:**
-- Features: Live streaming with guest participation (table stakes per project vision)
-- Features: Recording + VODs (table stakes for archive)
-- Architecture: Streaming infrastructure component
-- Pitfall #8 (No testing before live) by building dry-run checklist
-- Pitfall: Complexity without practice by starting with simple talking head
-- Pitfall: WiFi streaming by documenting wired Ethernet requirement
-- Pitfall: Audio neglect by prioritizing mic setup
-- Stack: OBS Studio, WebRTC/WHIP, VDO.Ninja
-
-**Uses:**
-- Stack: OBS Studio, WebRTC/WHIP protocol, VDO.Ninja (formerly OBS.Ninja), Twitch/YouTube Live APIs
-- Architecture: Streaming infrastructure with guest integration
-
-**Research flag:** MEDIUM-HIGH PRIORITY — Live streaming has many technical gotchas. Recommend `/gsd:research-phase` to investigate:
-- OBS scene configuration best practices for live coding
-- WebRTC/WHIP latency optimization (<100ms target)
-- VDO.Ninja guest setup (up to 10 guests recommended, but how to manage layouts)
-- RTMP relay for multi-platform simulcast
-- Recording settings (MKV safety, remux automation)
-- Audio routing (system audio + mic + guests)
-
-### Phase 7: Community + 3D Expansion (Weeks 29-32+)
-**Rationale:** With consistent output (50+ pieces), automated publishing, live streaming established, natural audience has emerged. Now formalize community platform. Also add third horizontal (3D/Three.js) after proving can manage two (creative coding vertical + audio horizontal). T-shaped balance maintained: 50% creative coding depth, 25% audio, 25% 3D/community.
-
-**Delivers:**
-- Discord server setup for community
-- GitHub organization for open-source code
-- Community showcase/gallery on portfolio site
-- Remix/fork features for contraptions
-- Three.js integration for 3D/WebGL atoms
-- Blender + Python workflow for procedural 3D assets
-- 5-10 3D pieces created
-- Motion graphics capabilities (GSAP integration)
-
-**Addresses:**
-- Features: Remixability with fork/view source (competitive advantage)
-- Features: Community platform (Discord standard, GitHub for contributions)
-- Features: 3D scenes, WebGL, particles (table stakes for full creative coding range)
-- Architecture: Community features + expanded atom types
-- Pitfall: Treating audience as customers not community by sharing process
-- Pitfall: Follower count obsession by tracking engagement quality not numbers
-- Stack: Three.js, Blender, GSAP, Discord, GitHub
-
-**Uses:**
-- Stack: Three.js r169, Blender 4.3 LTS + Python, GSAP v3.12.5, Discord, GitHub
-- Architecture: Expanded atom workspace (3D/motion), community features
-
-**Research flag:** MEDIUM PRIORITY — Three.js is well-documented but 3D creative coding has unique patterns. May need research on:
-- Three.js + p5.js integration patterns
-- Blender Python API for generative geometry
-- GSAP animation of WebGL scenes
-- Performance optimization for 60fps 3D
-Consider `/gsd:research-phase` for 3D-specific workflows.
+**Dependencies:**
+- Phase 4 complete (variations must sync across devices)
+- Phase 5 optional (LLM works without mobile, but mobile can review variations)
 
 ### Phase Ordering Rationale
 
-**Dependency chain (from architecture research):**
-- Atom workspace → Web runtime (can't deploy without creation)
-- Web runtime → Portfolio (can't showcase without deployment)
-- Portfolio → Publishing (can't distribute without content)
-- Publishing → Metrics (can't track without distribution)
-- All above → Streaming (need content to show)
-- All above → Community (people gather around existing work)
+**Why sync before LLM:**
+1. Sync is foundation — LLM-generated variations need multi-device propagation
+2. Sync pitfalls cause data loss (unrecoverable) — LLM pitfalls cause cost overruns (recoverable)
+3. Sync testing requires multiple devices (time-consuming) — LLM testing is desktop-only (faster iteration)
+4. Sync conflicts rare but catastrophic — LLM errors frequent but fixable
+5. User can use desktop sync without LLM (standalone value) — LLM without sync is weaker (variations don't propagate)
 
-**Pitfall avoidance:**
-- Phase 0-1 delay automation to avoid tooling trap and premature optimization
-- Phase 1 establishes vertical depth before expanding horizontals (T-shaped paradox)
-- Phase 1-2 manual workflows before Phase 3 automation (start manual constraint)
-- Phase 5 adds AI after skill foundation (Dunning-Kruger prevention)
-- Phase 6 defers streaming until content library exists (no empty demos)
-- Phase 7 defers community until consistent output proven (avoid empty forums)
+**Why desktop/server sync before mobile sync:**
+1. Validates hybrid model (Git + Syncthing + SQLite) without mobile constraints
+2. Conflict resolution patterns proven on desktop (manual review, Git merge tools) before adapting to mobile (limited UI)
+3. Desktop-only allows fast iteration (no app store, no device testing matrix)
+4. Server infrastructure (CouchDB, bridge daemon) tested with desktop before mobile introduced
 
-**Volume targets validate vertical:**
-- Phase 1: 20+ sketches proves core workflow
-- Phase 2: 5-10 audio pieces proves first horizontal
-- Phase 3: 25-35 total pieces justifies automation investment
-- Phase 5: 30-40+ pieces ensures AI augments rather than replaces skill
-- Phase 7: 50+ pieces demonstrates consistency worthy of community
-
-**Short-burst optimization:**
-- Each phase deliverable fits 10-15 min to 1 hour creation sessions
-- CLI commands reduce friction for context switching
-- Sync enables starting work on one device, continuing on another
-- Autosave + session resumption support interrupted workflows
+**How this avoids pitfalls:**
+- Phase 4 addresses top 3 data loss pitfalls (last-write-wins, sync loop, binary conflicts) before user-facing features
+- Phase 5 addresses mobile-specific pitfalls (bandwidth, storage, battery) in isolation
+- Phase 6 addresses cost pitfalls (LLM explosion) with proven sync infrastructure underneath
+- Sequential delivery prevents cascading failures (sync + LLM bugs compounding)
 
 ### Research Flags
 
-**Phases needing deeper research during planning:**
+**Phases needing research-phase during planning:**
 
-- **Phase 3 (Publishing Pipeline):** HIGH PRIORITY — Complex integrations with multiple APIs, video encoding, platform-specific rules, rate limiting. Recommend `/gsd:research-phase` on: Playwright canvas capture, FFmpeg web video profiles, platform API patterns, n8n workflow design, TikTok business account requirements.
-
-- **Phase 5 (LLM Augmentation):** MEDIUM PRIORITY — Emerging area with security implications. May need research on: effective prompting for creative code, AI Co-Artist patterns for generative art, context management, security practices for generated code.
-
-- **Phase 6 (Streaming Infrastructure):** MEDIUM-HIGH PRIORITY — Technical complexity with latency, audio routing, guest management. Recommend `/gsd:research-phase` on: OBS live coding scene setup, WebRTC/WHIP optimization, VDO.Ninja guest workflows, multi-platform RTMP, recording automation.
-
-- **Phase 2 (Audio + Composition):** MEDIUM PRIORITY — Audio-visual synchronization has complexity. May need research on: Web Audio API timing precision, composition timeline patterns, audio-reactive parameter mapping. Consider research if timeline orchestration proves difficult.
-
-- **Phase 7 (3D Expansion):** MEDIUM PRIORITY — 3D creative coding has unique performance constraints. May need research on: Three.js + p5.js integration, Blender Python API, GSAP WebGL animation, 60fps optimization.
+- **Phase 5 (Mobile PWA Sync):** iOS PWA limitations are well-documented but nuanced. Research needed for IndexedDB quota handling (varies by browser/OS version), service worker lifecycle (iOS restrictions on background sync), and PouchDB performance on mobile (large datasets, battery impact). Estimated 2-4 hours research.
 
 **Phases with standard patterns (skip research-phase):**
 
-- **Phase 0-1 (Foundation + Core Loop):** Well-documented — p5.js tutorials extensive, Vite/Astro guides clear, Cloudflare Pages deployment straightforward. Focus on execution not learning.
+- **Phase 4 (Desktop/Server Sync):** Syncthing patterns well-documented, official docs comprehensive, active community. File watcher + SQLite patterns standard. Estimated 0 hours research (use current research).
 
-- **Phase 4 (CLI Cockpit):** Well-documented — oclif has excellent docs, Ink/blessed have examples, YouTube/Reddit APIs straightforward for read-only. Standard patterns exist.
+- **Phase 6 (LLM Integration):** Claude API integration standard, prompt caching documented, cost control patterns established. Prompt engineering for p5.js variations needs experimentation (not research). Estimated 0 hours research (use current research).
 
-**Progressive research strategy:**
-- Start each phase with quick validation (2-4 hours) to confirm standard patterns work
-- Escalate to `/gsd:research-phase` only if hitting unknowns or complexity
-- Budget 1-2 days research maximum per phase, then ship with "good enough"
+**Additional research needed during implementation:**
+
+- **Prompt templates for variation types:** Not research, but trial-and-error iteration. Budget 1 week for prompt engineering experiments (generate, review, refine).
+
+- **Mobile performance benchmarks:** Test p5.js sketch FPS on target devices (iPhone 15, Pixel 8, older phones). Budget 2-3 days for device testing matrix.
 
 ## Confidence Assessment
 
 | Area | Confidence | Notes |
 |------|------------|-------|
-| Stack | **HIGH** | All recommendations from official docs, established communities (Processing Foundation, Creative Coding Berlin), 2026 trend research. Versions verified, alternatives evaluated. Anti-recommendations backed by practitioner consensus. |
-| Features | **HIGH** | Synthesized from 8 domains with 40+ sources. Table stakes validated across platforms (OpenProcessing, ShaderToy, Sonic Pi, StreamYard). Differentiators confirmed by 2026 trends (CLI tools, AI-assisted editing, narrative portfolios). Anti-features align with project constraints. |
-| Architecture | **HIGH** | Patterns validated from real systems (p5.js web editor source, n8n workflows, atomic design methodology). Dependency chains traced. Build order tested against solo developer constraints. Integration points specified with clear APIs. |
-| Pitfalls | **HIGH** | Meta-risks explicitly identified by creator (tooling trap) + synthesized from solo dev survival research. Domain-specific pitfalls sourced from 30+ practitioner guides, postmortems, and 2025 retrospectives. Prevention strategies include phase mapping and emergency reset protocol. |
+| **Syncthing architecture** | HIGH | Production-proven (10+ years), extensive documentation, active community. Official docs + real-world case studies validate block-level sync, conflict handling, and P2P architecture. |
+| **PouchDB/CouchDB sync** | HIGH | Battle-tested since 2012, designed for offline-first, official docs comprehensive. Revision-based conflict detection is proven pattern. IndexedDB performance on mobile validated by community. |
+| **iOS PWA limitations** | HIGH | Well-documented restrictions (background sync, filesystem access, cache limits) consistent across sources. Apple's official guidelines + community reports align. |
+| **Claude API pricing/features** | HIGH | Official Anthropic documentation, verified 2026 rates. Prompt caching feature GA (not beta). Rate limits and context windows confirmed. |
+| **Prompt caching cost reduction** | MEDIUM | Official feature with documented savings (90% reduction), but actual savings depend on usage patterns (cache hit rate, prompt structure). Research shows 73-90% range in production. |
+| **LLM code generation quality** | MEDIUM | Research (Pail IDE study) shows p5.js well-represented in training data, but variation quality varies by prompt. Needs experimentation to validate scaffolding accuracy. |
+| **Cost control efficacy** | MEDIUM | Patterns proven (rate limiting, budget caps, semantic caching) but edge cases exist (malicious users, bugs). Multi-layer defense reduces risk but doesn't eliminate. |
+| **Conflict resolution UX** | LOW | User behavior unpredictable in conflict scenarios. Research shows patterns (three-way merge, last-write-wins, CRDT) but actual user tolerance/comprehension needs validation. Manual resolution burden unknown. |
 
-**Overall confidence:** **HIGH**
+**Overall confidence:** HIGH for technology choices and architecture patterns, MEDIUM for cost/quality predictions, LOW for user behavior assumptions.
 
 ### Gaps to Address
 
-**TikTok API access:** Requires business account verification which may take weeks. Workaround: Manual uploads via web interface until API access granted, or defer TikTok until Phase 3+ when automation is critical. Not a blocker for Phases 1-2.
+**During Phase 4 planning:**
+- **File watcher → CouchDB bridge implementation:** No off-the-shelf tool found. Custom Node.js code required. Plan for edge cases: partial file writes, rapid file changes (debouncing), CouchDB connection failures. Validate during implementation with stress testing (1000 file changes/minute).
 
-**Mobile editing complexity:** Research shows full editing on mobile is complex; current architecture assumes review + control only (SSH to server for builds/publishes). Future consideration: Progressive Web App with simplified editor if mobile creation proves essential. Not addressing in initial roadmap.
+**During Phase 5 planning:**
+- **iOS PWA cache limits:** 50MB Cache Storage limit documented, but actual eviction behavior varies by iOS version. Validate with real device testing (fill cache, background app, check persistence). Plan fallback: warn user when approaching limit, offer "clear cache" option.
 
-**Large asset management:** Git LFS mentioned in Stack research but not deeply explored. May hit repo bloat with video/audio files. Strategy: Start with Git LFS basics (Phase 1), monitor repo size, escalate to separate asset CDN only if needed (Phase 4+). Document patterns in `.planning/decisions/` if becomes issue.
+**During Phase 6 planning:**
+- **Prompt templates effectiveness:** Research shows p5.js in LLM training data, but optimal prompt structure for variations unknown. Plan experimentation budget (1 week) to iterate on templates. Success metric: >60% of variations rated "worth exploring" by user.
 
-**Real-time collaboration:** Deliberately deferred (anti-feature per FEATURES.md) but may become request from community. If needed: Git branches + merge process sufficient; CRDT/OT complexity not justified until clear demand. Mark as v2+ explicitly in roadmap.
+**During implementation (all phases):**
+- **Conflict resolution UX validation:** User testing needed to validate "choose version" UI vs. "auto-merge with notification" approaches. Plan usability study (5-10 users, simulate conflicts, observe resolution behavior). Adjust conflict strategy based on findings.
 
-**Monetization strategy:** Not in scope (anti-commercial stance) but may need to address sustainability. Per ARCHITECTURE.md open question: Patreon, NFT drops, YouTube ad revenue possible. Decision point: After Phase 7 when community established, revisit if sustainable practice requires income. Document reasoning in `.planning/decisions/monetization.md` at that time.
-
-**Analytics privacy trade-off:** Self-hosted analytics (Plausible/Umami) gives control but incomplete data vs. platform APIs give full metrics but less privacy. Current architecture uses platform APIs (YouTube Data API, Reddit API) for completeness. If privacy becomes concern: Add self-hosted portfolio analytics in Phase 4, keep platform APIs for distributed content. Hybrid approach documented in Phase 4 planning.
-
-**Streaming latency optimization:** WebRTC/WHIP promises <100ms latency but achieving this requires tuning. If Phase 6 streaming experiences buffering/lag: Deep-dive on WebRTC configuration (TURN servers, bandwidth allocation, codec selection). Budget extra research time in Phase 6 for this.
-
-**LLM cost management:** Claude API pricing may increase; research suggests 2-3x budget. Strategy: Start with Claude API (Phase 5), monitor costs monthly, shift to Ollama local models if exceeds budget (Qwen3-Coder, DeepSeek-Coder validated as alternatives). Cost tracking in CLI cockpit metrics.
-
-**Security of AI-generated code:** Research shows AI produces secure code only 56% of time without security prompting. Mitigation: Phase 5 includes security-aware prompts, human review always, never deploy AI code without understanding. If becomes issue: Add security linting to CLI build step (`eoe build` runs static analysis on AI-generated code).
+- **Cost model validation:** LLM spending predictions assume 70% cheap model routing, 30% cache hit rate. Track actual usage during beta, adjust budget limits if predictions off by >20%. Plan monitoring dashboard for real-time cost tracking.
 
 ## Sources
 
-### Primary Sources (HIGH confidence)
+### Primary (HIGH confidence)
 
-**Official Documentation:**
-- [p5.js Official Docs](https://p5js.org/) — Creative coding framework
-- [Three.js Documentation](https://threejs.org/docs/) — 3D/WebGL library
-- [Tone.js Documentation](https://tonejs.github.io/) — Web Audio API wrapper
-- [Astro Documentation](https://astro.build/) — Static site generator
-- [Cloudflare Pages Docs](https://developers.cloudflare.com/pages/) — Hosting platform
-- [Syncthing Documentation](https://docs.syncthing.net/) — P2P file sync
-- [n8n Documentation](https://docs.n8n.io/) — Workflow automation
-- [FFmpeg Documentation](https://ffmpeg.org/documentation.html) — Video processing
-- [Blender Python API](https://docs.blender.org/api/current/) — 3D scripting
-- [YouTube Data API v3](https://developers.google.com/youtube/v3) — YouTube integration
-- [Reddit API](https://www.reddit.com/dev/api/) — Reddit integration
-- [oclif Documentation](https://oclif.io/) — CLI framework
-- [OBS Studio Docs](https://obsproject.com/docs/) — Streaming software
+**Syncthing / Sync Architecture:**
+- [Syncthing Official Documentation](https://docs.syncthing.net/users/syncing.html) — Block Exchange Protocol, conflict handling, versioning
+- [Syncthing vs Resilio Sync Comparison](https://stackshare.io/stackups/resilio-vs-syncthing/) — Feature comparison, cost analysis
+- [Block Exchange Protocol v1](https://docs.syncthing.net/specs/bep-v1.html) — Technical specification, checksum verification
+- [Syncthing Battery Optimization (Android)](https://github.com/Catfriend1/syncthing-android/blob/main/wiki/Info-on-battery-optimization-and-settings-affecting-battery-usage.md) — Battery impact analysis
 
-**Community Repositories:**
-- [GitHub - processing/p5.js](https://github.com/processing/p5.js) — Source code and patterns
-- [GitHub - processing/p5.js-web-editor](https://github.com/processing/p5.js-web-editor) — Editor architecture reference
-- [GitHub - terkelg/awesome-creative-coding](https://github.com/terkelg/awesome-creative-coding) — Curated tools and resources
-- [GitHub - CreativeCodeBerlin/creative-coding-minilist](https://github.com/CreativeCodeBerlin/creative-coding-minilist) — Berlin community recommendations
-- [GitHub - Aider-AI/aider](https://github.com/Aider-AI/aider) — LLM pair programming tool
+**PouchDB / CouchDB:**
+- [PouchDB Official Site](https://pouchdb.com/) — Offline-first design principles, replication protocol
+- [PouchDB/CouchDB Tutorial](https://terreii.github.io/use-pouchdb/docs/introduction/pouchdb_couchdb) — Integration patterns, conflict resolution
+- [SQLite Sync Conflict Resolution](https://www.sqliteforum.com/p/building-offline-first-applications) — Offline-first schema patterns
+- [PWA on iOS Limitations](https://brainhub.eu/library/pwa-on-ios) — Background sync restrictions, cache limits
 
-### Secondary Sources (MEDIUM confidence)
+**LLM Integration:**
+- [Anthropic Claude API Pricing 2026](https://platform.claude.com/docs/en/about-claude/pricing) — Official pricing, prompt caching costs
+- [Claude API Rate Limits](https://platform.claude.com/docs/en/api/rate-limits) — Token bucket algorithm, tier limits
+- [Prompt Caching Cost Reduction (ngrok)](https://ngrok.com/blog/prompt-caching/) — 90% cost reduction case study
+- [Semantic Caching vs Prompt Caching (Redis)](https://redis.io/blog/prompt-caching-vs-semantic-caching/) — Caching strategy comparison
+- [OWASP LLM Prompt Injection Prevention](https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html) — Security best practices
 
-**2026 Trend Research:**
-- [Top Creative Coding Tools in 2025 - VibeCoding](https://blog.vibecoding.vip/creative-coding-tools/) — Industry trends
-- [Astro's Journey from SSG to Next.js Rival - The New Stack](https://thenewstack.io/astros-journey-from-static-site-generator-to-next-js-rival/) — Static site generator comparison
-- [The Anthology of a Creative Developer: A 2026 Portfolio - DEV](https://dev.to/nk2552003/the-anthology-of-a-creative-developer-a-2026-portfolio-56jp) — Portfolio design trends
-- [The Creator Economy in 2026 - ExchangeWire](https://www.exchangewire.com/blog/2025/12/16/the-creator-economy-in-2026-tapping-into-culture-community-credibility-and-craft/) — Creator economy shifts
-- [7 Social Media Trends to Know in 2026 - Sprout Social](https://sproutsocial.com/insights/social-media-trends/) — Platform trends
-- [Content Marketing Trends 2026 - CMI](https://contentmarketinginstitute.com/strategy-planning/trends-content-marketing) — 67% using AI-assisted editing
+**Mobile Architecture:**
+- [Offline-First Architecture: Designing for Reality](https://medium.com/@jusuftopic/offline-first-architecture-designing-for-reality-not-just-the-cloud-e5fd18e50a79) — Offline-first principles
+- [The Complete Guide to Offline-First Architecture in Android](https://www.droidcon.com/2025/12/16/the-complete-guide-to-offline-first-architecture-in-android/) — Mobile patterns
+- [Background optimization - Android](https://developer.android.com/topic/performance/background-optimization) — Battery, task restrictions
 
-**Technical Comparisons:**
-- [Vercel vs Netlify vs Cloudflare Pages 2025 - AI Infra Link](https://www.ai-infra-link.com/vercel-vs-netlify-vs-cloudflare-pages-2025-comparison-for-developers/) — Hosting comparison
-- [Sonic Pi vs TidalCycles vs Strudel - Creative Coding Tech](https://creativecodingtech.com/music/live-coding/comparison/2024/10/22/sonic-pi-vs-tidalcycles-vs-strudel.html) — Audio framework comparison
-- [OBS vs StreamYard Comparison - StreamYard Blog](https://streamyard.com/blog/streaming-software-comparison-between-obs-and-streamlabs) — Streaming tools
-- [Syncthing vs Rsync Comparison - Rosetta Digital](https://rosettadigital.com/syncthing-vs-rsync/) — Sync strategy
-- [ink vs blessed - npm-compare](https://npm-compare.com/blessed,ink) — Terminal UI frameworks
+### Secondary (MEDIUM confidence)
 
-**Architecture Patterns:**
-- [Atomic Design for Developers - Benjamin Fox](https://benjaminwfox.com/blog/tech/atomic-design-for-developers) — Component composition
-- [Building Terminal Interfaces with Node.js - OpenReplay](https://blog.openreplay.com/building-terminal-interfaces-nodejs/) — CLI patterns
-- [TikTok System Design: Step-by-Step Guide - Grokking](https://grokkingthesystemdesign.com/guides/tiktok-system-design/) — Publishing pipeline architecture
-- [Automate content publishing to TikTok, YouTube, Instagram via Blotato - n8n](https://n8n.io/workflows/7187-automate-content-publishing-to-tiktok-youtube-instagram-facebook-via-blotato/) — Multi-platform workflow
-- [WebRTC cracks the WHIP on OBS - webrtcHacks](https://webrtchacks.com/webrtc-cracks-the-whip-on-obs/) — Low-latency streaming
+**p5.js Performance:**
+- [Optimizing p5.js Code for Performance](https://github.com/processing/p5.js/wiki/Optimizing-p5.js-Code-for-Performance) — Mobile performance, canvas size impact
+- [p5.js mobile performance issues](https://github.com/processing/p5.js/issues/4469) — Community reports of 30 FPS ceiling
 
-**Pitfall Research:**
-- [Scope Creep: The Silent Killer of Solo Indie Game Development - Wayline](https://www.wayline.io/blog/scope-creep-solo-indie-game-development) — Solo developer burnout
-- [Solo Dev's Roadmap: Building Games Without Burning Out - Wayline](https://www.wayline.io/blog/solo-dev-roadmap-building-games-without-burning-out) — Sustainability strategies
-- [My LLM coding workflow going into 2026 - Addy Osmani](https://medium.com/@addyosmani/my-llm-coding-workflow-going-into-2026-52fe1681325e) — LLM best practices
-- [As Coders Adopt AI Agents, Security Pitfalls Lurk - Dark Reading](https://www.darkreading.com/application-security/coders-adopt-ai-agents-security-pitfalls-lurk-2026) — AI security risks (56% secure code stat)
-- [103 Music Production Tips - Hyperbits](https://hyperbits.com/103-music-production-tips/) — Audio production mistakes
-- [7 Amateur Music Production Mistakes - Supreme Tracks](https://www.supremetracks.com/7-amateur-music-production-mistakes/) — Gear obsession over skill
-- [5 Common Live Streaming Mistakes - Magmatic Media](https://magmaticmedia.com/blogs/magmatic-blog/5-common-live-streaming-mistakes) — WiFi streaming pitfall
-- [Web Developer Portfolio: How to Build a Powerful One - Arc](https://arc.dev/talent-blog/web-developer-portfolio/) — Portfolio over-engineering (3-6 months stat)
+**LLM Code Quality:**
+- [Pail: LLM-Supported p5.js IDE](https://dl.acm.org/doi/10.1145/3706598.3714154) — Research showing p5.js in training data
+- [Claude Code + Ollama Comparison](https://blog.codeminer42.com/claude-code-ollama-stress-testing-opus-4-5-vs-glm-4-7/) — Quality benchmarks
 
-**Community Best Practices:**
-- [OpenProcessing Platform](https://openprocessing.org/) — Remixability patterns, classroom features
-- [ShaderToy Wikipedia](https://en.wikipedia.org/wiki/Shadertoy) — Parameter UI patterns
-- [What is creative coding and generative art - CodeNewbie](https://www.codenewbie.org/podcast/what-is-creative-coding-and-generative-art) — Expressive over functional emphasis
+**Cost Control:**
+- [LLM Pricing Comparison 2026](https://pricepertoken.com/) — Cross-model pricing
+- [LLM Context Management Guide](https://eval.16x.engineer/blog/llm-context-management-guide) — Context optimization strategies
 
-### Tertiary Sources (LOW-MEDIUM confidence, needs validation)
+### Tertiary (LOW confidence, needs validation)
 
-**Emerging Tools (2025-2026):**
-- [VFX-JS: WebGL Effects Made Easy - Codrops](https://tympanus.net/codrops/2025/01/20/vfx-js-webgl-effects-made-easy/) — Newer library, less battle-tested
-- [Postiz: Open-source Social Media Tool](https://postiz.com/) — n8n alternative, less mature
-- [ShaderGPT - Fountn](https://fountn.design/resource/shadergpt-generate-custom-webgl-shaders/) — AI shader generation, experimental
-- [AI Co-Artist: LLM-Powered Framework for Interactive GLSL Shader Animation](https://arxiv.org/html/2512.08951v1) — Research paper, 4.2 vs 0.6 shaders stat
+**Voice Note Workflows:**
+- [Voice note creative workflow 2026](https://www.kimklassen.com/blog/voice-note-idea-workflow) — Ideation capture patterns (blog post, not peer-reviewed)
+- [Wispr Flow AI voice keyboard](https://wisprflow.ai/post/best-voice-typing-app-android) — Transcription quality claims (vendor site)
 
-**Industry Predictions:**
-- [The LLM Bubble Is Bursting: The 2026 AI Reset - Medium](https://medium.com/generative-ai-revolution-ai-native-transformation/the-llm-bubble-is-bursting-the-2026-ai-reset-powering-agentic-engineering-085da564b6cd) — 15-25% productivity loss to rework stat
-- [5 Key Trends Shaping Agentic Development in 2026 - The New Stack](https://thenewstack.io/5-key-trends-shaping-agentic-development-in-2026/) — LLM context management trends
-- [20 Rules for Content in 2026 - RPN](https://rpn.beehiiv.com/p/20-rules-for-content-in-2026) — Posting frequency guidance
-
-**Mobile Workflows:**
-- [GarageBand iOS](https://www.apple.com/ios/garageband/) — Mobile audio creation
-- [FL Studio Mobile](https://www.image-line.com/fl-studio-mobile/) — Android audio
-- [Syncthing-Fork Android](https://f-droid.org/packages/com.github.catfriend1.syncthingandroid/) — Mobile sync
+**Conflict Resolution UX:**
+- [Offline vs. Real-Time Sync: Managing Data Conflicts](https://www.adalo.com/posts/offline-vs-real-time-sync-managing-data-conflicts) — Conflict strategy patterns (vendor blog)
 
 ---
 
-*Research completed: 2026-01-29*
-*Ready for roadmap: YES*
-*Next step: Generate roadmap with phase breakdown based on this synthesis*
+**Research completed:** 2026-01-31
+**Ready for roadmap:** Yes
+
+**Recommended next step:** Proceed to roadmap creation with 3-phase structure (Phase 4: Desktop/Server Sync, Phase 5: Mobile PWA, Phase 6: LLM Variations). Phase 4 can start immediately (high confidence, standard patterns). Phase 5 needs minor research-phase for iOS PWA validation (2-4 hours). Phase 6 needs prompt template experimentation (1 week, not research).
