@@ -27,6 +27,7 @@ export interface Composition {
     zoom: number;
   };
   synced: boolean;               // Phase 6 sync flag
+  playbackMode: 'simultaneous' | 'sequential';  // Phase 6: user chooses per composition
 }
 
 export interface CompositionAtom {
@@ -138,5 +139,20 @@ export function createEmptyComposition(name: string): Composition {
     routes: [],
     viewport: { x: 0, y: 0, zoom: 1 },
     synced: false,
+    playbackMode: 'simultaneous',  // Default: all atoms play together
   };
+}
+
+/**
+ * Preview playback state for UI binding.
+ */
+export type PreviewState = 'stopped' | 'playing' | 'paused';
+
+/**
+ * Message types for iframe <-> parent communication during preview.
+ */
+export interface AtomMessage {
+  type: 'param-update' | 'ready' | 'error' | 'audio-glitch';
+  atomNodeId: string;
+  payload?: Record<string, unknown>;
 }
