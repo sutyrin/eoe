@@ -4,10 +4,12 @@ import CompositionCanvas from '../../components/CompositionCanvas.astro';
 import AtomPickerSheet from '../../components/AtomPickerSheet.astro';
 import NodeDetailSheet from '../../components/NodeDetailSheet.astro';
 import CompositionToolbar from '../../components/CompositionToolbar.astro';
+import PreviewControls from '../../components/PreviewControls.astro';
 ---
 
 <MobileLayout title="Compose" showBack={true} backHref="/mobile/compositions">
   <CompositionToolbar />
+  <PreviewControls />
 
   <div style="margin: -16px; margin-top: -16px;">
     <CompositionCanvas />
@@ -49,11 +51,19 @@ import CompositionToolbar from '../../components/CompositionToolbar.astro';
     saveSnapshot,
     formatSnapshotSize,
     getSnapshotSize,
+    getSnapshot,
+    buildNodesFromSnapshot,
+    buildAtomsMapFromSnapshot,
   } from '../../scripts/composition-snapshot';
+  import type { CompositionSnapshot } from '../../scripts/composition-types';
+  import { PreviewEngine } from '../../scripts/preview-engine';
+  import type { PreviewState } from '../../scripts/composition-types';
 
   let currentComposition = createEmptyComposition('Untitled Composition');
+  let currentSnapshot: CompositionSnapshot | null = null;  // If viewing a snapshot
   let atomsMap = new Map();
   const history = new UndoRedoManager();
+  let previewEngine: PreviewEngine | null = null;  // Phase 6: preview engine
 
   // Helper: commit a change to history and schedule autosave
   function commitChange(composition: typeof currentComposition) {
@@ -76,7 +86,49 @@ import CompositionToolbar from '../../components/CompositionToolbar.astro';
 
     const params = new URLSearchParams(window.location.search);
     const compId = params.get('id');
+    const snapshotId = params.get('snapshot');
 
+    // Check if loading a snapshot
+    if (snapshotId) {
+      const snapshot = await getSnapshot(snapshotId);
+      if (snapshot) {
+        currentSnapshot = snapshot;
+        // Build synthetic atoms map from snapshot inline code
+        atomsMap = buildAtomsMapFromSnapshot(snapshot);
+
+        // Convert snapshot to composition format for canvas rendering
+        currentComposition = {
+          id: snapshot.compositionId,
+          name: snapshot.name,
+          createdAt: snapshot.createdAt,
+          updatedAt: snapshot.createdAt,
+          atoms: snapshot.atoms.map(a => ({
+            nodeId: a.nodeId,
+            atomSlug: a.atomSlug,
+            position: a.position,
+            paramOverrides: a.paramOverrides,
+          })),
+          routes: snapshot.routes,
+          viewport: snapshot.viewport,
+          synced: snapshot.synced,
+          playbackMode: snapshot.playbackMode,
+        };
+
+        // Snapshots are read-only - no history
+        history.clear();
+        updateHistoryButtons();
+
+        // Set toolbar composition name
+        window.dispatchEvent(new CustomEvent('eoe:composition-name-changed', {
+          detail: { name: currentComposition.name }
+        }));
+
+        await refreshCanvas();
+        return;
+      }
+    }
+
+    // Check if loading a draft composition
     if (compId) {
       const loaded = await getComposition(compId);
       if (loaded) {
@@ -288,6 +340,95 @@ import CompositionToolbar from '../../components/CompositionToolbar.astro';
       // Commit on drag stop (debounced autosave handles the actual save)
       commitChange(updated);
     }
+  });
+
+  // Phase 6: Preview engine integration
+
+  // Play preview
+  window.addEventListener('preview-play', async () => {
+    try {
+      if (!previewEngine) {
+        previewEngine = new PreviewEngine(currentComposition);
+        await previewEngine.init();
+
+        // Listen for state changes
+        previewEngine.addEventListener('state-change', ((e: CustomEvent<PreviewState>) => {
+          window.dispatchEvent(new CustomEvent('preview-state-changed', { detail: e.detail }));
+        }) as EventListener);
+
+        // Listen for route active events (for canvas highlighting)
+        previewEngine.addEventListener('route-active', ((e: CustomEvent<string[]>) => {
+          window.dispatchEvent(new CustomEvent('preview-routes-active', { detail: e.detail }));
+        }) as EventListener);
+
+        // Listen for sequential-next-ready
+        previewEngine.addEventListener('sequential-next-ready', ((e: CustomEvent<boolean>) => {
+          window.dispatchEvent(new CustomEvent('preview-next-ready', { detail: e.detail }));
+        }) as EventListener);
+
+        // Listen for glitch warnings
+        previewEngine.addEventListener('glitch-warning', ((e: CustomEvent) => {
+          window.dispatchEvent(new CustomEvent('preview-glitch', { detail: e.detail }));
+        }) as EventListener);
+      }
+
+      await previewEngine.play();
+    } catch (err) {
+      console.error('[preview] Failed to start:', err);
+      showToast('Preview failed to start');
+    }
+  });
+
+  // Pause preview
+  window.addEventListener('preview-pause', () => {
+    if (previewEngine) {
+      previewEngine.pause();
+    }
+  });
+
+  // Stop preview
+  window.addEventListener('preview-stop', async () => {
+    if (previewEngine) {
+      await previewEngine.stop();
+      previewEngine.cleanup();
+      previewEngine = null;
+    }
+  });
+
+  // Next atom in sequential mode
+  window.addEventListener('preview-next', async () => {
+    if (previewEngine) {
+      await previewEngine.startNext();
+    }
+  });
+
+  // Playback mode change
+  window.addEventListener('preview-mode-change', async ((e: CustomEvent<'simultaneous' | 'sequential'>) => {
+    const updated = {
+      ...currentComposition,
+      playbackMode: e.detail,
+      updatedAt: new Date().toISOString(),
+    };
+    commitChange(updated);
+
+    // If preview is running, restart with new mode
+    if (previewEngine && previewEngine.getState() !== 'stopped') {
+      await previewEngine.stop();
+      previewEngine.cleanup();
+      previewEngine = null;
+
+      window.dispatchEvent(new CustomEvent('preview-play'));
+    }
+  }) as EventListener);
+
+  // Restart after glitch
+  window.addEventListener('preview-restart', async () => {
+    if (previewEngine) {
+      await previewEngine.stop();
+      previewEngine.cleanup();
+      previewEngine = null;
+    }
+    window.dispatchEvent(new CustomEvent('preview-play'));
   });
 
   // Initialize

@@ -3,13 +3,23 @@ import MobileLayout from '../../layouts/MobileLayout.astro';
 ---
 
 <MobileLayout title="Compositions">
-  <div id="comp-list" class="comp-list">
-    <!-- Populated from IndexedDB on client side -->
+  <!-- Draft Compositions Section -->
+  <div class="comp-section">
+    <div class="comp-section-title">Drafts</div>
+    <div id="draft-list" class="comp-list">
+      <!-- Populated from IndexedDB on client side -->
+    </div>
+    <div id="draft-empty" class="comp-empty-inline" style="display: none;">
+      No draft compositions yet.
+    </div>
   </div>
 
-  <div id="comp-empty" class="comp-empty" style="display: none;">
-    <div class="comp-empty-title">No Compositions Yet</div>
-    <div class="comp-empty-text">Create one by tapping the button below.</div>
+  <!-- Snapshots Section -->
+  <div class="comp-section" id="snapshot-section" style="display: none;">
+    <div class="comp-section-title">Snapshots</div>
+    <div id="snapshot-list" class="comp-list">
+      <!-- Populated from IndexedDB on client side -->
+    </div>
   </div>
 
   <a href="/mobile/compose" class="btn btn-primary" id="new-comp-btn" style="width: 100%; margin-top: 16px;">
@@ -25,51 +35,100 @@ import MobileLayout from '../../layouts/MobileLayout.astro';
 
 <script>
   import { getAllCompositions, deleteComposition } from '../../scripts/composition-store';
+  import {
+    getAllSnapshots,
+    deleteSnapshot,
+    formatSnapshotSize,
+    getSnapshotSize,
+  } from '../../scripts/composition-snapshot';
 
   async function loadCompositions() {
-    const listEl = document.getElementById('comp-list')!;
-    const emptyEl = document.getElementById('comp-empty')!;
+    const draftListEl = document.getElementById('draft-list')!;
+    const draftEmptyEl = document.getElementById('draft-empty')!;
+    const snapshotListEl = document.getElementById('snapshot-list')!;
+    const snapshotSectionEl = document.getElementById('snapshot-section')!;
 
+    // Load drafts
     const compositions = await getAllCompositions();
 
     if (compositions.length === 0) {
-      listEl.innerHTML = '';
-      emptyEl.style.display = 'block';
-      return;
+      draftListEl.innerHTML = '';
+      draftEmptyEl.style.display = 'block';
+    } else {
+      draftEmptyEl.style.display = 'none';
+
+      draftListEl.innerHTML = compositions.map(comp => {
+        const atomCount = comp.atoms.length;
+        const routeCount = comp.routes.length;
+        const date = new Date(comp.updatedAt).toLocaleDateString('en-US', {
+          month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
+        });
+
+        return `
+          <a href="/mobile/compose?id=${comp.id}" class="comp-item">
+            <div class="comp-item-info">
+              <span class="comp-item-name">${comp.name}</span>
+              <span class="comp-item-meta">
+                ${atomCount} atom${atomCount !== 1 ? 's' : ''} &middot;
+                ${routeCount} route${routeCount !== 1 ? 's' : ''} &middot;
+                ${date}
+              </span>
+            </div>
+            <button class="comp-item-delete" data-id="${comp.id}" data-type="draft" title="Delete">&times;</button>
+          </a>
+        `;
+      }).join('');
     }
 
-    emptyEl.style.display = 'none';
+    // Load snapshots
+    const snapshots = await getAllSnapshots();
 
-    listEl.innerHTML = compositions.map(comp => {
-      const atomCount = comp.atoms.length;
-      const routeCount = comp.routes.length;
-      const date = new Date(comp.updatedAt).toLocaleDateString('en-US', {
-        month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
-      });
+    if (snapshots.length === 0) {
+      snapshotSectionEl.style.display = 'none';
+    } else {
+      snapshotSectionEl.style.display = 'block';
 
-      return `
-        <a href="/mobile/compose?id=${comp.id}" class="comp-item">
-          <div class="comp-item-info">
-            <span class="comp-item-name">${comp.name}</span>
-            <span class="comp-item-meta">
-              ${atomCount} atom${atomCount !== 1 ? 's' : ''} &middot;
-              ${routeCount} route${routeCount !== 1 ? 's' : ''} &middot;
-              ${date}
-            </span>
-          </div>
-          <button class="comp-item-delete" data-id="${comp.id}" title="Delete">&times;</button>
-        </a>
-      `;
-    }).join('');
+      snapshotListEl.innerHTML = snapshots.map(snapshot => {
+        const atomCount = snapshot.atoms.length;
+        const routeCount = snapshot.routes.length;
+        const date = new Date(snapshot.createdAt).toLocaleDateString('en-US', {
+          month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
+        });
+        const size = formatSnapshotSize(getSnapshotSize(snapshot));
+
+        return `
+          <a href="/mobile/compose?snapshot=${snapshot.id}" class="comp-item">
+            <div class="comp-item-info">
+              <span class="comp-item-name">
+                ${snapshot.name}
+                <span class="snapshot-badge">Snapshot</span>
+              </span>
+              <span class="comp-item-meta">
+                ${atomCount} atom${atomCount !== 1 ? 's' : ''} &middot;
+                ${routeCount} route${routeCount !== 1 ? 's' : ''} &middot;
+                ${size} &middot;
+                ${date}
+              </span>
+            </div>
+            <button class="comp-item-delete" data-id="${snapshot.id}" data-type="snapshot" title="Delete">&times;</button>
+          </a>
+        `;
+      }).join('');
+    }
 
     // Delete handlers
-    listEl.querySelectorAll('.comp-item-delete').forEach(btn => {
+    document.querySelectorAll('.comp-item-delete').forEach(btn => {
       btn.addEventListener('click', async (e) => {
         e.preventDefault();
         e.stopPropagation();
         const id = (btn as HTMLElement).dataset.id;
-        if (id && confirm('Delete this composition?')) {
-          await deleteComposition(id);
+        const type = (btn as HTMLElement).dataset.type;
+        if (id && confirm(`Delete this ${type}?`)) {
+          if (type === 'snapshot') {
+            await deleteSnapshot(id);
+          } else {
+            await deleteComposition(id);
+          }
           loadCompositions(); // Refresh list
         }
       });
@@ -80,8 +139,29 @@ import MobileLayout from '../../layouts/MobileLayout.astro';
 </script>
 
 <style>
+  .comp-section {
+    margin-bottom: 24px;
+  }
+
+  .comp-section-title {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #666;
+    margin-bottom: 8px;
+    padding: 0 4px;
+  }
+
   .comp-list {
-    margin-bottom: 16px;
+    margin-bottom: 8px;
+  }
+
+  .comp-empty-inline {
+    padding: 24px 16px;
+    text-align: center;
+    color: #555;
+    font-size: 0.85rem;
   }
 
   .comp-item {
@@ -114,6 +194,22 @@ import MobileLayout from '../../layouts/MobileLayout.astro';
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .snapshot-badge {
+    display: inline-block;
+    padding: 2px 6px;
+    background: #6bb5ff20;
+    color: #6bb5ff;
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    border-radius: 3px;
+    flex-shrink: 0;
   }
 
   .comp-item-meta {
