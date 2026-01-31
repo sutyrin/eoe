@@ -11,13 +11,13 @@
 - [x] **MOB-02**: User can browse atom gallery (thumbnails, titles, last modified, offline-capable)
 - [x] **MOB-03**: User can view NOTES.md (process notes, explorations, markdown rendered)
 - [x] **MOB-04**: User can tweak parameters (sliders/number inputs modify config.json)
-- [ ] **MOB-05**: User can access atoms offline (service worker caches atoms, works without network)
+- [x] **MOB-05**: User can access atoms offline (service worker caches atoms, works without network)
 
 ### Composition & Modular Tools
 
-- [ ] **COMP-01**: User can add atoms to composition canvas (tap-to-add from gallery)
-- [ ] **COMP-02**: User can route parameters (dropdown UI: select source param → target param)
-- [ ] **COMP-03**: User can create rich combinations (parameter routing supports many-to-many mappings, combinatorial possibilities)
+- [x] **COMP-01**: User can add atoms to composition canvas (tap-to-add from gallery)
+- [x] **COMP-02**: User can route parameters (dropdown UI: select source param → target param)
+- [x] **COMP-03**: User can create rich combinations (parameter routing supports many-to-many mappings, combinatorial possibilities)
 - [ ] **COMP-04**: User can preview composition (play all atoms simultaneously + apply routed parameters in real-time)
 - [ ] **COMP-05**: User can save composition (persisted locally, shareable format, restorable)
 
@@ -77,10 +77,10 @@ Which phases cover which requirements (populated during roadmap creation).
 | MOB-02 | Phase 4 | Complete |
 | MOB-03 | Phase 4 | Complete |
 | MOB-04 | Phase 4 | Complete |
-| MOB-05 | Phase 5 | Pending |
-| COMP-01 | Phase 5 | Pending |
-| COMP-02 | Phase 5 | Pending |
-| COMP-03 | Phase 5 | Pending |
+| MOB-05 | Phase 5 | Complete |
+| COMP-01 | Phase 5 | Complete |
+| COMP-02 | Phase 5 | Complete |
+| COMP-03 | Phase 5 | Complete |
 | COMP-04 | Phase 6 | Pending |
 | COMP-05 | Phase 6 | Pending |
 | IDEA-01 | Phase 4 | Complete |
