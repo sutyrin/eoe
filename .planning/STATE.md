@@ -28,7 +28,7 @@ Consistent output of creative atoms that compound into a body of work, tools, an
 - Goal: Build touch-friendly composition tool enabling parameter routing and multi-atom combinations
 - Requirements: COMP-01 (add atoms), COMP-02 (route params), COMP-03 (rich combinations), MOB-05 (offline)
 - Delivered: React Flow canvas, atom addition, parameter routing dropdown, undo/redo, autosave, touch optimization
-- **Last activity:** 2026-01-31 - Completed 05-05-PLAN.md (Touch Optimization & Verification)
+- **Last activity:** 2026-01-31 - Deployed to production at https://llm.sutyrin.pro (quick task 011)
 
 ### Status
 v1.0 COMPLETE (shipped 2026-01-30). v1.1 Phase 4 COMPLETE (5/5 plans). v1.1 Phase 5 COMPLETE (5/5 plans). Phase 6 ready.
@@ -101,6 +101,12 @@ None identified. All research complete, requirements clear, roadmap defined.
 
 ### Technical Debt
 None inherited from v1.0. v1.1 builds on proven v1.0 foundation (no refactoring needed).
+
+### Quick Tasks Completed
+
+| # | Description | Date | Commit | Directory |
+|---|-------------|------|--------|-----------|
+| 011 | Deploy to fra server at https://llm.sutyrin.pro | 2026-01-31 | 4c5f0ba | [011-deployment-to-fra-server](./quick/011-deployment-to-fra-server/) |
 
 ---
 
