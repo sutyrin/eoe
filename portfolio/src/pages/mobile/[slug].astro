@@ -1,7 +1,7 @@
 ---
 import MobileLayout from '../../layouts/MobileLayout.astro';
 import CodeViewer from '../../components/CodeViewer.astro';
-import NotesViewer from '../../components/NotesViewer.astro';
+import NotesEditor from '../../components/NotesEditor.astro';
 import fs from 'node:fs';
 import path from 'node:path';
 
@@ -69,7 +69,7 @@ const codeFilename = codeFilenames[atom.type] || 'sketch.js';
 
   <!-- Notes tab -->
   <div class="tab-content" id="tab-notes" style="display: none;">
-    <NotesViewer notes={atom.notes} />
+    <NotesEditor atomSlug={atom.slug} initialNotes={atom.notes} />
   </div>
 
   <script>
