@@ -7,10 +7,10 @@
 
 ### Mobile Creation Tools
 
-- [ ] **MOB-01**: User can view atom code (read-only, syntax-highlighted, searchable)
-- [ ] **MOB-02**: User can browse atom gallery (thumbnails, titles, last modified, offline-capable)
-- [ ] **MOB-03**: User can view NOTES.md (process notes, explorations, markdown rendered)
-- [ ] **MOB-04**: User can tweak parameters (sliders/number inputs modify config.json)
+- [x] **MOB-01**: User can view atom code (read-only, syntax-highlighted, searchable)
+- [x] **MOB-02**: User can browse atom gallery (thumbnails, titles, last modified, offline-capable)
+- [x] **MOB-03**: User can view NOTES.md (process notes, explorations, markdown rendered)
+- [x] **MOB-04**: User can tweak parameters (sliders/number inputs modify config.json)
 - [ ] **MOB-05**: User can access atoms offline (service worker caches atoms, works without network)
 
 ### Composition & Modular Tools
@@ -23,10 +23,10 @@
 
 ### Ideation Tools
 
-- [ ] **IDEA-01**: User can capture voice notes (record audio on mobile, store as files)
-- [ ] **IDEA-02**: User can transcribe voice notes (audio → text via speech-to-text, appended to NOTES.md)
-- [ ] **IDEA-03**: User can annotate screenshots (capture phone screenshot, draw markup, store as image)
-- [ ] **IDEA-04**: User can quick-edit NOTES.md (text editor for process notes on mobile)
+- [x] **IDEA-01**: User can capture voice notes (record audio on mobile, store as files)
+- [x] **IDEA-02**: User can transcribe voice notes (audio → text via speech-to-text, appended to NOTES.md)
+- [x] **IDEA-03**: User can annotate screenshots (capture phone screenshot, draw markup, store as image)
+- [x] **IDEA-04**: User can quick-edit NOTES.md (text editor for process notes on mobile)
 
 ### Cloud Backup
 
@@ -73,20 +73,20 @@ Which phases cover which requirements (populated during roadmap creation).
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| MOB-01 | Phase 4 | Pending |
-| MOB-02 | Phase 4 | Pending |
-| MOB-03 | Phase 4 | Pending |
-| MOB-04 | Phase 4 | Pending |
+| MOB-01 | Phase 4 | Complete |
+| MOB-02 | Phase 4 | Complete |
+| MOB-03 | Phase 4 | Complete |
+| MOB-04 | Phase 4 | Complete |
 | MOB-05 | Phase 5 | Pending |
 | COMP-01 | Phase 5 | Pending |
 | COMP-02 | Phase 5 | Pending |
 | COMP-03 | Phase 5 | Pending |
 | COMP-04 | Phase 6 | Pending |
 | COMP-05 | Phase 6 | Pending |
-| IDEA-01 | Phase 4 | Pending |
-| IDEA-02 | Phase 4 | Pending |
-| IDEA-03 | Phase 4 | Pending |
-| IDEA-04 | Phase 4 | Pending |
+| IDEA-01 | Phase 4 | Complete |
+| IDEA-02 | Phase 4 | Complete |
+| IDEA-03 | Phase 4 | Complete |
+| IDEA-04 | Phase 4 | Complete |
 | SYNC-01 | Phase 6 | Pending |
 | SYNC-02 | Phase 6 | Pending |
 | SYNC-03 | Phase 6 | Pending |
@@ -99,4 +99,4 @@ Which phases cover which requirements (populated during roadmap creation).
 ---
 
 *Requirements defined: 2026-01-31*
-*Last updated: 2026-01-31 after v1.1 scoping*
+*Last updated: 2026-01-31 after Phase 4 execution*
