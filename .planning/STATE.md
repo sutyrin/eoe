@@ -24,16 +24,16 @@ Consistent output of creative atoms that compound into a body of work, tools, an
 - Requirements: 13 total (all mobile/composition/backup focused)
 
 ### Current Phase
-**Phase 6: Composition Preview, Save, Cloud Backup** - IN PROGRESS (2/3 plans complete)
+**Phase 6: Composition Preview, Save, Cloud Backup** - COMPLETE (3/3 plans complete)
 - Goal: Enable real-time preview of compositions with parameter routing, save/load capability, and cloud backup
 - Requirements: COMP-04 (preview), COMP-05 (save/load), BACK-01 (cloud backup)
-- Delivered: Preview engine, immutable composition snapshots with inline atom code
-- **Last activity:** 2026-02-01 - Completed Plan 06-02 (Composition Snapshots)
+- Delivered: Preview engine, immutable composition snapshots, cloud backup with auto-backup on app close
+- **Last activity:** 2026-02-01 - Completed Plan 06-03 (Cloud Backup)
 
 ### Status
-v1.0 COMPLETE (shipped 2026-01-30). v1.1 Phase 4 COMPLETE (5/5 plans). v1.1 Phase 5 COMPLETE (5/5 plans). Phase 6 Plans 01-02 COMPLETE.
+v1.0 COMPLETE (shipped 2026-01-30). v1.1 COMPLETE (shipped 2026-02-01). All 13 plans executed.
 
-**Progress:** █████████████████████████████░░░░░░░░ 12/13 plans (92.3%)
+**Progress:** █████████████████████████████████████ 13/13 plans (100%)
 
 ---
 
@@ -45,11 +45,12 @@ v1.0 COMPLETE (shipped 2026-01-30). v1.1 Phase 4 COMPLETE (5/5 plans). v1.1 Phas
 - Full creation-to-distribution pipeline live
 - Production-ready for solo creator
 
-### v1.1 Status (IN PROGRESS)
-- 3 phases planned (Phases 4-6)
-- 13/13 requirements scoped
-- 5/13 plans executed (Phase 4 COMPLETE, all 5 plans)
-- Infrastructure research complete
+### v1.1 Status (COMPLETE)
+- 3 phases executed (Phases 4-6)
+- 13/13 requirements fulfilled
+- 13/13 plans executed (all phases complete)
+- Full mobile-first creative workflow live
+- Cloud backup operational
 
 ---
 
@@ -96,6 +97,15 @@ v1.0 COMPLETE (shipped 2026-01-30). v1.1 Phase 4 COMPLETE (5/5 plans). v1.1 Phas
 | Hybrid snapshot structure | Store slug + inline code in snapshots | Enables attribution while guaranteeing immutability | 06-02 |
 | Separate snapshots store | Snapshots in dedicated IndexedDB store | Clear separation between mutable drafts and immutable snapshots | 06-02 |
 | Snapshot read-only mode | Snapshots loaded without history/autosave | Clear UX signal: snapshots are records, not workspaces | 06-02 |
+| Express backup server | Express over serverless for simple JSON file storage | No cold starts, persistent volume, easy debugging | 06-03 |
+| sendBeacon for auto-backup | sendBeacon over fetch for page close reliability | Survives navigation on mobile, iOS Safari compatible | 06-03 |
+| Timestamp-based backup IDs | YYYY-MM-DDTHH-MM-SS format for backup filenames | Natural chronological sorting, human-readable | 06-03 |
+| Voice note metadata only | Exclude audio blobs from backups | Reduces backup size (audio typically large) | 06-03 |
+| No auth in v1.1 backup | Single-user, private server | Simplifies implementation, defer auth to v1.2+ | 06-03 |
+| Indefinite backup retention | Keep all backups, no storage limits | User manages their own storage, full archive available | 06-03 |
+| Selective restore | items filter in restore endpoint | User can restore atoms, compositions, snapshots independently | 06-03 |
+| visibilitychange over beforeunload | Use visibilitychange for auto-backup trigger | More reliable on mobile (iOS ignores beforeunload) | 06-03 |
+| 3-retry exponential backoff | 1s, 2s, 4s retry delays | Network resilience for backup uploads | 06-03 |
 
 ### Known Constraints
 - **Mobile:** 6" phone screen, touch interaction, battery/bandwidth limits, iOS PWA limitations
@@ -145,13 +155,13 @@ None inherited from v1.0. v1.1 builds on proven v1.0 foundation (no refactoring 
 
 ### Context for Next Session
 **Last session:** 2026-02-01
-**Stopped at:** Completed Phase 6 Plan 02 (Composition Snapshots)
+**Stopped at:** Completed v1.1 milestone - all 13 plans executed
 **Resume file:** None
 
 **Phase 6 Status:**
 - ✓ Plan 01: Preview Engine complete (8 min execution)
 - ✓ Plan 02: Composition Snapshots complete (9 min execution)
-- ⏳ Plan 03: Cloud Backup (next)
+- ✓ Plan 03: Cloud Backup complete (5 min execution)
 
 **Phase 6 Progress:**
 - Preview engine with sandboxed atom execution
@@ -163,6 +173,11 @@ None inherited from v1.0. v1.1 builds on proven v1.0 foundation (no refactoring 
 - Hybrid structure (slug reference + inline code)
 - Lossless save/reload cycle
 - Snapshots visible in compositions list with metadata
+- Express backup server with persistent Docker volume
+- Auto-backup on app close via sendBeacon
+- 3-retry exponential backoff for network resilience
+- Selective restore (atoms, compositions, snapshots)
+- Sync status indicator with real-time progress
 
 **Gallery ready:**
 - Gallery list view with search functional
