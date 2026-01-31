@@ -1,0 +1,348 @@
+---
+/**
+ * AtomPickerSheet: Bottom sheet for selecting atoms to add to canvas.
+ *
+ * UI flow:
+ * 1. User taps FAB "+" button
+ * 2. Sheet slides up (80% viewport height) with atom list
+ * 3. User can search by typing in search field
+ * 4. Tapping an atom dispatches 'eoe:add-atom' custom event
+ * 5. Sheet dismisses automatically after selection
+ *
+ * Data source: IndexedDB atoms store (populated by gallery on first visit)
+ */
+---
+
+<div id="atom-picker-backdrop" class="picker-backdrop" style="display: none;">
+  <div id="atom-picker-sheet" class="picker-sheet">
+    <div class="picker-handle"></div>
+
+    <div class="picker-header">
+      <h3 class="picker-title">Add Atom</h3>
+      <button id="picker-close-btn" class="picker-close">&times;</button>
+    </div>
+
+    <input
+      type="search"
+      id="picker-search"
+      class="search-bar"
+      placeholder="Search atoms..."
+      autocomplete="off"
+      autocapitalize="none"
+      spellcheck="false"
+    />
+
+    <div id="picker-list" class="picker-list">
+      <!-- Populated dynamically from IndexedDB -->
+    </div>
+
+    <div id="picker-empty" class="picker-empty" style="display: none;">
+      No atoms found. Visit the Gallery first to cache atoms.
+    </div>
+
+    <div id="picker-limit" class="picker-limit" style="display: none;">
+      Maximum 5 atoms per composition reached.
+    </div>
+  </div>
+</div>
+
+<script>
+  import { getAllAtomsSorted, type AtomMetadata } from '../scripts/db';
+
+  let allAtoms: AtomMetadata[] = [];
+  let isOpen = false;
+
+  const backdrop = document.getElementById('atom-picker-backdrop')!;
+  const sheet = document.getElementById('atom-picker-sheet')!;
+  const searchInput = document.getElementById('picker-search') as HTMLInputElement;
+  const listEl = document.getElementById('picker-list')!;
+  const emptyEl = document.getElementById('picker-empty')!;
+  const limitEl = document.getElementById('picker-limit')!;
+  const closeBtn = document.getElementById('picker-close-btn')!;
+
+  // Open picker
+  window.addEventListener('eoe:open-atom-picker', async (e: Event) => {
+    const customEvent = e as CustomEvent;
+    const atLimit = customEvent.detail?.atLimit || false;
+
+    if (atLimit) {
+      limitEl.style.display = 'block';
+      emptyEl.style.display = 'none';
+    } else {
+      limitEl.style.display = 'none';
+    }
+
+    // Load atoms from IndexedDB
+    allAtoms = await getAllAtomsSorted();
+    renderAtomList(allAtoms);
+
+    // Show sheet
+    backdrop.style.display = 'block';
+    requestAnimationFrame(() => {
+      backdrop.classList.add('open');
+      sheet.classList.add('open');
+    });
+    isOpen = true;
+
+    // Focus search after animation
+    setTimeout(() => searchInput.focus(), 350);
+  });
+
+  // Close picker
+  function closePicker() {
+    backdrop.classList.remove('open');
+    sheet.classList.remove('open');
+    setTimeout(() => {
+      backdrop.style.display = 'none';
+      searchInput.value = '';
+      isOpen = false;
+    }, 300);
+  }
+
+  closeBtn.addEventListener('click', closePicker);
+  backdrop.addEventListener('click', (e) => {
+    if (e.target === backdrop) closePicker();
+  });
+
+  // Search filtering
+  searchInput.addEventListener('input', () => {
+    const query = searchInput.value.toLowerCase().trim();
+    if (!query) {
+      renderAtomList(allAtoms);
+      return;
+    }
+    const filtered = allAtoms.filter(a =>
+      a.title.toLowerCase().includes(query) ||
+      a.slug.toLowerCase().includes(query) ||
+      a.type.toLowerCase().includes(query)
+    );
+    renderAtomList(filtered);
+  });
+
+  // Render atom list
+  function renderAtomList(atoms: AtomMetadata[]) {
+    if (atoms.length === 0) {
+      listEl.innerHTML = '';
+      emptyEl.style.display = 'block';
+      return;
+    }
+    emptyEl.style.display = 'none';
+
+    const typeColors: Record<string, string> = {
+      visual: '#6bb5ff',
+      audio: '#ff6b9d',
+      'audio-visual': '#b56bff',
+      composition: '#6bffb5',
+    };
+
+    listEl.innerHTML = atoms.map(atom => {
+      const color = typeColors[atom.type] || '#888';
+      return `
+        <button class="picker-atom-item" data-slug="${atom.slug}">
+          <div class="picker-atom-thumb" style="border-color: ${color}">
+            <span class="picker-atom-type-icon">${
+              atom.type === 'visual' ? 'V' :
+              atom.type === 'audio' ? 'A' :
+              atom.type === 'audio-visual' ? 'AV' : 'C'
+            }</span>
+          </div>
+          <div class="picker-atom-info">
+            <span class="picker-atom-title">${atom.title}</span>
+            <span class="picker-atom-meta">
+              ${atom.date}
+              <span style="color: ${color}; font-weight: 600; text-transform: uppercase; font-size: 0.65rem;">${atom.type}</span>
+            </span>
+          </div>
+        </button>
+      `;
+    }).join('');
+
+    // Attach click handlers
+    listEl.querySelectorAll('.picker-atom-item').forEach(item => {
+      item.addEventListener('click', () => {
+        const slug = (item as HTMLElement).dataset.slug;
+        if (slug) {
+          window.dispatchEvent(new CustomEvent('eoe:add-atom', {
+            detail: { atomSlug: slug }
+          }));
+          closePicker();
+        }
+      });
+    });
+  }
+</script>
+
+<style>
+  .picker-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0);
+    z-index: 200;
+    transition: background 300ms ease;
+  }
+
+  .picker-backdrop.open {
+    background: rgba(0, 0, 0, 0.5);
+  }
+
+  .picker-sheet {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    max-height: 80vh;
+    background: #111;
+    border-radius: 16px 16px 0 0;
+    padding: 0 16px 16px;
+    padding-bottom: calc(16px + env(safe-area-inset-bottom, 0));
+    transform: translateY(100%);
+    transition: transform 300ms ease;
+    z-index: 201;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .picker-sheet.open {
+    transform: translateY(0);
+  }
+
+  .picker-handle {
+    width: 32px;
+    height: 4px;
+    background: #444;
+    border-radius: 2px;
+    margin: 12px auto 8px;
+  }
+
+  .picker-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0 12px;
+  }
+
+  .picker-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #fff;
+  }
+
+  .picker-close {
+    width: 36px;
+    height: 36px;
+    border: none;
+    background: #222;
+    color: #888;
+    border-radius: 18px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .picker-close:active {
+    background: #333;
+  }
+
+  .search-bar {
+    width: 100%;
+    padding: 10px 14px;
+    background: #1a1a1a;
+    border: 1px solid #333;
+    border-radius: 8px;
+    color: #fff;
+    font-size: 0.9rem;
+    font-family: inherit;
+    outline: none;
+  }
+
+  .search-bar:focus {
+    border-color: #6bb5ff;
+  }
+
+  .search-bar::placeholder {
+    color: #666;
+  }
+
+  .picker-list {
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    margin-top: 12px;
+  }
+
+  .picker-atom-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    padding: 10px 8px;
+    border: none;
+    background: none;
+    color: inherit;
+    text-align: left;
+    cursor: pointer;
+    border-radius: 8px;
+    min-height: 56px;
+    font-family: inherit;
+  }
+
+  .picker-atom-item:active {
+    background: #1a1a1a;
+  }
+
+  .picker-atom-thumb {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    background: #1a1a1a;
+    border: 2px solid #333;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .picker-atom-type-icon {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: #888;
+  }
+
+  .picker-atom-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+  }
+
+  .picker-atom-title {
+    color: #fff;
+    font-weight: 600;
+    font-size: 0.9rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .picker-atom-meta {
+    color: #666;
+    font-size: 0.75rem;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .picker-empty, .picker-limit {
+    padding: 24px;
+    text-align: center;
+    color: #666;
+    font-size: 0.85rem;
+  }
+
+  .picker-limit {
+    color: #ffb56b;
+  }
+</style>

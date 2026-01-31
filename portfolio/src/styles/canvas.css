@@ -89,6 +89,13 @@
   opacity: 0.9;
 }
 
+.compose-fab.disabled {
+  background: #444;
+  color: #888;
+  box-shadow: none;
+  pointer-events: none;
+}
+
 /* Empty canvas message */
 .canvas-empty {
   position: absolute;
