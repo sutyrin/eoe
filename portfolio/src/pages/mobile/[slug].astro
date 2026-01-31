@@ -2,6 +2,7 @@
 import MobileLayout from '../../layouts/MobileLayout.astro';
 import CodeViewer from '../../components/CodeViewer.astro';
 import NotesEditor from '../../components/NotesEditor.astro';
+import ParamTweaker from '../../components/ParamTweaker.astro';
 import fs from 'node:fs';
 import path from 'node:path';
 
@@ -47,6 +48,7 @@ const codeFilename = codeFilenames[atom.type] || 'sketch.js';
     <button class="tab active" data-tab="code">Code</button>
     <button class="tab" data-tab="config">Config</button>
     <button class="tab" data-tab="notes">Notes</button>
+    <button class="tab" data-tab="params">Params</button>
   </div>
 
   <!-- Code tab -->
@@ -70,6 +72,11 @@ const codeFilename = codeFilenames[atom.type] || 'sketch.js';
   <!-- Notes tab -->
   <div class="tab-content" id="tab-notes" style="display: none;">
     <NotesEditor atomSlug={atom.slug} initialNotes={atom.notes} />
+  </div>
+
+  <!-- Params tab -->
+  <div class="tab-content" id="tab-params" style="display: none;">
+    <ParamTweaker atomSlug={atom.slug} configJson={atom.configJson} />
   </div>
 
   <script>
