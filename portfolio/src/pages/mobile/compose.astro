@@ -1,57 +1,143 @@
 ---
 import MobileLayout from '../../layouts/MobileLayout.astro';
 import CompositionCanvas from '../../components/CompositionCanvas.astro';
+import AtomPickerSheet from '../../components/AtomPickerSheet.astro';
 ---
 
-<MobileLayout title="Compose" showBack={true} backHref="/mobile/gallery">
+<MobileLayout title="Compose" showBack={true} backHref="/mobile/compositions">
   <div style="margin: -16px; margin-top: -16px;">
     <CompositionCanvas />
   </div>
 
-  <nav class="bottom-nav">
-    <a href="/mobile/gallery" class="bottom-nav-item">Gallery</a>
-    <a href="/mobile/compose" class="bottom-nav-item active">Compose</a>
-  </nav>
+  <!-- FAB button to add atoms -->
+  <button id="add-atom-fab" class="compose-fab" title="Add atom">+</button>
+
+  <!-- Atom picker bottom sheet -->
+  <AtomPickerSheet />
 </MobileLayout>
 
+<script>
+  import {
+    saveComposition,
+    getComposition,
+    addAtomToComposition,
+    buildNodes,
+    buildEdges,
+    loadAtomsMap,
+    updateNodePositions,
+  } from '../../scripts/composition-store';
+  import {
+    createEmptyComposition,
+    MAX_ATOMS_PER_COMPOSITION,
+  } from '../../scripts/composition-types';
+  import { getAtom } from '../../scripts/db';
+  import type { Node, Edge } from 'reactflow';
+
+  let currentComposition = createEmptyComposition('Untitled Composition');
+  let atomsMap = new Map();
+
+  // Load composition from URL parameter or create new
+  async function initComposition() {
+    atomsMap = await loadAtomsMap();
+
+    const params = new URLSearchParams(window.location.search);
+    const compId = params.get('id');
+
+    if (compId) {
+      const loaded = await getComposition(compId);
+      if (loaded) {
+        currentComposition = loaded;
+        await refreshCanvas();
+        return;
+      }
+    }
+
+    // New composition - canvas starts empty
+    updateFabState();
+  }
+
+  // Refresh React Flow canvas from composition data
+  async function refreshCanvas() {
+    const nodes = await buildNodes(currentComposition, atomsMap);
+    const edges = buildEdges(currentComposition);
+
+    // Update React canvas via global setters (from CompositionCanvas)
+    if ((window as any).__canvasSetNodes) {
+      (window as any).__canvasSetNodes(nodes);
+    }
+    if ((window as any).__canvasSetEdges) {
+      (window as any).__canvasSetEdges(edges);
+    }
+    updateFabState();
+  }
+
+  // FAB button: open atom picker
+  const fab = document.getElementById('add-atom-fab')!;
+  fab.addEventListener('click', () => {
+    const atLimit = currentComposition.atoms.length >= MAX_ATOMS_PER_COMPOSITION;
+    window.dispatchEvent(new CustomEvent('eoe:open-atom-picker', {
+      detail: { atLimit }
+    }));
+  });
+
+  // Handle atom selection from picker
+  window.addEventListener('eoe:add-atom', async (e: Event) => {
+    const customEvent = e as CustomEvent;
+    const { atomSlug } = customEvent.detail;
+    const atomMeta = atomsMap.get(atomSlug);
+    if (!atomMeta) {
+      console.warn('[compose] Atom not found in cache:', atomSlug);
+      return;
+    }
+
+    const updated = addAtomToComposition(currentComposition, atomSlug, atomMeta);
+    if (!updated) {
+      // Limit reached
+      showToast('Maximum 5 atoms reached');
+      return;
+    }
+
+    currentComposition = updated;
+    await saveComposition(currentComposition);
+    await refreshCanvas();
+
+    showToast(`Added ${atomMeta.title}`);
+  });
+
+  // Update FAB state (disable at limit)
+  function updateFabState() {
+    const atLimit = currentComposition.atoms.length >= MAX_ATOMS_PER_COMPOSITION;
+    fab.classList.toggle('disabled', atLimit);
+  }
+
+  // Toast notification helper
+  function showToast(message: string) {
+    const toast = document.getElementById('canvas-toast');
+    if (toast) {
+      toast.textContent = message;
+      toast.classList.add('visible');
+      setTimeout(() => toast.classList.remove('visible'), 2000);
+    }
+  }
+
+  // Listen for node position changes from React Flow
+  // The canvas dispatches this when nodes are dragged
+  window.addEventListener('eoe:nodes-changed', async (e: Event) => {
+    const customEvent = e as CustomEvent;
+    const nodes = customEvent.detail?.nodes;
+    if (nodes && currentComposition) {
+      currentComposition = updateNodePositions(currentComposition, nodes);
+      // Don't save on every drag - autosave in 05-04 handles this
+    }
+  });
+
+  // Initialize
+  initComposition();
+</script>
+
 <style>
-  /* Override MobileLayout padding for full-bleed canvas */
   :global(.mobile-main) {
     padding: 0 !important;
     max-width: none !important;
-  }
-
-  .bottom-nav {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    display: flex;
-    background: #111;
-    border-top: 1px solid #222;
-    padding-bottom: env(safe-area-inset-bottom, 0);
-    z-index: 100;
-  }
-
-  .bottom-nav-item {
-    flex: 1;
-    padding: 12px;
-    text-align: center;
-    color: #666;
-    font-size: 0.85rem;
-    font-weight: 600;
-    text-decoration: none;
-    min-height: 48px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .bottom-nav-item.active {
-    color: #6bb5ff;
-  }
-
-  .bottom-nav-item:active {
-    background: #1a1a1a;
   }
 </style>

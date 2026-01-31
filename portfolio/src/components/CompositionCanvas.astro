@@ -80,11 +80,20 @@ const { compositionId } = Astro.props;
         }
       }, [nodes.length]);
 
+      // Node drag handler - dispatch positions to Astro
+      const onNodeDragStop = React.useCallback((_event: any, _node: any) => {
+        const currentNodes = (window as any).__canvasGetNodes?.() || [];
+        window.dispatchEvent(new CustomEvent('eoe:nodes-changed', {
+          detail: { nodes: currentNodes }
+        }));
+      }, []);
+
       return React.createElement(
         ReactFlow,
         {
           nodes: nodes,
           edges: edges,
+          onNodeDragStop: onNodeDragStop,
           nodeTypes: nodeTypes,
           // Mobile-optimized settings (from 05-RESEARCH.md)
           panOnDrag: [1],           // Single-finger pan on background
