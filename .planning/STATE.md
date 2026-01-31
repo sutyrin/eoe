@@ -1,7 +1,7 @@
 # Project State: Engines of Experience
 
 **Last Updated:** 2026-02-01
-**Session:** Phase 6 Plan 01 Complete (Preview Engine)
+**Session:** Phase 6 Plan 02 Complete (Composition Snapshots)
 
 ---
 
@@ -24,16 +24,16 @@ Consistent output of creative atoms that compound into a body of work, tools, an
 - Requirements: 13 total (all mobile/composition/backup focused)
 
 ### Current Phase
-**Phase 6: Composition Preview, Save, Cloud Backup** - IN PROGRESS (1/3 plans complete)
+**Phase 6: Composition Preview, Save, Cloud Backup** - IN PROGRESS (2/3 plans complete)
 - Goal: Enable real-time preview of compositions with parameter routing, save/load capability, and cloud backup
 - Requirements: COMP-04 (preview), COMP-05 (save/load), BACK-01 (cloud backup)
-- Delivered: Preview engine with sandboxed atom execution, real-time parameter routing, route visualization
-- **Last activity:** 2026-02-01 - Completed Plan 06-01 (Preview Engine)
+- Delivered: Preview engine, immutable composition snapshots with inline atom code
+- **Last activity:** 2026-02-01 - Completed Plan 06-02 (Composition Snapshots)
 
 ### Status
-v1.0 COMPLETE (shipped 2026-01-30). v1.1 Phase 4 COMPLETE (5/5 plans). v1.1 Phase 5 COMPLETE (5/5 plans). Phase 6 Plan 01 COMPLETE.
+v1.0 COMPLETE (shipped 2026-01-30). v1.1 Phase 4 COMPLETE (5/5 plans). v1.1 Phase 5 COMPLETE (5/5 plans). Phase 6 Plans 01-02 COMPLETE.
 
-**Progress:** ████████████████████████████░░░░░░░░░ 11/13 plans (84.6%)
+**Progress:** █████████████████████████████░░░░░░░░ 12/13 plans (92.3%)
 
 ---
 
@@ -93,6 +93,9 @@ v1.0 COMPLETE (shipped 2026-01-30). v1.1 Phase 4 COMPLETE (5/5 plans). v1.1 Phas
 | 30fps routing loop | Balance responsiveness and mobile performance | Parameter changes apply ~every 33ms, smooth for audio/visual | 06-01 |
 | Glitch detection via AudioContext.state | Catch interrupted state and buffer underruns | Users warned of audio issues, can choose Continue or Restart | 06-01 |
 | User agency on glitches | Continue vs Restart gives user control | No forced stops, user decides if glitch is acceptable | 06-01 |
+| Hybrid snapshot structure | Store slug + inline code in snapshots | Enables attribution while guaranteeing immutability | 06-02 |
+| Separate snapshots store | Snapshots in dedicated IndexedDB store | Clear separation between mutable drafts and immutable snapshots | 06-02 |
+| Snapshot read-only mode | Snapshots loaded without history/autosave | Clear UX signal: snapshots are records, not workspaces | 06-02 |
 
 ### Known Constraints
 - **Mobile:** 6" phone screen, touch interaction, battery/bandwidth limits, iOS PWA limitations
@@ -142,13 +145,13 @@ None inherited from v1.0. v1.1 builds on proven v1.0 foundation (no refactoring 
 
 ### Context for Next Session
 **Last session:** 2026-02-01
-**Stopped at:** Completed Phase 6 Plan 01 (Preview Engine)
+**Stopped at:** Completed Phase 6 Plan 02 (Composition Snapshots)
 **Resume file:** None
 
 **Phase 6 Status:**
 - ✓ Plan 01: Preview Engine complete (8 min execution)
-- ⏳ Plan 02: Save/Load Compositions (next)
-- ⏳ Plan 03: Cloud Backup
+- ✓ Plan 02: Composition Snapshots complete (9 min execution)
+- ⏳ Plan 03: Cloud Backup (next)
 
 **Phase 6 Progress:**
 - Preview engine with sandboxed atom execution
@@ -156,6 +159,10 @@ None inherited from v1.0. v1.1 builds on proven v1.0 foundation (no refactoring 
 - Route visualization with pulsing animation
 - Audio glitch detection and user recovery
 - Simultaneous and sequential playback modes
+- Immutable composition snapshots with inline atom code
+- Hybrid structure (slug reference + inline code)
+- Lossless save/reload cycle
+- Snapshots visible in compositions list with metadata
 
 **Gallery ready:**
 - Gallery list view with search functional
