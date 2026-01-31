@@ -1,9 +1,9 @@
 /* Composition canvas styles */
 
-/* React Flow container: fill viewport below header */
+/* React Flow container: fill viewport below header and toolbar */
 .canvas-container {
   width: 100%;
-  height: calc(100vh - 48px); /* 48px = mobile header height */
+  height: calc(100vh - 48px - 40px); /* header (48px) + toolbar (40px) */
   position: relative;
   background: #0a0a0a;
 }

@@ -3,9 +3,12 @@ import MobileLayout from '../../layouts/MobileLayout.astro';
 import CompositionCanvas from '../../components/CompositionCanvas.astro';
 import AtomPickerSheet from '../../components/AtomPickerSheet.astro';
 import NodeDetailSheet from '../../components/NodeDetailSheet.astro';
+import CompositionToolbar from '../../components/CompositionToolbar.astro';
 ---
 
 <MobileLayout title="Compose" showBack={true} backHref="/mobile/compositions">
+  <CompositionToolbar />
+
   <div style="margin: -16px; margin-top: -16px;">
     <CompositionCanvas />
   </div>
@@ -30,6 +33,7 @@ import NodeDetailSheet from '../../components/NodeDetailSheet.astro';
     loadAtomsMap,
     updateNodePositions,
     removeAtomFromComposition,
+    deleteComposition,
   } from '../../scripts/composition-store';
   import { createRoute, deleteRoute } from '../../scripts/routing-engine';
   import {
@@ -38,9 +42,27 @@ import NodeDetailSheet from '../../components/NodeDetailSheet.astro';
   } from '../../scripts/composition-types';
   import { getAtom } from '../../scripts/db';
   import type { Node, Edge } from 'reactflow';
+  import { UndoRedoManager } from '../../scripts/undo-redo';
+  import { scheduleAutosave, cancelAutosave } from '../../scripts/composition-autosave';
 
   let currentComposition = createEmptyComposition('Untitled Composition');
   let atomsMap = new Map();
+  const history = new UndoRedoManager();
+
+  // Helper: commit a change to history and schedule autosave
+  function commitChange(composition: typeof currentComposition) {
+    currentComposition = composition;
+    history.push(composition);
+    scheduleAutosave(composition);
+    updateHistoryButtons();
+  }
+
+  // Update toolbar undo/redo button states
+  function updateHistoryButtons() {
+    window.dispatchEvent(new CustomEvent('eoe:history-changed', {
+      detail: history.stats(),
+    }));
+  }
 
   // Load composition from URL parameter or create new
   async function initComposition() {
@@ -53,12 +75,32 @@ import NodeDetailSheet from '../../components/NodeDetailSheet.astro';
       const loaded = await getComposition(compId);
       if (loaded) {
         currentComposition = loaded;
+
+        // Initialize history with loaded composition
+        history.clear();
+        history.push(currentComposition);
+        updateHistoryButtons();
+
+        // Set toolbar composition name
+        window.dispatchEvent(new CustomEvent('eoe:composition-name-changed', {
+          detail: { name: currentComposition.name }
+        }));
+
         await refreshCanvas();
         return;
       }
     }
 
-    // New composition - canvas starts empty
+    // New composition - initialize history with empty state
+    history.clear();
+    history.push(currentComposition);
+    updateHistoryButtons();
+
+    // Set toolbar composition name
+    window.dispatchEvent(new CustomEvent('eoe:composition-name-changed', {
+      detail: { name: currentComposition.name }
+    }));
+
     updateFabState();
   }
 
@@ -103,11 +145,100 @@ import NodeDetailSheet from '../../components/NodeDetailSheet.astro';
       return;
     }
 
-    currentComposition = updated;
-    await saveComposition(currentComposition);
+    commitChange(updated);
     await refreshCanvas();
 
     showToast(`Added ${atomMeta.title}`);
+  });
+
+  // Handle atom removal from node detail sheet
+  window.addEventListener('eoe:remove-atom', async (e: Event) => {
+    const customEvent = e as CustomEvent;
+    const { nodeId } = customEvent.detail;
+
+    const updated = removeAtomFromComposition(currentComposition, nodeId);
+    commitChange(updated);
+    await refreshCanvas();
+
+    showToast('Atom removed');
+  });
+
+  // Handle route creation
+  window.addEventListener('eoe:create-route', async (e: Event) => {
+    const customEvent = e as CustomEvent;
+    const { sourceNodeId, sourceParam, targetNodeId, targetParam } = customEvent.detail;
+
+    const updated = createRoute(
+      currentComposition,
+      sourceNodeId,
+      sourceParam,
+      targetNodeId,
+      targetParam
+    );
+    commitChange(updated);
+    await refreshCanvas();
+
+    showToast('Route created');
+  });
+
+  // Handle route deletion
+  window.addEventListener('eoe:delete-route', async (e: Event) => {
+    const customEvent = e as CustomEvent;
+    const { routeId } = customEvent.detail;
+
+    const updated = deleteRoute(currentComposition, routeId);
+    commitChange(updated);
+    await refreshCanvas();
+
+    showToast('Route deleted');
+  });
+
+  // Undo
+  window.addEventListener('eoe:undo', async () => {
+    const prev = history.undo();
+    if (prev) {
+      currentComposition = prev;
+      scheduleAutosave(prev);
+      await refreshCanvas();
+      updateHistoryButtons();
+      showToast('Undone');
+    }
+  });
+
+  // Redo
+  window.addEventListener('eoe:redo', async () => {
+    const next = history.redo();
+    if (next) {
+      currentComposition = next;
+      scheduleAutosave(next);
+      await refreshCanvas();
+      updateHistoryButtons();
+      showToast('Redone');
+    }
+  });
+
+  // Rename composition
+  window.addEventListener('eoe:rename-composition', async (e: Event) => {
+    const customEvent = e as CustomEvent;
+    const updated = {
+      ...currentComposition,
+      name: customEvent.detail.name,
+      updatedAt: new Date().toISOString(),
+    };
+    commitChange(updated);
+
+    window.dispatchEvent(new CustomEvent('eoe:composition-name-changed', {
+      detail: { name: customEvent.detail.name }
+    }));
+
+    showToast('Composition renamed');
+  });
+
+  // Delete composition
+  window.addEventListener('eoe:delete-composition', async () => {
+    await deleteComposition(currentComposition.id);
+    cancelAutosave();
+    window.location.href = '/mobile/compositions';
   });
 
   // Update FAB state (disable at limit)
@@ -132,83 +263,11 @@ import NodeDetailSheet from '../../components/NodeDetailSheet.astro';
     const customEvent = e as CustomEvent;
     const nodes = customEvent.detail?.nodes;
     if (nodes && currentComposition) {
-      currentComposition = updateNodePositions(currentComposition, nodes);
-      // Don't save on every drag - autosave in 05-04 handles this
+      const updated = updateNodePositions(currentComposition, nodes);
+      // Commit on drag stop (debounced autosave handles the actual save)
+      commitChange(updated);
     }
   });
-
-  // Handle node tap -> open detail sheet
-  window.addEventListener('eoe:node-tapped', ((e: CustomEvent) => {
-    const { nodeId } = e.detail;
-    window.dispatchEvent(new CustomEvent('eoe:open-node-detail', {
-      detail: {
-        nodeId,
-        composition: currentComposition,
-        atomsMap,
-      }
-    }));
-  }) as EventListener);
-
-  // Handle route creation
-  window.addEventListener('eoe:create-route', (async (e: CustomEvent) => {
-    const { sourceNodeId, sourceParam, targetNodeId, targetParam } = e.detail;
-
-    currentComposition = createRoute(
-      currentComposition,
-      sourceNodeId,
-      sourceParam,
-      targetNodeId,
-      targetParam,
-    );
-
-    await saveComposition(currentComposition);
-    await refreshCanvas();
-
-    // Notify detail sheet of updated composition
-    window.dispatchEvent(new CustomEvent('eoe:composition-updated', {
-      detail: { composition: currentComposition }
-    }));
-
-    // Find target atom name for toast
-    const targetAtom = currentComposition.atoms.find(a => a.nodeId === targetNodeId);
-    const targetName = targetAtom
-      ? atomsMap.get(targetAtom.atomSlug)?.title || targetAtom.atomSlug
-      : '???';
-    showToast(`Routed ${sourceParam} -> ${targetName}.${targetParam}`);
-  }) as EventListener);
-
-  // Handle route deletion
-  window.addEventListener('eoe:delete-route', (async (e: CustomEvent) => {
-    const { routeId } = e.detail;
-
-    currentComposition = deleteRoute(currentComposition, routeId);
-    await saveComposition(currentComposition);
-    await refreshCanvas();
-
-    window.dispatchEvent(new CustomEvent('eoe:composition-updated', {
-      detail: { composition: currentComposition }
-    }));
-
-    showToast('Route deleted');
-  }) as EventListener);
-
-  // Handle node removal
-  window.addEventListener('eoe:remove-node', (async (e: CustomEvent) => {
-    const { nodeId } = e.detail;
-
-    currentComposition = removeAtomFromComposition(currentComposition, nodeId);
-    await saveComposition(currentComposition);
-    await refreshCanvas();
-
-    showToast('Atom removed');
-  }) as EventListener);
-
-  // Handle composition state request (from detail sheet after changes)
-  window.addEventListener('eoe:request-composition-state', (() => {
-    window.dispatchEvent(new CustomEvent('eoe:composition-updated', {
-      detail: { composition: currentComposition }
-    }));
-  }) as EventListener);
 
   // Initialize
   initComposition();
