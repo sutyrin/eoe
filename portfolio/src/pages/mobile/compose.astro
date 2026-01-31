@@ -387,23 +387,26 @@ import PreviewControls from '../../components/PreviewControls.astro';
   });
 
   // Stop preview
-  window.addEventListener('preview-stop', async () => {
+  window.addEventListener('preview-stop', () => {
     if (previewEngine) {
-      await previewEngine.stop();
-      previewEngine.cleanup();
-      previewEngine = null;
+      previewEngine.stop().then(() => {
+        if (previewEngine) {
+          previewEngine.cleanup();
+          previewEngine = null;
+        }
+      });
     }
   });
 
   // Next atom in sequential mode
-  window.addEventListener('preview-next', async () => {
+  window.addEventListener('preview-next', () => {
     if (previewEngine) {
-      await previewEngine.startNext();
+      previewEngine.startNext();
     }
   });
 
   // Playback mode change
-  window.addEventListener('preview-mode-change', async ((e: CustomEvent<'simultaneous' | 'sequential'>) => {
+  window.addEventListener('preview-mode-change', ((e: CustomEvent<'simultaneous' | 'sequential'>) => {
     const updated = {
       ...currentComposition,
       playbackMode: e.detail,
@@ -413,22 +416,27 @@ import PreviewControls from '../../components/PreviewControls.astro';
 
     // If preview is running, restart with new mode
     if (previewEngine && previewEngine.getState() !== 'stopped') {
-      await previewEngine.stop();
-      previewEngine.cleanup();
-      previewEngine = null;
-
-      window.dispatchEvent(new CustomEvent('preview-play'));
+      previewEngine.stop().then(() => {
+        if (previewEngine) {
+          previewEngine.cleanup();
+          previewEngine = null;
+        }
+        window.dispatchEvent(new CustomEvent('preview-play'));
+      });
     }
   }) as EventListener);
 
   // Restart after glitch
-  window.addEventListener('preview-restart', async () => {
+  window.addEventListener('preview-restart', () => {
     if (previewEngine) {
-      await previewEngine.stop();
-      previewEngine.cleanup();
-      previewEngine = null;
+      previewEngine.stop().then(() => {
+        if (previewEngine) {
+          previewEngine.cleanup();
+          previewEngine = null;
+        }
+        window.dispatchEvent(new CustomEvent('preview-play'));
+      });
     }
-    window.dispatchEvent(new CustomEvent('preview-play'));
   });
 
   // Initialize

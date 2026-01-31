@@ -55,6 +55,7 @@ const { compositionId } = Astro.props;
     function CanvasApp() {
       const [nodes, setNodes] = React.useState<Node<AtomNodeData>[]>(initialNodes);
       const [edges, setEdges] = React.useState<Edge[]>(initialEdges);
+      const [activeRoutes, setActiveRoutes] = React.useState<string[]>([]);
 
       // Expose setters globally for Astro script interop (temporary pattern)
       // Plans 05-02+ will replace with proper event-based communication
@@ -80,6 +81,16 @@ const { compositionId } = Astro.props;
         }
       }, [nodes.length]);
 
+      // Listen for active routes from preview engine
+      React.useEffect(() => {
+        const handler = (e: Event) => {
+          const customEvent = e as CustomEvent<string[]>;
+          setActiveRoutes(customEvent.detail);
+        };
+        window.addEventListener('preview-routes-active', handler);
+        return () => window.removeEventListener('preview-routes-active', handler);
+      }, []);
+
       // Node drag handler - dispatch positions to Astro
       const onNodeDragStop = React.useCallback((_event: any, _node: any) => {
         const currentNodes = (window as any).__canvasGetNodes?.() || [];
@@ -95,11 +106,27 @@ const { compositionId } = Astro.props;
         }));
       }, []);
 
+      // Apply active route styling
+      const styledEdges = React.useMemo(() => {
+        return edges.map(edge => {
+          const isActive = activeRoutes.includes(edge.id);
+          return {
+            ...edge,
+            animated: isActive,
+            style: {
+              ...edge.style,
+              stroke: isActive ? '#00ff88' : '#6bb5ff',
+              strokeWidth: isActive ? 3 : 2,
+            },
+          };
+        });
+      }, [edges, activeRoutes]);
+
       return React.createElement(
         ReactFlow,
         {
           nodes: nodes,
-          edges: edges,
+          edges: styledEdges,
           onNodeDragStop: onNodeDragStop,
           onNodeClick: onNodeClick,
           nodeTypes: nodeTypes,

@@ -122,6 +122,20 @@
   stroke-width: 3;
 }
 
+/* Active route animation during preview */
+.react-flow__edge.animated .react-flow__edge-path {
+  animation: route-pulse 1s ease-in-out infinite;
+}
+
+@keyframes route-pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+
 /* Connection line (while dragging) */
 .react-flow__connection-line {
   stroke: #6bb5ff;
