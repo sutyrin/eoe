@@ -1,83 +1,122 @@
 ---
 /**
- * CompositionCanvas: Astro wrapper for React Flow canvas.
+ * CompositionCanvas: Astro wrapper for React Flow composition canvas.
  *
- * Uses client:only='react' to render React Flow client-side only.
- * Provides mobile-optimized touch controls (pan, pinch zoom).
+ * Uses client:only="react" because React Flow requires browser APIs
+ * (DOM measurements, touch events) and cannot be server-rendered.
+ *
+ * Props:
+ * - compositionId: Optional ID of composition to load from IndexedDB
  */
 import '../styles/canvas.css';
+
+export interface Props {
+  compositionId?: string;
+}
+
+const { compositionId } = Astro.props;
 ---
 
-<div id="composition-canvas-container" class="composition-canvas">
-  <!-- React Flow canvas rendered client-side -->
-</div>
+<div class="canvas-container" id="canvas-root" data-composition-id={compositionId || ''}>
+  <!-- React Flow mounts here via client-side React -->
+  <div id="react-canvas-mount" style="width: 100%; height: 100%;"></div>
 
-<!-- Toast notification -->
-<div id="canvas-toast" class="canvas-toast"></div>
+  <!-- Empty state (hidden when nodes exist) -->
+  <div class="canvas-empty" id="canvas-empty-state">
+    <div class="canvas-empty-title">Empty Canvas</div>
+    <div>Tap + to add an atom</div>
+  </div>
+
+  <!-- Toast container -->
+  <div class="canvas-toast" id="canvas-toast"></div>
+</div>
 
 <script>
   import React from 'react';
-  import ReactDOM from 'react-dom/client';
-  import { ReactFlow, Background, useNodesState, useEdgesState, type Node, type Edge } from 'reactflow';
+  import { createRoot } from 'react-dom/client';
+  import { ReactFlow, Background } from 'reactflow';
+  import type { Node, Edge, Viewport } from 'reactflow';
+  import 'reactflow/dist/style.css';
   import { nodeTypes } from '../scripts/atom-node';
+  import type { AtomNodeData } from '../scripts/composition-types';
 
-  // Canvas React component
-  function CanvasApp() {
-    const [nodes, setNodes, onNodesChange] = useNodesState([]);
-    const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+  // Initialize React Flow canvas
+  function initCanvas() {
+    const mountEl = document.getElementById('react-canvas-mount');
+    if (!mountEl) return;
 
-    // Expose setters to window for Astro script communication
-    React.useEffect(() => {
-      (window as any).__canvasSetNodes = setNodes;
-      (window as any).__canvasSetEdges = setEdges;
-      (window as any).__canvasGetNodes = () => nodes;
-      (window as any).__canvasGetEdges = () => edges;
-    }, [setNodes, setEdges, nodes, edges]);
+    const root = createRoot(mountEl);
 
-    // Node drag handler - dispatch positions to Astro
-    const onNodeDragStop = React.useCallback((_event: any, _node: any) => {
-      const currentNodes = (window as any).__canvasGetNodes?.() || [];
-      window.dispatchEvent(new CustomEvent('eoe:nodes-changed', {
-        detail: { nodes: currentNodes }
-      }));
-    }, []);
+    // Canvas state (managed outside React for Phase 5 simplicity)
+    // Plans 05-02 through 05-04 will upgrade this to full state management
+    const initialNodes: Node<AtomNodeData>[] = [];
+    const initialEdges: Edge[] = [];
 
-    return React.createElement(
-      ReactFlow,
-      {
-        nodes,
-        edges,
-        onNodesChange,
-        onEdgesChange,
-        onNodeDragStop,
-        nodeTypes,
-        fitView: true,
-        fitViewOptions: {
-          padding: 0.2,
-          maxZoom: 1,
+    function CanvasApp() {
+      const [nodes, setNodes] = React.useState<Node<AtomNodeData>[]>(initialNodes);
+      const [edges, setEdges] = React.useState<Edge[]>(initialEdges);
+
+      // Expose setters globally for Astro script interop (temporary pattern)
+      // Plans 05-02+ will replace with proper event-based communication
+      React.useEffect(() => {
+        (window as any).__canvasSetNodes = setNodes;
+        (window as any).__canvasSetEdges = setEdges;
+        (window as any).__canvasGetNodes = () => nodes;
+        (window as any).__canvasGetEdges = () => edges;
+
+        return () => {
+          delete (window as any).__canvasSetNodes;
+          delete (window as any).__canvasSetEdges;
+          delete (window as any).__canvasGetNodes;
+          delete (window as any).__canvasGetEdges;
+        };
+      }, [nodes, edges]);
+
+      // Hide empty state when nodes exist
+      React.useEffect(() => {
+        const emptyState = document.getElementById('canvas-empty-state');
+        if (emptyState) {
+          emptyState.style.display = nodes.length === 0 ? 'block' : 'none';
+        }
+      }, [nodes.length]);
+
+      return React.createElement(
+        ReactFlow,
+        {
+          nodes: nodes,
+          edges: edges,
+          nodeTypes: nodeTypes,
+          // Mobile-optimized settings (from 05-RESEARCH.md)
+          panOnDrag: [1],           // Single-finger pan on background
+          zoomOnPinch: true,        // Pinch-to-zoom
+          panOnScroll: false,       // Disable (conflicts with page scroll)
+          zoomOnScroll: false,      // Disable (use pinch only)
+          zoomOnDoubleClick: false, // Disable (accidental taps on mobile)
+          nodesDraggable: true,     // Drag nodes with finger
+          nodesConnectable: false,  // Disable drag-to-connect (use dropdown routing in 05-03)
+          minZoom: 0.5,
+          maxZoom: 2,
+          defaultViewport: { x: 0, y: 0, zoom: 1 },
+          fitView: true,
+          fitViewOptions: { padding: 0.3 },
+          proOptions: { hideAttribution: true },
         },
-        // Mobile-optimized controls
-        panOnDrag: [1], // Single finger pan
-        zoomOnPinch: true,
-        panOnScroll: false,
-        minZoom: 0.3,
-        maxZoom: 2,
-        defaultViewport: { x: 0, y: 0, zoom: 1 },
-        // Style
-        className: 'react-flow-canvas',
-      },
-      React.createElement(Background, {
-        color: '#333',
-        gap: 16,
-        size: 1,
-      })
-    );
+        // Background dots for spatial reference
+        React.createElement(Background, {
+          gap: 20,
+          size: 1,
+          color: '#222',
+        })
+      );
+    }
+
+    root.render(React.createElement(CanvasApp));
   }
 
-  // Mount React app
-  const container = document.getElementById('composition-canvas-container');
-  if (container) {
-    const root = ReactDOM.createRoot(container);
-    root.render(React.createElement(CanvasApp));
+  // Initialize when DOM is ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initCanvas);
+  } else {
+    initCanvas();
   }
 </script>

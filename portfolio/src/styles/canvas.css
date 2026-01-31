@@ -1,198 +1,130 @@
-/**
- * Canvas styles for React Flow composition canvas.
- * Mobile-first with dark theme.
- */
+/* Composition canvas styles */
 
-/* React Flow base styles */
-@import 'reactflow/dist/style.css';
-
-/* Canvas container */
-.composition-canvas {
+/* React Flow container: fill viewport below header */
+.canvas-container {
   width: 100%;
-  height: calc(100vh - 60px); /* Account for mobile header */
-  background: #0a0a0a;
+  height: calc(100vh - 48px); /* 48px = mobile header height */
   position: relative;
-}
-
-/* React Flow dark theme overrides */
-.react-flow {
   background: #0a0a0a;
 }
 
+/* Override React Flow default styles for dark theme */
 .react-flow__background {
-  background: #0a0a0a;
+  background: #0a0a0a !important;
 }
 
-.react-flow__background line {
-  stroke: #1a1a1a;
+.react-flow__background pattern line {
+  stroke: #1a1a1a !important;
 }
 
-/* Disable default controls (too small for mobile) */
-.react-flow__controls {
-  display: none;
-}
-
-/* AtomNode component */
-.atom-node {
-  background: #111;
-  border: 2px solid #333;
-  border-radius: 12px;
-  padding: 12px 16px;
-  min-width: 180px;
-  max-width: 220px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-}
-
-.atom-node-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  margin-bottom: 12px;
-}
-
-.atom-node-title {
-  color: #fff;
-  font-weight: 600;
-  font-size: 0.9rem;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  flex: 1;
-}
-
-.atom-node-type-badge {
-  font-size: 0.65rem;
-  font-weight: 700;
-  color: #fff;
-  padding: 3px 6px;
-  border-radius: 4px;
-  flex-shrink: 0;
-}
-
-.atom-node-params {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  margin-top: 8px;
-}
-
-.atom-node-param-label {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  color: #888;
-  font-size: 0.75rem;
-}
-
-.atom-node-param-label-out {
-  justify-content: flex-end;
-}
-
-.param-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  flex-shrink: 0;
-}
-
-/* Missing atom state */
-.atom-node-missing {
-  border-color: #ff4444;
-  opacity: 0.7;
-}
-
-.atom-node-missing-label {
-  color: #ff4444;
-  font-size: 0.7rem;
-  margin-top: 4px;
-  text-align: center;
-}
-
-/* Touch-friendly edges */
+/* Edge styles */
 .react-flow__edge-path {
-  stroke-width: 3px; /* Thicker for easier tap */
+  stroke: #6bb5ff;
+  stroke-width: 2;
 }
 
-/* Selected node */
-.react-flow__node.selected .atom-node {
-  border-color: #6bb5ff;
-  box-shadow: 0 0 0 2px #6bb5ff40;
+.react-flow__edge.selected .react-flow__edge-path {
+  stroke: #fff;
+  stroke-width: 3;
 }
 
-/* FAB button (add atom) */
+/* Connection line (while dragging) */
+.react-flow__connection-line {
+  stroke: #6bb5ff;
+  stroke-width: 2;
+  stroke-dasharray: 5 5;
+}
+
+/* Minimap (disabled on mobile, but style anyway) */
+.react-flow__minimap {
+  display: none; /* Hidden on mobile to save screen space */
+}
+
+/* Controls panel */
+.react-flow__controls {
+  display: none; /* Hidden on mobile; use gestures instead */
+}
+
+/* Attribution */
+.react-flow__attribution {
+  display: none; /* Hidden (React Flow Pro not required for open source) */
+}
+
+/* iOS Safari: Prevent grey highlight rectangles on touch */
+.react-flow,
+.react-flow * {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Prevent scroll conflicts on canvas */
+.canvas-container {
+  touch-action: none;
+  overflow: hidden;
+}
+
+/* FAB button placeholder (implemented in 05-02) */
 .compose-fab {
   position: fixed;
-  bottom: 24px;
+  bottom: calc(24px + env(safe-area-inset-bottom, 0));
   right: 24px;
   width: 56px;
   height: 56px;
   border-radius: 28px;
   background: #6bb5ff;
-  color: #fff;
+  color: #0a0a0a;
   border: none;
-  font-size: 1.8rem;
-  font-weight: 300;
-  box-shadow: 0 4px 12px rgba(107, 181, 255, 0.5);
-  cursor: pointer;
-  z-index: 100;
+  font-size: 24px;
+  font-weight: 700;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: transform 100ms ease, box-shadow 100ms ease;
+  box-shadow: 0 4px 12px rgba(107, 181, 255, 0.3);
+  cursor: pointer;
+  z-index: 50;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .compose-fab:active {
-  transform: scale(0.95);
+  transform: scale(0.92);
+  opacity: 0.9;
 }
 
-.compose-fab.disabled {
-  background: #444;
-  color: #888;
-  box-shadow: none;
+/* Empty canvas message */
+.canvas-empty {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  color: #555;
+  font-size: 0.9rem;
   pointer-events: none;
+  z-index: 1;
 }
 
-/* Toast notification */
+.canvas-empty-title {
+  font-size: 1.1rem;
+  color: #888;
+  margin-bottom: 8px;
+}
+
+/* Toast notification for composition actions */
 .canvas-toast {
   position: fixed;
-  bottom: 96px;
+  bottom: calc(96px + env(safe-area-inset-bottom, 0));
   left: 50%;
-  transform: translateX(-50%) translateY(100px);
-  background: #222;
+  transform: translateX(-50%);
+  background: #333;
   color: #fff;
-  padding: 12px 20px;
+  padding: 10px 20px;
   border-radius: 8px;
   font-size: 0.85rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+  z-index: 100;
   opacity: 0;
-  transition: opacity 200ms ease, transform 200ms ease;
+  transition: opacity 300ms ease;
   pointer-events: none;
-  z-index: 150;
 }
 
 .canvas-toast.visible {
   opacity: 1;
-  transform: translateX(-50%) translateY(0);
-}
-
-/* Search bar in atom picker */
-.search-bar {
-  width: 100%;
-  padding: 10px 14px;
-  background: #1a1a1a;
-  border: 1px solid #333;
-  border-radius: 8px;
-  color: #fff;
-  font-size: 0.9rem;
-  font-family: inherit;
-  outline: none;
-}
-
-.search-bar:focus {
-  border-color: #6bb5ff;
-}
-
-.search-bar::placeholder {
-  color: #666;
 }
