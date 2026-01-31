@@ -194,6 +194,17 @@ export async function getConfigOverride(atomSlug: string): Promise<ConfigOverrid
   return db.get('configOverrides', atomSlug);
 }
 
+// ---- Snapshot Helpers (Phase 6) ----
+
+export async function getUnsyncedSnapshots(): Promise<unknown[]> {
+  const db = await getDB();
+  try {
+    return await db.getAllFromIndex('snapshots', 'synced', false);
+  } catch {
+    return [];
+  }
+}
+
 // ---- Storage Quota ----
 
 export async function getStorageEstimate(): Promise<{ usage: number; quota: number; percentUsed: number }> {
