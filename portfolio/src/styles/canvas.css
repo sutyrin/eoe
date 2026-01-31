@@ -1,5 +1,19 @@
 /* Composition canvas styles */
 
+/* CSS Variables for preview controls */
+:root {
+  --bg-primary: #0a0a0a;
+  --bg-secondary: #1a1a1a;
+  --bg-warning: #332200;
+  --text-primary: #e0e0e0;
+  --text-secondary: #888;
+  --border-color: #333;
+  --button-bg: #1a1a1a;
+  --button-hover: #2a2a2a;
+  --accent-color: #6bb5ff;
+  --warning-color: #ffaa00;
+}
+
 /* iOS Safari fixes for canvas */
 
 /* Prevent grey highlight rectangles on touch (iOS Safari bug) */

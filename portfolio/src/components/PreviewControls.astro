@@ -1,0 +1,343 @@
+---
+/**
+ * PreviewControls: Play/Pause/Stop controls with playback mode toggle.
+ *
+ * Features:
+ * - Play/Pause/Stop buttons (44px min touch targets)
+ * - Playback mode toggle: ALL (simultaneous) vs SEQ (sequential)
+ * - Sequential: Next button to start next atom
+ * - Glitch warning toast with Continue/Restart buttons
+ * - Visual feedback: disabled states, active mode highlight
+ *
+ * Phase 6 Design:
+ * - Toolbar at top of compose page
+ * - Fixed position, always visible
+ * - Glitch toast slides in from bottom
+ */
+---
+
+<div class="preview-controls">
+  <div class="controls-left">
+    <button id="play-btn" class="control-btn" aria-label="Play">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M8 5v14l11-7z"/>
+      </svg>
+    </button>
+    <button id="pause-btn" class="control-btn" style="display: none;" aria-label="Pause">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+        <rect x="6" y="4" width="4" height="16"/>
+        <rect x="14" y="4" width="4" height="16"/>
+      </svg>
+    </button>
+    <button id="stop-btn" class="control-btn" aria-label="Stop" disabled>
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+        <rect x="6" y="6" width="12" height="12"/>
+      </svg>
+    </button>
+    <button id="next-btn" class="control-btn" style="display: none;" aria-label="Next Atom" disabled>
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M6 4v16l8-8z"/>
+        <path d="M16 4v16l8-8z"/>
+      </svg>
+    </button>
+  </div>
+
+  <div class="controls-right">
+    <div class="mode-toggle">
+      <button id="mode-all" class="mode-btn active" data-mode="simultaneous">ALL</button>
+      <button id="mode-seq" class="mode-btn" data-mode="sequential">SEQ</button>
+    </div>
+  </div>
+</div>
+
+<div id="glitch-toast" class="glitch-toast" style="display: none;">
+  <div class="glitch-message">
+    <strong>Audio glitch detected</strong>
+    <p id="glitch-reason"></p>
+  </div>
+  <div class="glitch-actions">
+    <button id="glitch-continue" class="glitch-btn">Continue</button>
+    <button id="glitch-restart" class="glitch-btn primary">Restart</button>
+  </div>
+</div>
+
+<script>
+  import type { PreviewState } from '../scripts/composition-types';
+
+  // UI element references
+  const playBtn = document.getElementById('play-btn') as HTMLButtonElement;
+  const pauseBtn = document.getElementById('pause-btn') as HTMLButtonElement;
+  const stopBtn = document.getElementById('stop-btn') as HTMLButtonElement;
+  const nextBtn = document.getElementById('next-btn') as HTMLButtonElement;
+  const modeAll = document.getElementById('mode-all') as HTMLButtonElement;
+  const modeSeq = document.getElementById('mode-seq') as HTMLButtonElement;
+  const glitchToast = document.getElementById('glitch-toast') as HTMLDivElement;
+  const glitchReason = document.getElementById('glitch-reason') as HTMLParagraphElement;
+  const glitchContinue = document.getElementById('glitch-continue') as HTMLButtonElement;
+  const glitchRestart = document.getElementById('glitch-restart') as HTMLButtonElement;
+
+  // State (will be set by compose.astro via custom events)
+  let currentState: PreviewState = 'stopped';
+  let currentMode: 'simultaneous' | 'sequential' = 'simultaneous';
+
+  // Play button handler
+  playBtn.addEventListener('click', () => {
+    window.dispatchEvent(new CustomEvent('preview-play'));
+  });
+
+  // Pause button handler
+  pauseBtn.addEventListener('click', () => {
+    window.dispatchEvent(new CustomEvent('preview-pause'));
+  });
+
+  // Stop button handler
+  stopBtn.addEventListener('click', () => {
+    window.dispatchEvent(new CustomEvent('preview-stop'));
+  });
+
+  // Next button handler (sequential mode only)
+  nextBtn.addEventListener('click', () => {
+    window.dispatchEvent(new CustomEvent('preview-next'));
+  });
+
+  // Mode toggle handlers
+  modeAll.addEventListener('click', () => {
+    setMode('simultaneous');
+    window.dispatchEvent(new CustomEvent('preview-mode-change', { detail: 'simultaneous' }));
+  });
+
+  modeSeq.addEventListener('click', () => {
+    setMode('sequential');
+    window.dispatchEvent(new CustomEvent('preview-mode-change', { detail: 'sequential' }));
+  });
+
+  // Glitch toast handlers
+  glitchContinue.addEventListener('click', () => {
+    hideGlitchToast();
+  });
+
+  glitchRestart.addEventListener('click', () => {
+    hideGlitchToast();
+    window.dispatchEvent(new CustomEvent('preview-restart'));
+  });
+
+  // Listen for state changes from compose.astro
+  window.addEventListener('preview-state-changed', ((event: CustomEvent<PreviewState>) => {
+    updateUIForState(event.detail);
+  }) as EventListener);
+
+  // Listen for sequential-next-ready from PreviewEngine
+  window.addEventListener('preview-next-ready', ((event: CustomEvent<boolean>) => {
+    nextBtn.disabled = !event.detail;
+  }) as EventListener);
+
+  // Listen for glitch warnings from compose.astro
+  window.addEventListener('preview-glitch', ((event: CustomEvent<{ reason: string }>) => {
+    showGlitchToast(event.detail.reason);
+  }) as EventListener);
+
+  /**
+   * Update UI based on preview state.
+   */
+  function updateUIForState(state: PreviewState) {
+    currentState = state;
+
+    if (state === 'playing') {
+      playBtn.style.display = 'none';
+      pauseBtn.style.display = 'inline-flex';
+      stopBtn.disabled = false;
+      nextBtn.style.display = currentMode === 'sequential' ? 'inline-flex' : 'none';
+    } else if (state === 'paused') {
+      playBtn.style.display = 'inline-flex';
+      pauseBtn.style.display = 'none';
+      stopBtn.disabled = false;
+      nextBtn.style.display = 'none';
+    } else {
+      playBtn.style.display = 'inline-flex';
+      pauseBtn.style.display = 'none';
+      stopBtn.disabled = true;
+      nextBtn.style.display = 'none';
+    }
+  }
+
+  /**
+   * Set playback mode and update UI.
+   */
+  function setMode(mode: 'simultaneous' | 'sequential') {
+    currentMode = mode;
+
+    if (mode === 'simultaneous') {
+      modeAll.classList.add('active');
+      modeSeq.classList.remove('active');
+    } else {
+      modeAll.classList.remove('active');
+      modeSeq.classList.add('active');
+    }
+
+    // Hide Next button in simultaneous mode
+    if (currentState !== 'playing') {
+      nextBtn.style.display = 'none';
+    }
+  }
+
+  /**
+   * Show glitch warning toast.
+   */
+  function showGlitchToast(reason: string) {
+    glitchReason.textContent = reason;
+    glitchToast.style.display = 'flex';
+  }
+
+  /**
+   * Hide glitch warning toast.
+   */
+  function hideGlitchToast() {
+    glitchToast.style.display = 'none';
+  }
+</script>
+
+<style>
+  .preview-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    background: var(--bg-primary);
+    border-bottom: 1px solid var(--border-color);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .controls-left {
+    display: flex;
+    gap: 8px;
+  }
+
+  .controls-right {
+    display: flex;
+    gap: 8px;
+  }
+
+  .control-btn {
+    min-width: 44px;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--button-bg);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .control-btn:hover:not(:disabled) {
+    background: var(--button-hover);
+  }
+
+  .control-btn:active:not(:disabled) {
+    transform: scale(0.95);
+  }
+
+  .control-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  .mode-toggle {
+    display: flex;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .mode-btn {
+    min-width: 60px;
+    min-height: 44px;
+    padding: 0 16px;
+    background: transparent;
+    color: var(--text-secondary);
+    border: none;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .mode-btn.active {
+    background: var(--accent-color);
+    color: white;
+  }
+
+  .mode-btn:hover:not(.active) {
+    background: var(--button-hover);
+  }
+
+  .glitch-toast {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--bg-warning);
+    border-top: 2px solid var(--warning-color);
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    z-index: 1000;
+    animation: slide-up 0.3s ease;
+  }
+
+  @keyframes slide-up {
+    from {
+      transform: translateY(100%);
+    }
+    to {
+      transform: translateY(0);
+    }
+  }
+
+  .glitch-message strong {
+    display: block;
+    color: var(--warning-color);
+    margin-bottom: 4px;
+  }
+
+  .glitch-message p {
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: 14px;
+  }
+
+  .glitch-actions {
+    display: flex;
+    gap: 8px;
+  }
+
+  .glitch-btn {
+    flex: 1;
+    min-height: 44px;
+    padding: 0 16px;
+    background: var(--button-bg);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .glitch-btn.primary {
+    background: var(--accent-color);
+    color: white;
+    border-color: var(--accent-color);
+  }
+
+  .glitch-btn:active {
+    transform: scale(0.95);
+  }
+</style>
