@@ -139,6 +139,7 @@ None inherited from v1.0. v1.1 builds on proven v1.0 foundation (no refactoring 
 
 | # | Description | Date | Commit | Directory |
 |---|-------------|------|--------|-----------|
+| 017 | Fix dark theme control visibility and contrast (WCAG AA) | 2026-02-01 | 93a9e87 | [017-fix-dark-theme-controls](./quick/017-fix-dark-theme-controls/) |
 | 016 | Fix atom pages by handling Prism errors and using metadata code | 2026-02-01 | 57a7817 | [016-fix-atom-pages-prism](./quick/016-fix-atom-pages-prism/) |
 | 015 | Debug atom page display issues with Prism.js syntax errors | 2026-02-01 | d0b214e | [015-debug-atom-page](./quick/015-debug-atom-page/) |
 | 014 | Fix atom bundling for production with Vite | 2026-02-01 | 7df1bfe | [014-fix-atom-bundling](./quick/014-fix-atom-bundling/) |
