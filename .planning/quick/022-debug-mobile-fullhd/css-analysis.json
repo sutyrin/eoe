@@ -1,0 +1,1966 @@
+[
+  {
+    "name": "gallery",
+    "url": "https://llm.sutyrin.pro/mobile/gallery",
+    "viewports": {
+      "standard": {
+        "viewport": {
+          "width": 390,
+          "height": 844,
+          "name": "390x844"
+        },
+        "buttons": [],
+        "containers": [
+          {
+            "selector": "body",
+            "found": true,
+            "dimensions": {
+              "width": 390,
+              "height": 844,
+              "offsetWidth": 390,
+              "offsetHeight": 844
+            },
+            "css": {
+              "display": "block",
+              "width": "390px",
+              "maxWidth": "none",
+              "overflow": "visible",
+              "padding": "0px",
+              "margin": "0px"
+            }
+          },
+          {
+            "selector": "main",
+            "found": true,
+            "dimensions": {
+              "width": 390,
+              "height": 590,
+              "offsetWidth": 390,
+              "offsetHeight": 590
+            },
+            "css": {
+              "display": "block",
+              "width": "390px",
+              "maxWidth": "600px",
+              "overflow": "auto",
+              "padding": "16px",
+              "margin": "0px"
+            }
+          }
+        ],
+        "mediaQueries": [
+          "External: https://llm.sutyrin.pro/_astro/index.DMOABKrp.css"
+        ],
+        "visibleButtonCount": 0,
+        "offscreenButtons": 0,
+        "hiddenButtons": 0,
+        "issues": []
+      },
+      "fullhd": {
+        "viewport": {
+          "width": 1080,
+          "height": 1920,
+          "name": "1080x1920"
+        },
+        "buttons": [],
+        "containers": [
+          {
+            "selector": "body",
+            "found": true,
+            "dimensions": {
+              "width": 1080,
+              "height": 1920,
+              "offsetWidth": 1080,
+              "offsetHeight": 1920
+            },
+            "css": {
+              "display": "block",
+              "width": "1080px",
+              "maxWidth": "none",
+              "overflow": "visible",
+              "padding": "0px",
+              "margin": "0px"
+            }
+          },
+          {
+            "selector": "main",
+            "found": true,
+            "dimensions": {
+              "width": 600,
+              "height": 590,
+              "offsetWidth": 600,
+              "offsetHeight": 590
+            },
+            "css": {
+              "display": "block",
+              "width": "600px",
+              "maxWidth": "600px",
+              "overflow": "auto",
+              "padding": "16px",
+              "margin": "0px 240px"
+            }
+          }
+        ],
+        "mediaQueries": [
+          "External: https://llm.sutyrin.pro/_astro/index.DMOABKrp.css"
+        ],
+        "visibleButtonCount": 0,
+        "offscreenButtons": 0,
+        "hiddenButtons": 0,
+        "issues": [
+          "main has fixed width 600px (viewport is 1080px)"
+        ]
+      }
+    }
+  },
+  {
+    "name": "au1",
+    "url": "https://llm.sutyrin.pro/mobile/au1",
+    "viewports": {
+      "standard": {
+        "viewport": {
+          "width": 390,
+          "height": 844,
+          "name": "390x844"
+        },
+        "buttons": [],
+        "containers": [
+          {
+            "selector": "body",
+            "found": true,
+            "dimensions": {
+              "width": 390,
+              "height": 1900,
+              "offsetWidth": 390,
+              "offsetHeight": 1900
+            },
+            "css": {
+              "display": "block",
+              "width": "390px",
+              "maxWidth": "none",
+              "overflow": "visible",
+              "padding": "0px",
+              "margin": "0px"
+            }
+          },
+          {
+            "selector": "main",
+            "found": true,
+            "dimensions": {
+              "width": 390,
+              "height": 1813,
+              "offsetWidth": 390,
+              "offsetHeight": 1813
+            },
+            "css": {
+              "display": "block",
+              "width": "390px",
+              "maxWidth": "1200px",
+              "overflow": "visible",
+              "padding": "32px",
+              "margin": "0px"
+            }
+          }
+        ],
+        "mediaQueries": [],
+        "visibleButtonCount": 0,
+        "offscreenButtons": 0,
+        "hiddenButtons": 0,
+        "issues": []
+      },
+      "fullhd": {
+        "viewport": {
+          "width": 1080,
+          "height": 1920,
+          "name": "1080x1920"
+        },
+        "buttons": [],
+        "containers": [
+          {
+            "selector": "body",
+            "found": true,
+            "dimensions": {
+              "width": 1080,
+              "height": 1920,
+              "offsetWidth": 1080,
+              "offsetHeight": 1920
+            },
+            "css": {
+              "display": "block",
+              "width": "1080px",
+              "maxWidth": "none",
+              "overflow": "visible",
+              "padding": "0px",
+              "margin": "0px"
+            }
+          },
+          {
+            "selector": "main",
+            "found": true,
+            "dimensions": {
+              "width": 1080,
+              "height": 665,
+              "offsetWidth": 1080,
+              "offsetHeight": 665
+            },
+            "css": {
+              "display": "block",
+              "width": "1080px",
+              "maxWidth": "1200px",
+              "overflow": "visible",
+              "padding": "32px",
+              "margin": "0px"
+            }
+          }
+        ],
+        "mediaQueries": [],
+        "visibleButtonCount": 0,
+        "offscreenButtons": 0,
+        "hiddenButtons": 0,
+        "issues": []
+      }
+    }
+  },
+  {
+    "name": "compose",
+    "url": "https://llm.sutyrin.pro/mobile/compose",
+    "viewports": {
+      "standard": {
+        "viewport": {
+          "width": 390,
+          "height": 844,
+          "name": "390x844"
+        },
+        "buttons": [
+          {
+            "text": "↶",
+            "visible": true,
+            "position": {
+              "x": 12,
+              "y": 54,
+              "width": 36,
+              "height": 36
+            },
+            "css": {
+              "display": "flex",
+              "position": "static",
+              "visibility": "visible",
+              "width": "36px",
+              "height": "36px",
+              "overflow": "visible"
+            },
+            "parent_css": {
+              "display": "flex",
+              "overflow": "visible",
+              "width": "76px",
+              "maxWidth": "none"
+            },
+            "offscreen": false
+          },
+          {
+            "text": "↷",
+            "visible": true,
+            "position": {
+              "x": 52,
+              "y": 54,
+              "width": 36,
+              "height": 36
+            },
+            "css": {
+              "display": "flex",
+              "position": "static",
+              "visibility": "visible",
+              "width": "36px",
+              "height": "36px",
+              "overflow": "visible"
+            },
+            "parent_css": {
+              "display": "flex",
+              "overflow": "visible",
+              "width": "76px",
+              "maxWidth": "none"
+            },
+            "offscreen": false
+          },
+          {
+            "text": "Untitled Composition",
+            "visible": true,
+            "position": {
+              "x": 123,
+              "y": 60,
+              "width": 144,
+              "height": 24
+            },
+            "css": {
+              "display": "block",
+              "position": "static",
+              "visibility": "visible",
+              "width": "144.375px",
+              "height": "24px",
+              "overflow": "hidden"
+            },
+            "parent_css": {
+              "display": "flex",
+              "overflow": "visible",
+              "width": "214px",
+              "maxWidth": "none"
+            },
+            "offscreen": false
+          },
+          {
+            "text": "💾",
+            "visible": true,
+            "position": {
+              "x": 302,
+              "y": 54,
+              "width": 36,
+              "height": 36
+            },
+            "css": {
+              "display": "flex",
+              "position": "static",
+              "visibility": "visible",
+              "width": "36px",
+              "height": "36px",
+              "overflow": "visible"
+            },
+            "parent_css": {
+              "display": "flex",
+              "overflow": "visible",
+              "width": "76px",
+              "maxWidth": "none"
+            },
+            "offscreen": false
+          },
+          {
+            "text": "Del",
+            "visible": true,
+            "position": {
+              "x": 342,
+              "y": 54,
+              "width": 36,
+              "height": 36
+            },
+            "css": {
+              "display": "flex",
+              "position": "static",
+              "visibility": "visible",
+              "width": "36px",
+              "height": "36px",
+              "overflow": "visible"
+            },
+            "parent_css": {
+              "display": "flex",
+              "overflow": "visible",
+              "width": "76px",
+              "maxWidth": "none"
+            },
+            "offscreen": false
+          },
+          {
+            "text": "",
+            "visible": true,
+            "position": {
+              "x": 12,
+              "y": 78,
+              "width": 44,
+              "height": 44
+            },
+            "css": {
+              "display": "flex",
+              "position": "static",
+              "visibility": "visible",
+              "width": "44px",
+              "height": "44px",
+              "overflow": "visible"
+            },
+            "parent_css": {
+              "display": "flex",
+              "overflow": "visible",
+              "width": "96px",
+              "maxWidth": "none"
+            },
+            "offscreen": false
+          },
+          {
+            "text": "",
+            "visible": false,
+            "position": {
+              "x": 0,
+              "y": 0,
+              "width": 0,
+              "height": 0
+            },
+            "css": {
+              "display": "none",
+              "position": "static",
+              "visibility": "visible",
+              "width": "auto",
+              "height": "auto",
+              "overflow": "visible"
+            },
+            "parent_css": {
+              "display": "flex",
+              "overflow": "visible",
+              "width": "96px",
+              "maxWidth": "none"
+            },
+            "offscreen": false
+          },
+          {
+            "text": "",
+            "visible": true,
+            "position": {
+              "x": 64,
+              "y": 78,
+              "width": 44,
+              "height": 44
+            },
+            "css": {
+              "display": "flex",
+              "position": "static",
+              "visibility": "visible",
+              "width": "44px",
+              "height": "44px",
+              "overflow": "visible"
+            },
+            "parent_css": {
+              "display": "flex",
+              "overflow": "visible",
+              "width": "96px",
+              "maxWidth": "none"
+            },
+            "offscreen": false
+          },
+          {
+            "text": "",
+            "visible": false,
+            "position": {
+              "x": 0,
+              "y": 0,
+              "width": 0,
+              "height": 0
+            },
+            "css": {
+              "display": "none",
+              "position": "static",
+              "visibility": "visible",
+              "width": "auto",
+              "height": "auto",
+              "overflow": "visible"
+            },
+            "parent_css": {
+              "display": "flex",
+              "overflow": "visible",
+              "width": "96px",
+              "maxWidth": "none"
+            },
+            "offscreen": false
+          },
+          {
+            "text": "ALL",
+            "visible": true,
+            "position": {
+              "x": 255,
+              "y": 78,
+              "width": 60,
+              "height": 44
+            },
+            "css": {
+              "display": "block",
+              "position": "static",
+              "visibility": "visible",
+              "width": "60px",
+              "height": "44px",
+              "overflow": "visible"
+            },
+            "parent_css": {
+              "display": "flex",
+              "overflow": "hidden",
+              "width": "123.578px",
+              "maxWidth": "none"
+            },
+            "offscreen": false
+          },
+          {
+            "text": "SEQ",
+            "visible": true,
+            "position": {
+              "x": 315,
+              "y": 78,
+              "width": 62,
+              "height": 44
+            },
+            "css": {
+              "display": "block",
+              "position": "static",
+              "visibility": "visible",
+              "width": "61.5781px",
+              "height": "44px",
+              "overflow": "visible"
+            },
+            "parent_css": {
+              "display": "flex",
+              "overflow": "hidden",
+              "width": "123.578px",
+              "maxWidth": "none"
+            },
+            "offscreen": false
+          },
+          {
+            "text": "Continue",
+            "visible": true,
+            "position": {
+              "x": 0,
+              "y": 0,
+              "width": 0,
+              "height": 0
+            },
+            "css": {
+              "display": "block",
+              "position": "static",
+              "visibility": "visible",
+              "width": "auto",
+              "height": "auto",
+              "overflow": "visible"
+            },
+            "parent_css": {
+              "display": "flex",
+              "overflow": "visible",
+              "width": "auto",
+              "maxWidth": "none"
+            },
+            "offscreen": false
+          },
+          {
+            "text": "Restart",
+            "visible": true,
+            "position": {
+              "x": 0,
+              "y": 0,
+              "width": 0,
+              "height": 0
+            },
+            "css": {
+              "display": "block",
+              "position": "static",
+              "visibility": "visible",
+              "width": "auto",
+              "height": "auto",
+              "overflow": "visible"
+            },
+            "parent_css": {
+              "display": "flex",
+              "overflow": "visible",
+              "width": "auto",
+              "maxWidth": "none"
+            },
+            "offscreen": false
+          },
+          {
+            "text": "+",
+            "visible": true,
+            "position": {
+              "x": 310,
+              "y": 764,
+              "width": 56,
+              "height": 56
+            },
+            "css": {
+              "display": "flex",
+              "position": "fixed",
+              "visibility": "visible",
+              "width": "56px",
+              "height": "56px",
+              "overflow": "visible"
+            },
+            "parent_css": {
+              "display": "block",
+              "overflow": "auto",
+              "width": "390px",
+              "maxWidth": "none"
+            },
+            "offscreen": false
+          },
+          {
+            "text": "×",
+            "visible": true,
+            "position": {
+              "x": 0,
+              "y": 0,
+              "width": 0,
+              "height": 0
+            },
+            "css": {
+              "display": "flex",
+              "position": "static",
+              "visibility": "visible",
+              "width": "36px",
+              "height": "36px",
+              "overflow": "visible"
+            },
+            "parent_css": {
+              "display": "flex",
+              "overflow": "visible",
+              "width": "auto",
+              "maxWidth": "none"
+            },
+            "offscreen": false
+          },
+          {
+            "text": "Remove",
+            "visible": true,
+            "position": {
+              "x": 0,
+              "y": 0,
+              "width": 0,
+              "height": 0
+            },
+            "css": {
+              "display": "block",
+              "position": "static",
+              "visibility": "visible",
+              "width": "auto",
+              "height": "auto",
+              "overflow": "visible"
+            },
+            "parent_css": {
+              "display": "flex",
+              "overflow": "visible",
+              "width": "auto",
+              "maxWidth": "none"
+            },
+            "offscreen": false
+          },
+          {
+            "text": "×",
+            "visible": true,
+            "position": {
+              "x": 0,
+              "y": 0,
+              "width": 0,
+              "height": 0
+            },
+            "css": {
+              "display": "flex",
+              "position": "static",
+              "visibility": "visible",
+              "width": "36px",
+              "height": "36px",
+              "overflow": "visible"
+            },
+            "parent_css": {
+              "display": "flex",
+              "overflow": "visible",
+              "width": "auto",
+              "maxWidth": "none"
+            },
+            "offscreen": false
+          }
+        ],
+        "containers": [
+          {
+            "selector": "body",
+            "found": true,
+            "dimensions": {
+              "width": 390,
+              "height": 856,
+              "offsetWidth": 390,
+              "offsetHeight": 856
+            },
+            "css": {
+              "display": "block",
+              "width": "390px",
+              "maxWidth": "none",
+              "overflow": "visible",
+              "padding": "0px",
+              "margin": "0px"
+            }
+          },
+          {
+            "selector": "main",
+            "found": true,
+            "dimensions": {
+              "width": 390,
+              "height": 787,
+              "offsetWidth": 390,
+              "offsetHeight": 787
+            },
+            "css": {
+              "display": "block",
+              "width": "390px",
+              "maxWidth": "none",
+              "overflow": "auto",
+              "padding": "0px",
+              "margin": "0px"
+            }
+          }
+        ],
+        "mediaQueries": [
+          "External: https://llm.sutyrin.pro/_astro/CompositionCanvas.B5DZHykP.css",
+          "External: https://llm.sutyrin.pro/_astro/index.DMOABKrp.css",
+          "External: https://llm.sutyrin.pro/_astro/compose.ugt6L8Hn.css"
+        ],
+        "visibleButtonCount": 15,
+        "offscreenButtons": 0,
+        "hiddenButtons": 2,
+        "issues": [
+          "2 button(s) hidden (display:none or visibility:hidden)"
+        ]
+      },
+      "fullhd": {
+        "viewport": {
+          "width": 1080,
+          "height": 1920,
+          "name": "1080x1920"
+        },
+        "buttons": [
+          {
+            "text": "↶",
+            "visible": true,
+            "position": {
+              "x": 12,
+              "y": 54,
+              "width": 36,
+              "height": 36
+            },
+            "css": {
+              "display": "flex",
+              "position": "static",
+              "visibility": "visible",
+              "width": "36px",
+              "height": "36px",
+              "overflow": "visible"
+            },
+            "parent_css": {
+              "display": "flex",
+              "overflow": "visible",
+              "width": "76px",
+              "maxWidth": "none"
+            },
+            "offscreen": false
+          },
+          {
+            "text": "↷",
+            "visible": true,
+            "position": {
+              "x": 52,
+              "y": 54,
+              "width": 36,
+              "height": 36
+            },
+            "css": {
+              "display": "flex",
+              "position": "static",
+              "visibility": "visible",
+              "width": "36px",
+              "height": "36px",
+              "overflow": "visible"
+            },
+            "parent_css": {
+              "display": "flex",
+              "overflow": "visible",
+              "width": "76px",
+              "maxWidth": "none"
+            },
+            "offscreen": false
+          },
+          {
+            "text": "Untitled Composition",
+            "visible": true,
+            "position": {
+              "x": 468,
+              "y": 60,
+              "width": 144,
+              "height": 24
+            },
+            "css": {
+              "display": "block",
+              "position": "static",
+              "visibility": "visible",
+              "width": "144.375px",
+              "height": "24px",
+              "overflow": "hidden"
+            },
+            "parent_css": {
+              "display": "flex",
+              "overflow": "visible",
+              "width": "904px",
+              "maxWidth": "none"
+            },
+            "offscreen": false
+          },
+          {
+            "text": "💾",
+            "visible": true,
+            "position": {
+              "x": 992,
+              "y": 54,
+              "width": 36,
+              "height": 36
+            },
+            "css": {
+              "display": "flex",
+              "position": "static",
+              "visibility": "visible",
+              "width": "36px",
+              "height": "36px",
+              "overflow": "visible"
+            },
+            "parent_css": {
+              "display": "flex",
+              "overflow": "visible",
+              "width": "76px",
+              "maxWidth": "none"
+            },
+            "offscreen": false
+          },
+          {
+            "text": "Del",
+            "visible": true,
+            "position": {
+              "x": 1032,
+              "y": 54,
+              "width": 36,
+              "height": 36
+            },
+            "css": {
+              "display": "flex",
+              "position": "static",
+              "visibility": "visible",
+              "width": "36px",
+              "height": "36px",
+              "overflow": "visible"
+            },
+            "parent_css": {
+              "display": "flex",
+              "overflow": "visible",
+              "width": "76px",
+              "maxWidth": "none"
+            },
+            "offscreen": false
+          },
+          {
+            "text": "",
+            "visible": true,
+            "position": {
+              "x": 12,
+              "y": 78,
+              "width": 44,
+              "height": 44
+            },
+            "css": {
+              "display": "flex",
+              "position": "static",
+              "visibility": "visible",
+              "width": "44px",
+              "height": "44px",
+              "overflow": "visible"
+            },
+            "parent_css": {
+              "display": "flex",
+              "overflow": "visible",
+              "width": "96px",
+              "maxWidth": "none"
+            },
+            "offscreen": false
+          },
+          {
+            "text": "",
+            "visible": false,
+            "position": {
+              "x": 0,
+              "y": 0,
+              "width": 0,
+              "height": 0
+            },
+            "css": {
+              "display": "none",
+              "position": "static",
+              "visibility": "visible",
+              "width": "auto",
+              "height": "auto",
+              "overflow": "visible"
+            },
+            "parent_css": {
+              "display": "flex",
+              "overflow": "visible",
+              "width": "96px",
+              "maxWidth": "none"
+            },
+            "offscreen": false
+          },
+          {
+            "text": "",
+            "visible": true,
+            "position": {
+              "x": 64,
+              "y": 78,
+              "width": 44,
+              "height": 44
+            },
+            "css": {
+              "display": "flex",
+              "position": "static",
+              "visibility": "visible",
+              "width": "44px",
+              "height": "44px",
+              "overflow": "visible"
+            },
+            "parent_css": {
+              "display": "flex",
+              "overflow": "visible",
+              "width": "96px",
+              "maxWidth": "none"
+            },
+            "offscreen": false
+          },
+          {
+            "text": "",
+            "visible": false,
+            "position": {
+              "x": 0,
+              "y": 0,
+              "width": 0,
+              "height": 0
+            },
+            "css": {
+              "display": "none",
+              "position": "static",
+              "visibility": "visible",
+              "width": "auto",
+              "height": "auto",
+              "overflow": "visible"
+            },
+            "parent_css": {
+              "display": "flex",
+              "overflow": "visible",
+              "width": "96px",
+              "maxWidth": "none"
+            },
+            "offscreen": false
+          },
+          {
+            "text": "ALL",
+            "visible": true,
+            "position": {
+              "x": 945,
+              "y": 78,
+              "width": 60,
+              "height": 44
+            },
+            "css": {
+              "display": "block",
+              "position": "static",
+              "visibility": "visible",
+              "width": "60px",
+              "height": "44px",
+              "overflow": "visible"
+            },
+            "parent_css": {
+              "display": "flex",
+              "overflow": "hidden",
+              "width": "123.578px",
+              "maxWidth": "none"
+            },
+            "offscreen": false
+          },
+          {
+            "text": "SEQ",
+            "visible": true,
+            "position": {
+              "x": 1005,
+              "y": 78,
+              "width": 62,
+              "height": 44
+            },
+            "css": {
+              "display": "block",
+              "position": "static",
+              "visibility": "visible",
+              "width": "61.5781px",
+              "height": "44px",
+              "overflow": "visible"
+            },
+            "parent_css": {
+              "display": "flex",
+              "overflow": "hidden",
+              "width": "123.578px",
+              "maxWidth": "none"
+            },
+            "offscreen": false
+          },
+          {
+            "text": "Continue",
+            "visible": true,
+            "position": {
+              "x": 0,
+              "y": 0,
+              "width": 0,
+              "height": 0
+            },
+            "css": {
+              "display": "block",
+              "position": "static",
+              "visibility": "visible",
+              "width": "auto",
+              "height": "auto",
+              "overflow": "visible"
+            },
+            "parent_css": {
+              "display": "flex",
+              "overflow": "visible",
+              "width": "auto",
+              "maxWidth": "none"
+            },
+            "offscreen": false
+          },
+          {
+            "text": "Restart",
+            "visible": true,
+            "position": {
+              "x": 0,
+              "y": 0,
+              "width": 0,
+              "height": 0
+            },
+            "css": {
+              "display": "block",
+              "position": "static",
+              "visibility": "visible",
+              "width": "auto",
+              "height": "auto",
+              "overflow": "visible"
+            },
+            "parent_css": {
+              "display": "flex",
+              "overflow": "visible",
+              "width": "auto",
+              "maxWidth": "none"
+            },
+            "offscreen": false
+          },
+          {
+            "text": "+",
+            "visible": true,
+            "position": {
+              "x": 1000,
+              "y": 1840,
+              "width": 56,
+              "height": 56
+            },
+            "css": {
+              "display": "flex",
+              "position": "fixed",
+              "visibility": "visible",
+              "width": "56px",
+              "height": "56px",
+              "overflow": "visible"
+            },
+            "parent_css": {
+              "display": "block",
+              "overflow": "auto",
+              "width": "1080px",
+              "maxWidth": "none"
+            },
+            "offscreen": false
+          },
+          {
+            "text": "×",
+            "visible": true,
+            "position": {
+              "x": 0,
+              "y": 0,
+              "width": 0,
+              "height": 0
+            },
+            "css": {
+              "display": "flex",
+              "position": "static",
+              "visibility": "visible",
+              "width": "36px",
+              "height": "36px",
+              "overflow": "visible"
+            },
+            "parent_css": {
+              "display": "flex",
+              "overflow": "visible",
+              "width": "auto",
+              "maxWidth": "none"
+            },
+            "offscreen": false
+          },
+          {
+            "text": "Remove",
+            "visible": true,
+            "position": {
+              "x": 0,
+              "y": 0,
+              "width": 0,
+              "height": 0
+            },
+            "css": {
+              "display": "block",
+              "position": "static",
+              "visibility": "visible",
+              "width": "auto",
+              "height": "auto",
+              "overflow": "visible"
+            },
+            "parent_css": {
+              "display": "flex",
+              "overflow": "visible",
+              "width": "auto",
+              "maxWidth": "none"
+            },
+            "offscreen": false
+          },
+          {
+            "text": "×",
+            "visible": true,
+            "position": {
+              "x": 0,
+              "y": 0,
+              "width": 0,
+              "height": 0
+            },
+            "css": {
+              "display": "flex",
+              "position": "static",
+              "visibility": "visible",
+              "width": "36px",
+              "height": "36px",
+              "overflow": "visible"
+            },
+            "parent_css": {
+              "display": "flex",
+              "overflow": "visible",
+              "width": "auto",
+              "maxWidth": "none"
+            },
+            "offscreen": false
+          }
+        ],
+        "containers": [
+          {
+            "selector": "body",
+            "found": true,
+            "dimensions": {
+              "width": 1080,
+              "height": 1932,
+              "offsetWidth": 1080,
+              "offsetHeight": 1932
+            },
+            "css": {
+              "display": "block",
+              "width": "1080px",
+              "maxWidth": "none",
+              "overflow": "visible",
+              "padding": "0px",
+              "margin": "0px"
+            }
+          },
+          {
+            "selector": "main",
+            "found": true,
+            "dimensions": {
+              "width": 1080,
+              "height": 1863,
+              "offsetWidth": 1080,
+              "offsetHeight": 1863
+            },
+            "css": {
+              "display": "block",
+              "width": "1080px",
+              "maxWidth": "none",
+              "overflow": "auto",
+              "padding": "0px",
+              "margin": "0px"
+            }
+          }
+        ],
+        "mediaQueries": [
+          "External: https://llm.sutyrin.pro/_astro/CompositionCanvas.B5DZHykP.css",
+          "External: https://llm.sutyrin.pro/_astro/index.DMOABKrp.css",
+          "External: https://llm.sutyrin.pro/_astro/compose.ugt6L8Hn.css"
+        ],
+        "visibleButtonCount": 15,
+        "offscreenButtons": 0,
+        "hiddenButtons": 2,
+        "issues": [
+          "2 button(s) hidden (display:none or visibility:hidden)"
+        ]
+      }
+    }
+  },
+  {
+    "name": "backup",
+    "url": "https://llm.sutyrin.pro/mobile/backup",
+    "viewports": {
+      "standard": {
+        "viewport": {
+          "width": 390,
+          "height": 844,
+          "name": "390x844"
+        },
+        "buttons": [
+          {
+            "text": "Back Up Now Never backed up",
+            "visible": true,
+            "position": {
+              "x": 32,
+              "y": 101,
+              "width": 326,
+              "height": 74
+            },
+            "css": {
+              "display": "flex",
+              "position": "static",
+              "visibility": "visible",
+              "width": "326px",
+              "height": "74px",
+              "overflow": "visible"
+            },
+            "parent_css": {
+              "display": "block",
+              "overflow": "visible",
+              "width": "326px",
+              "maxWidth": "none"
+            },
+            "offscreen": false
+          },
+          {
+            "text": "Restore",
+            "visible": true,
+            "position": {
+              "x": 32,
+              "y": 282,
+              "width": 51,
+              "height": 19
+            },
+            "css": {
+              "display": "inline-block",
+              "position": "static",
+              "visibility": "visible",
+              "width": "50.6719px",
+              "height": "19px",
+              "overflow": "visible"
+            },
+            "parent_css": {
+              "display": "block",
+              "overflow": "visible",
+              "width": "326px",
+              "maxWidth": "none"
+            },
+            "offscreen": false
+          },
+          {
+            "text": "Restore",
+            "visible": true,
+            "position": {
+              "x": 32,
+              "y": 362,
+              "width": 51,
+              "height": 19
+            },
+            "css": {
+              "display": "inline-block",
+              "position": "static",
+              "visibility": "visible",
+              "width": "50.6719px",
+              "height": "19px",
+              "overflow": "visible"
+            },
+            "parent_css": {
+              "display": "block",
+              "overflow": "visible",
+              "width": "326px",
+              "maxWidth": "none"
+            },
+            "offscreen": false
+          },
+          {
+            "text": "Restore",
+            "visible": true,
+            "position": {
+              "x": 32,
+              "y": 442,
+              "width": 51,
+              "height": 19
+            },
+            "css": {
+              "display": "inline-block",
+              "position": "static",
+              "visibility": "visible",
+              "width": "50.6719px",
+              "height": "19px",
+              "overflow": "visible"
+            },
+            "parent_css": {
+              "display": "block",
+              "overflow": "visible",
+              "width": "326px",
+              "maxWidth": "none"
+            },
+            "offscreen": false
+          },
+          {
+            "text": "Restore",
+            "visible": true,
+            "position": {
+              "x": 32,
+              "y": 522,
+              "width": 51,
+              "height": 19
+            },
+            "css": {
+              "display": "inline-block",
+              "position": "static",
+              "visibility": "visible",
+              "width": "50.6719px",
+              "height": "19px",
+              "overflow": "visible"
+            },
+            "parent_css": {
+              "display": "block",
+              "overflow": "visible",
+              "width": "326px",
+              "maxWidth": "none"
+            },
+            "offscreen": false
+          },
+          {
+            "text": "Restore",
+            "visible": true,
+            "position": {
+              "x": 32,
+              "y": 602,
+              "width": 51,
+              "height": 19
+            },
+            "css": {
+              "display": "inline-block",
+              "position": "static",
+              "visibility": "visible",
+              "width": "50.6719px",
+              "height": "19px",
+              "overflow": "visible"
+            },
+            "parent_css": {
+              "display": "block",
+              "overflow": "visible",
+              "width": "326px",
+              "maxWidth": "none"
+            },
+            "offscreen": false
+          },
+          {
+            "text": "Restore",
+            "visible": true,
+            "position": {
+              "x": 32,
+              "y": 682,
+              "width": 51,
+              "height": 19
+            },
+            "css": {
+              "display": "inline-block",
+              "position": "static",
+              "visibility": "visible",
+              "width": "50.6719px",
+              "height": "19px",
+              "overflow": "visible"
+            },
+            "parent_css": {
+              "display": "block",
+              "overflow": "visible",
+              "width": "326px",
+              "maxWidth": "none"
+            },
+            "offscreen": false
+          },
+          {
+            "text": "Restore",
+            "visible": true,
+            "position": {
+              "x": 32,
+              "y": 762,
+              "width": 51,
+              "height": 19
+            },
+            "css": {
+              "display": "inline-block",
+              "position": "static",
+              "visibility": "visible",
+              "width": "50.6719px",
+              "height": "19px",
+              "overflow": "visible"
+            },
+            "parent_css": {
+              "display": "block",
+              "overflow": "visible",
+              "width": "326px",
+              "maxWidth": "none"
+            },
+            "offscreen": false
+          },
+          {
+            "text": "Restore",
+            "visible": true,
+            "position": {
+              "x": 32,
+              "y": 842,
+              "width": 51,
+              "height": 19
+            },
+            "css": {
+              "display": "inline-block",
+              "position": "static",
+              "visibility": "visible",
+              "width": "50.6719px",
+              "height": "19px",
+              "overflow": "visible"
+            },
+            "parent_css": {
+              "display": "block",
+              "overflow": "visible",
+              "width": "326px",
+              "maxWidth": "none"
+            },
+            "offscreen": false
+          },
+          {
+            "text": "Restore",
+            "visible": true,
+            "position": {
+              "x": 32,
+              "y": 922,
+              "width": 51,
+              "height": 19
+            },
+            "css": {
+              "display": "inline-block",
+              "position": "static",
+              "visibility": "visible",
+              "width": "50.6719px",
+              "height": "19px",
+              "overflow": "visible"
+            },
+            "parent_css": {
+              "display": "block",
+              "overflow": "visible",
+              "width": "326px",
+              "maxWidth": "none"
+            },
+            "offscreen": true
+          },
+          {
+            "text": "×",
+            "visible": true,
+            "position": {
+              "x": 0,
+              "y": 0,
+              "width": 0,
+              "height": 0
+            },
+            "css": {
+              "display": "flex",
+              "position": "static",
+              "visibility": "visible",
+              "width": "auto",
+              "height": "auto",
+              "overflow": "visible"
+            },
+            "parent_css": {
+              "display": "flex",
+              "overflow": "visible",
+              "width": "auto",
+              "maxWidth": "none"
+            },
+            "offscreen": false
+          },
+          {
+            "text": "Cancel",
+            "visible": true,
+            "position": {
+              "x": 0,
+              "y": 0,
+              "width": 0,
+              "height": 0
+            },
+            "css": {
+              "display": "block",
+              "position": "static",
+              "visibility": "visible",
+              "width": "auto",
+              "height": "auto",
+              "overflow": "visible"
+            },
+            "parent_css": {
+              "display": "flex",
+              "overflow": "visible",
+              "width": "auto",
+              "maxWidth": "none"
+            },
+            "offscreen": false
+          },
+          {
+            "text": "Restore Selected",
+            "visible": true,
+            "position": {
+              "x": 0,
+              "y": 0,
+              "width": 0,
+              "height": 0
+            },
+            "css": {
+              "display": "block",
+              "position": "static",
+              "visibility": "visible",
+              "width": "auto",
+              "height": "auto",
+              "overflow": "visible"
+            },
+            "parent_css": {
+              "display": "flex",
+              "overflow": "visible",
+              "width": "auto",
+              "maxWidth": "none"
+            },
+            "offscreen": false
+          }
+        ],
+        "containers": [
+          {
+            "selector": "body",
+            "found": true,
+            "dimensions": {
+              "width": 390,
+              "height": 999,
+              "offsetWidth": 390,
+              "offsetHeight": 999
+            },
+            "css": {
+              "display": "block",
+              "width": "390px",
+              "maxWidth": "none",
+              "overflow": "visible",
+              "padding": "0px",
+              "margin": "0px"
+            }
+          },
+          {
+            "selector": "main",
+            "found": true,
+            "dimensions": {
+              "width": 390,
+              "height": 930,
+              "offsetWidth": 390,
+              "offsetHeight": 930
+            },
+            "css": {
+              "display": "block",
+              "width": "390px",
+              "maxWidth": "600px",
+              "overflow": "auto",
+              "padding": "16px",
+              "margin": "0px"
+            }
+          }
+        ],
+        "mediaQueries": [
+          "External: https://llm.sutyrin.pro/_astro/index.DMOABKrp.css",
+          "External: https://llm.sutyrin.pro/_astro/backup.jZW2Ecjw.css"
+        ],
+        "visibleButtonCount": 12,
+        "offscreenButtons": 1,
+        "hiddenButtons": 0,
+        "issues": [
+          "1 button(s) positioned off-screen"
+        ]
+      },
+      "fullhd": {
+        "viewport": {
+          "width": 1080,
+          "height": 1920,
+          "name": "1080x1920"
+        },
+        "buttons": [
+          {
+            "text": "Back Up Now Never backed up",
+            "visible": true,
+            "position": {
+              "x": 272,
+              "y": 101,
+              "width": 536,
+              "height": 74
+            },
+            "css": {
+              "display": "flex",
+              "position": "static",
+              "visibility": "visible",
+              "width": "536px",
+              "height": "74px",
+              "overflow": "visible"
+            },
+            "parent_css": {
+              "display": "block",
+              "overflow": "visible",
+              "width": "536px",
+              "maxWidth": "none"
+            },
+            "offscreen": false
+          },
+          {
+            "text": "Restore",
+            "visible": true,
+            "position": {
+              "x": 272,
+              "y": 282,
+              "width": 51,
+              "height": 19
+            },
+            "css": {
+              "display": "inline-block",
+              "position": "static",
+              "visibility": "visible",
+              "width": "50.6719px",
+              "height": "19px",
+              "overflow": "visible"
+            },
+            "parent_css": {
+              "display": "block",
+              "overflow": "visible",
+              "width": "536px",
+              "maxWidth": "none"
+            },
+            "offscreen": false
+          },
+          {
+            "text": "Restore",
+            "visible": true,
+            "position": {
+              "x": 272,
+              "y": 362,
+              "width": 51,
+              "height": 19
+            },
+            "css": {
+              "display": "inline-block",
+              "position": "static",
+              "visibility": "visible",
+              "width": "50.6719px",
+              "height": "19px",
+              "overflow": "visible"
+            },
+            "parent_css": {
+              "display": "block",
+              "overflow": "visible",
+              "width": "536px",
+              "maxWidth": "none"
+            },
+            "offscreen": false
+          },
+          {
+            "text": "Restore",
+            "visible": true,
+            "position": {
+              "x": 272,
+              "y": 442,
+              "width": 51,
+              "height": 19
+            },
+            "css": {
+              "display": "inline-block",
+              "position": "static",
+              "visibility": "visible",
+              "width": "50.6719px",
+              "height": "19px",
+              "overflow": "visible"
+            },
+            "parent_css": {
+              "display": "block",
+              "overflow": "visible",
+              "width": "536px",
+              "maxWidth": "none"
+            },
+            "offscreen": false
+          },
+          {
+            "text": "Restore",
+            "visible": true,
+            "position": {
+              "x": 272,
+              "y": 522,
+              "width": 51,
+              "height": 19
+            },
+            "css": {
+              "display": "inline-block",
+              "position": "static",
+              "visibility": "visible",
+              "width": "50.6719px",
+              "height": "19px",
+              "overflow": "visible"
+            },
+            "parent_css": {
+              "display": "block",
+              "overflow": "visible",
+              "width": "536px",
+              "maxWidth": "none"
+            },
+            "offscreen": false
+          },
+          {
+            "text": "Restore",
+            "visible": true,
+            "position": {
+              "x": 272,
+              "y": 602,
+              "width": 51,
+              "height": 19
+            },
+            "css": {
+              "display": "inline-block",
+              "position": "static",
+              "visibility": "visible",
+              "width": "50.6719px",
+              "height": "19px",
+              "overflow": "visible"
+            },
+            "parent_css": {
+              "display": "block",
+              "overflow": "visible",
+              "width": "536px",
+              "maxWidth": "none"
+            },
+            "offscreen": false
+          },
+          {
+            "text": "Restore",
+            "visible": true,
+            "position": {
+              "x": 272,
+              "y": 682,
+              "width": 51,
+              "height": 19
+            },
+            "css": {
+              "display": "inline-block",
+              "position": "static",
+              "visibility": "visible",
+              "width": "50.6719px",
+              "height": "19px",
+              "overflow": "visible"
+            },
+            "parent_css": {
+              "display": "block",
+              "overflow": "visible",
+              "width": "536px",
+              "maxWidth": "none"
+            },
+            "offscreen": false
+          },
+          {
+            "text": "Restore",
+            "visible": true,
+            "position": {
+              "x": 272,
+              "y": 762,
+              "width": 51,
+              "height": 19
+            },
+            "css": {
+              "display": "inline-block",
+              "position": "static",
+              "visibility": "visible",
+              "width": "50.6719px",
+              "height": "19px",
+              "overflow": "visible"
+            },
+            "parent_css": {
+              "display": "block",
+              "overflow": "visible",
+              "width": "536px",
+              "maxWidth": "none"
+            },
+            "offscreen": false
+          },
+          {
+            "text": "Restore",
+            "visible": true,
+            "position": {
+              "x": 272,
+              "y": 842,
+              "width": 51,
+              "height": 19
+            },
+            "css": {
+              "display": "inline-block",
+              "position": "static",
+              "visibility": "visible",
+              "width": "50.6719px",
+              "height": "19px",
+              "overflow": "visible"
+            },
+            "parent_css": {
+              "display": "block",
+              "overflow": "visible",
+              "width": "536px",
+              "maxWidth": "none"
+            },
+            "offscreen": false
+          },
+          {
+            "text": "Restore",
+            "visible": true,
+            "position": {
+              "x": 272,
+              "y": 922,
+              "width": 51,
+              "height": 19
+            },
+            "css": {
+              "display": "inline-block",
+              "position": "static",
+              "visibility": "visible",
+              "width": "50.6719px",
+              "height": "19px",
+              "overflow": "visible"
+            },
+            "parent_css": {
+              "display": "block",
+              "overflow": "visible",
+              "width": "536px",
+              "maxWidth": "none"
+            },
+            "offscreen": false
+          },
+          {
+            "text": "×",
+            "visible": true,
+            "position": {
+              "x": 0,
+              "y": 0,
+              "width": 0,
+              "height": 0
+            },
+            "css": {
+              "display": "flex",
+              "position": "static",
+              "visibility": "visible",
+              "width": "auto",
+              "height": "auto",
+              "overflow": "visible"
+            },
+            "parent_css": {
+              "display": "flex",
+              "overflow": "visible",
+              "width": "auto",
+              "maxWidth": "none"
+            },
+            "offscreen": false
+          },
+          {
+            "text": "Cancel",
+            "visible": true,
+            "position": {
+              "x": 0,
+              "y": 0,
+              "width": 0,
+              "height": 0
+            },
+            "css": {
+              "display": "block",
+              "position": "static",
+              "visibility": "visible",
+              "width": "auto",
+              "height": "auto",
+              "overflow": "visible"
+            },
+            "parent_css": {
+              "display": "flex",
+              "overflow": "visible",
+              "width": "auto",
+              "maxWidth": "none"
+            },
+            "offscreen": false
+          },
+          {
+            "text": "Restore Selected",
+            "visible": true,
+            "position": {
+              "x": 0,
+              "y": 0,
+              "width": 0,
+              "height": 0
+            },
+            "css": {
+              "display": "block",
+              "position": "static",
+              "visibility": "visible",
+              "width": "auto",
+              "height": "auto",
+              "overflow": "visible"
+            },
+            "parent_css": {
+              "display": "flex",
+              "overflow": "visible",
+              "width": "auto",
+              "maxWidth": "none"
+            },
+            "offscreen": false
+          }
+        ],
+        "containers": [
+          {
+            "selector": "body",
+            "found": true,
+            "dimensions": {
+              "width": 1080,
+              "height": 1920,
+              "offsetWidth": 1080,
+              "offsetHeight": 1920
+            },
+            "css": {
+              "display": "block",
+              "width": "1080px",
+              "maxWidth": "none",
+              "overflow": "visible",
+              "padding": "0px",
+              "margin": "0px"
+            }
+          },
+          {
+            "selector": "main",
+            "found": true,
+            "dimensions": {
+              "width": 600,
+              "height": 930,
+              "offsetWidth": 600,
+              "offsetHeight": 930
+            },
+            "css": {
+              "display": "block",
+              "width": "600px",
+              "maxWidth": "600px",
+              "overflow": "auto",
+              "padding": "16px",
+              "margin": "0px 240px"
+            }
+          }
+        ],
+        "mediaQueries": [
+          "External: https://llm.sutyrin.pro/_astro/index.DMOABKrp.css",
+          "External: https://llm.sutyrin.pro/_astro/backup.jZW2Ecjw.css"
+        ],
+        "visibleButtonCount": 13,
+        "offscreenButtons": 0,
+        "hiddenButtons": 0,
+        "issues": [
+          "main has fixed width 600px (viewport is 1080px)"
+        ]
+      }
+    }
+  }
+]
