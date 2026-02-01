@@ -30,8 +30,13 @@ const { code, language = 'javascript', filename = '' } = Astro.props;
   import 'prismjs/components/prism-json';
   import 'prismjs/components/prism-markdown';
 
-  // Highlight all code blocks on page
-  Prism.highlightAll();
+  // Highlight all code blocks on page with error handling
+  try {
+    Prism.highlightAll();
+  } catch (error) {
+    console.warn('[CodeViewer] Prism highlighting failed (page still renders):', error);
+    // Page remains readable even if Prism fails - code blocks display without highlight
+  }
 </script>
 
 <style is:global>
