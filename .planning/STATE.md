@@ -131,6 +131,7 @@ None inherited from v1.0. v1.1 builds on proven v1.0 foundation (no refactoring 
 
 | # | Description | Date | Commit | Directory |
 |---|-------------|------|--------|-----------|
+| 012 | Deploy v1.1 and test Phase 6 features with Playwright | 2026-02-01 | 64f3ad8 | [012-deploy-test-phase6](./quick/012-deploy-test-phase6/) |
 | 011 | Deploy to fra server at https://llm.sutyrin.pro | 2026-01-31 | 4c5f0ba | [011-deployment-to-fra-server](./quick/011-deployment-to-fra-server/) |
 
 ---
@@ -163,7 +164,7 @@ None inherited from v1.0. v1.1 builds on proven v1.0 foundation (no refactoring 
 
 ### Context for Next Session
 **Last session:** 2026-02-01
-**Stopped at:** Completed Phase 6 Plan 05 - Shareable URLs & E2E Verification (v1.1 COMPLETE)
+**Stopped at:** Completed Quick Task 012 - Deploy v1.1 and Test Phase 6 Features (v1.1 VERIFIED IN PRODUCTION)
 **Resume file:** None
 
 **Phase 6 Status:**
