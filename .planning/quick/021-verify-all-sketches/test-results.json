@@ -1,0 +1,246 @@
+{
+  "test_date": "2026-02-01",
+  "test_time": "2026-02-01T15:11:47.036Z",
+  "duration_seconds": 25,
+  "atoms_tested": 6,
+  "results": [
+    {
+      "atom": "workflow-test",
+      "slug": "2026-01-29-workflow-test",
+      "url": "https://llm.sutyrin.pro/atom/2026-01-29-workflow-test/",
+      "page_loads_successfully": true,
+      "initial_console_messages": {
+        "logs": [],
+        "warnings": [],
+        "errors": [
+          "Error parsing code: SyntaxError: Unexpected token (1166:18)\n    at pp$4.raise (https://llm.sutyrin.pro/atoms/2026-01-29-workflow-test/sketch.bundle.js:54280:13)\n    at pp$9.unexpected (https://llm.sutyrin.pro/atoms/2026-01-29-workflow-test/sketch.bundle.js:51665:8)\n    at pp$9.expect (https://llm.sutyrin.pro/atoms/2026-01-29-workflow-test/sketch.bundle.js:51662:27)\n    at pp$5.parseMethod (https://llm.sutyrin.pro/atoms/2026-01-29-workflow-test/sketch.bundle.js:54075:8)\n    at pp$8.parseClassMethod (https://llm.sutyrin.pro/atoms/2026-01-29-workflow-test/sketch.bundle.js:52449:35)\n    at pp$8.parseClassElement (https://llm.sutyrin.pro/atoms/2026-01-29-workflow-test/sketch.bundle.js:52417:10)\n    at pp$8.parseClass (https://llm.sutyrin.pro/atoms/2026-01-29-workflow-test/sketch.bundle.js:52340:25)\n    at pp$8.parseStatement (https://llm.sutyrin.pro/atoms/2026-01-29-workflow-test/sketch.bundle.js:51837:19)\n    at pp$8.parseTopLevel (https://llm.sutyrin.pro/atoms/2026-01-29-workflow-test/sketch.bundle.js:51719:21)\n    at Parser2.parse (https://llm.sutyrin.pro/atoms/2026-01-29-workflow-test/sketch.bundle.js:51515:15)"
+        ]
+      },
+      "iframe_found": true,
+      "iframe_loads": true,
+      "canvas": {
+        "count": 1,
+        "visible": true,
+        "width": 800,
+        "height": 800
+      },
+      "audio_context": true,
+      "play_button": {
+        "found": true,
+        "visible": true,
+        "clickable": true
+      },
+      "animation_started": false,
+      "console_errors": [
+        "Error parsing code: SyntaxError: Unexpected token (1166:18)\n    at pp$4.raise (https://llm.sutyrin.pro/atoms/2026-01-29-workflow-test/sketch.bundle.js:54280:13)\n    at pp$9.unexpected (https://llm.sutyrin.pro/atoms/2026-01-29-workflow-test/sketch.bundle.js:51665:8)\n    at pp$9.expect (https://llm.sutyrin.pro/atoms/2026-01-29-workflow-test/sketch.bundle.js:51662:27)\n    at pp$5.parseMethod (https://llm.sutyrin.pro/atoms/2026-01-29-workflow-test/sketch.bundle.js:54075:8)\n    at pp$8.parseClassMethod (https://llm.sutyrin.pro/atoms/2026-01-29-workflow-test/sketch.bundle.js:52449:35)\n    at pp$8.parseClassElement (https://llm.sutyrin.pro/atoms/2026-01-29-workflow-test/sketch.bundle.js:52417:10)\n    at pp$8.parseClass (https://llm.sutyrin.pro/atoms/2026-01-29-workflow-test/sketch.bundle.js:52340:25)\n    at pp$8.parseStatement (https://llm.sutyrin.pro/atoms/2026-01-29-workflow-test/sketch.bundle.js:51837:19)\n    at pp$8.parseTopLevel (https://llm.sutyrin.pro/atoms/2026-01-29-workflow-test/sketch.bundle.js:51719:21)\n    at Parser2.parse (https://llm.sutyrin.pro/atoms/2026-01-29-workflow-test/sketch.bundle.js:51515:15)"
+      ],
+      "status": "PARTIAL",
+      "notes": "Console errors: Error parsing code: SyntaxError: Unexpected token (1166:18)\n    at pp$4.raise (https://llm.sutyrin.pro/atoms/2026-01-29-workflow-test/sketch.bundle.js:54280:13)\n    at pp$9.unexpected (https://llm.sutyrin.pro/atoms/2026-01-29-workflow-test/sketch.bundle.js:51665:8)\n    at pp$9.expect (https://llm.sutyrin.pro/atoms/2026-01-29-workflow-test/sketch.bundle.js:51662:27)\n    at pp$5.parseMethod (https://llm.sutyrin.pro/atoms/2026-01-29-workflow-test/sketch.bundle.js:54075:8)\n    at pp$8.parseClassMethod (https://llm.sutyrin.pro/atoms/2026-01-29-workflow-test/sketch.bundle.js:52449:35)\n    at pp$8.parseClassElement (https://llm.sutyrin.pro/atoms/2026-01-29-workflow-test/sketch.bundle.js:52417:10)\n    at pp$8.parseClass (https://llm.sutyrin.pro/atoms/2026-01-29-workflow-test/sketch.bundle.js:52340:25)\n    at pp$8.parseStatement (https://llm.sutyrin.pro/atoms/2026-01-29-workflow-test/sketch.bundle.js:51837:19)\n    at pp$8.parseTopLevel (https://llm.sutyrin.pro/atoms/2026-01-29-workflow-test/sketch.bundle.js:51719:21)\n    at Parser2.parse (https://llm.sutyrin.pro/atoms/2026-01-29-workflow-test/sketch.bundle.js:51515:15)"
+    },
+    {
+      "atom": "au1",
+      "slug": "2026-01-30-au1",
+      "url": "https://llm.sutyrin.pro/atom/2026-01-30-au1/",
+      "page_loads_successfully": true,
+      "initial_console_messages": {
+        "logs": [
+          "%c * Tone.js v15.1.22 *  background: #000; color: #fff"
+        ],
+        "warnings": [
+          "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+          "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+          "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+          "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+          "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+          "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+          "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+          "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+          "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+          "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+          "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+          "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+          "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+          "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+          "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio"
+        ],
+        "errors": []
+      },
+      "iframe_found": true,
+      "iframe_loads": true,
+      "canvas": {
+        "count": 0,
+        "visible": false,
+        "width": 0,
+        "height": 0
+      },
+      "audio_context": true,
+      "play_button": {
+        "found": true,
+        "visible": true,
+        "clickable": true
+      },
+      "animation_started": false,
+      "console_errors": [],
+      "status": "PASS",
+      "notes": "Audio context initialized, ready for playback"
+    },
+    {
+      "atom": "av-sync-debug",
+      "slug": "2026-01-30-av-sync-debug",
+      "url": "https://llm.sutyrin.pro/atom/2026-01-30-av-sync-debug/",
+      "page_loads_successfully": true,
+      "initial_console_messages": {
+        "logs": [
+          "%c * Tone.js v15.1.22 *  background: #000; color: #fff"
+        ],
+        "warnings": [
+          "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+          "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio"
+        ],
+        "errors": []
+      },
+      "iframe_found": true,
+      "iframe_loads": true,
+      "canvas": {
+        "count": 0,
+        "visible": false,
+        "width": 0,
+        "height": 0
+      },
+      "audio_context": true,
+      "play_button": {
+        "found": true,
+        "visible": true,
+        "clickable": true
+      },
+      "animation_started": false,
+      "console_errors": [],
+      "status": "PASS",
+      "notes": "Audio context initialized, ready for playback"
+    },
+    {
+      "atom": "av1",
+      "slug": "2026-01-30-av1",
+      "url": "https://llm.sutyrin.pro/atom/2026-01-30-av1/",
+      "page_loads_successfully": true,
+      "initial_console_messages": {
+        "logs": [
+          "%c * Tone.js v15.1.22 *  background: #000; color: #fff"
+        ],
+        "warnings": [
+          "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+          "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+          "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+          "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+          "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+          "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+          "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+          "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+          "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+          "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+          "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+          "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+          "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+          "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+          "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio"
+        ],
+        "errors": [
+          "Error parsing code: SyntaxError: Unexpected token (1166:18)\n    at pp$4.raise (https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js:54280:13)\n    at pp$9.unexpected (https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js:51665:8)\n    at pp$9.expect (https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js:51662:27)\n    at pp$5.parseMethod (https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js:54075:8)\n    at pp$8.parseClassMethod (https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js:52449:35)\n    at pp$8.parseClassElement (https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js:52417:10)\n    at pp$8.parseClass (https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js:52340:25)\n    at pp$8.parseStatement (https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js:51837:19)\n    at pp$8.parseTopLevel (https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js:51719:21)\n    at Parser2.parse (https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js:51515:15)"
+        ]
+      },
+      "iframe_found": true,
+      "iframe_loads": true,
+      "canvas": {
+        "count": 1,
+        "visible": true,
+        "width": 800,
+        "height": 800
+      },
+      "audio_context": true,
+      "play_button": {
+        "found": true,
+        "visible": true,
+        "clickable": true
+      },
+      "animation_started": false,
+      "console_errors": [
+        "Error parsing code: SyntaxError: Unexpected token (1166:18)\n    at pp$4.raise (https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js:54280:13)\n    at pp$9.unexpected (https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js:51665:8)\n    at pp$9.expect (https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js:51662:27)\n    at pp$5.parseMethod (https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js:54075:8)\n    at pp$8.parseClassMethod (https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js:52449:35)\n    at pp$8.parseClassElement (https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js:52417:10)\n    at pp$8.parseClass (https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js:52340:25)\n    at pp$8.parseStatement (https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js:51837:19)\n    at pp$8.parseTopLevel (https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js:51719:21)\n    at Parser2.parse (https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js:51515:15)"
+      ],
+      "status": "PARTIAL",
+      "notes": "Console errors: Error parsing code: SyntaxError: Unexpected token (1166:18)\n    at pp$4.raise (https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js:54280:13)\n    at pp$9.unexpected (https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js:51665:8)\n    at pp$9.expect (https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js:51662:27)\n    at pp$5.parseMethod (https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js:54075:8)\n    at pp$8.parseClassMethod (https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js:52449:35)\n    at pp$8.parseClassElement (https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js:52417:10)\n    at pp$8.parseClass (https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js:52340:25)\n    at pp$8.parseStatement (https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js:51837:19)\n    at pp$8.parseTopLevel (https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js:51719:21)\n    at Parser2.parse (https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js:51515:15)"
+    },
+    {
+      "atom": "my-first-sketch",
+      "slug": "2026-01-30-my-first-sketch",
+      "url": "https://llm.sutyrin.pro/atom/2026-01-30-my-first-sketch/",
+      "page_loads_successfully": true,
+      "initial_console_messages": {
+        "logs": [],
+        "warnings": [],
+        "errors": [
+          "Error parsing code: SyntaxError: Unexpected token (1166:18)\n    at pp$4.raise (https://llm.sutyrin.pro/atoms/2026-01-30-my-first-sketch/sketch.bundle.js:54280:13)\n    at pp$9.unexpected (https://llm.sutyrin.pro/atoms/2026-01-30-my-first-sketch/sketch.bundle.js:51665:8)\n    at pp$9.expect (https://llm.sutyrin.pro/atoms/2026-01-30-my-first-sketch/sketch.bundle.js:51662:27)\n    at pp$5.parseMethod (https://llm.sutyrin.pro/atoms/2026-01-30-my-first-sketch/sketch.bundle.js:54075:8)\n    at pp$8.parseClassMethod (https://llm.sutyrin.pro/atoms/2026-01-30-my-first-sketch/sketch.bundle.js:52449:35)\n    at pp$8.parseClassElement (https://llm.sutyrin.pro/atoms/2026-01-30-my-first-sketch/sketch.bundle.js:52417:10)\n    at pp$8.parseClass (https://llm.sutyrin.pro/atoms/2026-01-30-my-first-sketch/sketch.bundle.js:52340:25)\n    at pp$8.parseStatement (https://llm.sutyrin.pro/atoms/2026-01-30-my-first-sketch/sketch.bundle.js:51837:19)\n    at pp$8.parseTopLevel (https://llm.sutyrin.pro/atoms/2026-01-30-my-first-sketch/sketch.bundle.js:51719:21)\n    at Parser2.parse (https://llm.sutyrin.pro/atoms/2026-01-30-my-first-sketch/sketch.bundle.js:51515:15)"
+        ]
+      },
+      "iframe_found": true,
+      "iframe_loads": true,
+      "canvas": {
+        "count": 1,
+        "visible": true,
+        "width": 800,
+        "height": 800
+      },
+      "audio_context": true,
+      "play_button": {
+        "found": true,
+        "visible": true,
+        "clickable": true
+      },
+      "animation_started": false,
+      "console_errors": [
+        "Error parsing code: SyntaxError: Unexpected token (1166:18)\n    at pp$4.raise (https://llm.sutyrin.pro/atoms/2026-01-30-my-first-sketch/sketch.bundle.js:54280:13)\n    at pp$9.unexpected (https://llm.sutyrin.pro/atoms/2026-01-30-my-first-sketch/sketch.bundle.js:51665:8)\n    at pp$9.expect (https://llm.sutyrin.pro/atoms/2026-01-30-my-first-sketch/sketch.bundle.js:51662:27)\n    at pp$5.parseMethod (https://llm.sutyrin.pro/atoms/2026-01-30-my-first-sketch/sketch.bundle.js:54075:8)\n    at pp$8.parseClassMethod (https://llm.sutyrin.pro/atoms/2026-01-30-my-first-sketch/sketch.bundle.js:52449:35)\n    at pp$8.parseClassElement (https://llm.sutyrin.pro/atoms/2026-01-30-my-first-sketch/sketch.bundle.js:52417:10)\n    at pp$8.parseClass (https://llm.sutyrin.pro/atoms/2026-01-30-my-first-sketch/sketch.bundle.js:52340:25)\n    at pp$8.parseStatement (https://llm.sutyrin.pro/atoms/2026-01-30-my-first-sketch/sketch.bundle.js:51837:19)\n    at pp$8.parseTopLevel (https://llm.sutyrin.pro/atoms/2026-01-30-my-first-sketch/sketch.bundle.js:51719:21)\n    at Parser2.parse (https://llm.sutyrin.pro/atoms/2026-01-30-my-first-sketch/sketch.bundle.js:51515:15)"
+      ],
+      "status": "PARTIAL",
+      "notes": "Console errors: Error parsing code: SyntaxError: Unexpected token (1166:18)\n    at pp$4.raise (https://llm.sutyrin.pro/atoms/2026-01-30-my-first-sketch/sketch.bundle.js:54280:13)\n    at pp$9.unexpected (https://llm.sutyrin.pro/atoms/2026-01-30-my-first-sketch/sketch.bundle.js:51665:8)\n    at pp$9.expect (https://llm.sutyrin.pro/atoms/2026-01-30-my-first-sketch/sketch.bundle.js:51662:27)\n    at pp$5.parseMethod (https://llm.sutyrin.pro/atoms/2026-01-30-my-first-sketch/sketch.bundle.js:54075:8)\n    at pp$8.parseClassMethod (https://llm.sutyrin.pro/atoms/2026-01-30-my-first-sketch/sketch.bundle.js:52449:35)\n    at pp$8.parseClassElement (https://llm.sutyrin.pro/atoms/2026-01-30-my-first-sketch/sketch.bundle.js:52417:10)\n    at pp$8.parseClass (https://llm.sutyrin.pro/atoms/2026-01-30-my-first-sketch/sketch.bundle.js:52340:25)\n    at pp$8.parseStatement (https://llm.sutyrin.pro/atoms/2026-01-30-my-first-sketch/sketch.bundle.js:51837:19)\n    at pp$8.parseTopLevel (https://llm.sutyrin.pro/atoms/2026-01-30-my-first-sketch/sketch.bundle.js:51719:21)\n    at Parser2.parse (https://llm.sutyrin.pro/atoms/2026-01-30-my-first-sketch/sketch.bundle.js:51515:15)"
+    },
+    {
+      "atom": "test-verify",
+      "slug": "2026-01-30-test-verify",
+      "url": "https://llm.sutyrin.pro/atom/2026-01-30-test-verify/",
+      "page_loads_successfully": true,
+      "initial_console_messages": {
+        "logs": [],
+        "warnings": [],
+        "errors": [
+          "Error parsing code: SyntaxError: Unexpected token (1166:18)\n    at pp$4.raise (https://llm.sutyrin.pro/atoms/2026-01-30-test-verify/sketch.bundle.js:54280:13)\n    at pp$9.unexpected (https://llm.sutyrin.pro/atoms/2026-01-30-test-verify/sketch.bundle.js:51665:8)\n    at pp$9.expect (https://llm.sutyrin.pro/atoms/2026-01-30-test-verify/sketch.bundle.js:51662:27)\n    at pp$5.parseMethod (https://llm.sutyrin.pro/atoms/2026-01-30-test-verify/sketch.bundle.js:54075:8)\n    at pp$8.parseClassMethod (https://llm.sutyrin.pro/atoms/2026-01-30-test-verify/sketch.bundle.js:52449:35)\n    at pp$8.parseClassElement (https://llm.sutyrin.pro/atoms/2026-01-30-test-verify/sketch.bundle.js:52417:10)\n    at pp$8.parseClass (https://llm.sutyrin.pro/atoms/2026-01-30-test-verify/sketch.bundle.js:52340:25)\n    at pp$8.parseStatement (https://llm.sutyrin.pro/atoms/2026-01-30-test-verify/sketch.bundle.js:51837:19)\n    at pp$8.parseTopLevel (https://llm.sutyrin.pro/atoms/2026-01-30-test-verify/sketch.bundle.js:51719:21)\n    at Parser2.parse (https://llm.sutyrin.pro/atoms/2026-01-30-test-verify/sketch.bundle.js:51515:15)"
+        ]
+      },
+      "iframe_found": true,
+      "iframe_loads": true,
+      "canvas": {
+        "count": 1,
+        "visible": true,
+        "width": 800,
+        "height": 800
+      },
+      "audio_context": true,
+      "play_button": {
+        "found": true,
+        "visible": true,
+        "clickable": true
+      },
+      "animation_started": false,
+      "console_errors": [
+        "Error parsing code: SyntaxError: Unexpected token (1166:18)\n    at pp$4.raise (https://llm.sutyrin.pro/atoms/2026-01-30-test-verify/sketch.bundle.js:54280:13)\n    at pp$9.unexpected (https://llm.sutyrin.pro/atoms/2026-01-30-test-verify/sketch.bundle.js:51665:8)\n    at pp$9.expect (https://llm.sutyrin.pro/atoms/2026-01-30-test-verify/sketch.bundle.js:51662:27)\n    at pp$5.parseMethod (https://llm.sutyrin.pro/atoms/2026-01-30-test-verify/sketch.bundle.js:54075:8)\n    at pp$8.parseClassMethod (https://llm.sutyrin.pro/atoms/2026-01-30-test-verify/sketch.bundle.js:52449:35)\n    at pp$8.parseClassElement (https://llm.sutyrin.pro/atoms/2026-01-30-test-verify/sketch.bundle.js:52417:10)\n    at pp$8.parseClass (https://llm.sutyrin.pro/atoms/2026-01-30-test-verify/sketch.bundle.js:52340:25)\n    at pp$8.parseStatement (https://llm.sutyrin.pro/atoms/2026-01-30-test-verify/sketch.bundle.js:51837:19)\n    at pp$8.parseTopLevel (https://llm.sutyrin.pro/atoms/2026-01-30-test-verify/sketch.bundle.js:51719:21)\n    at Parser2.parse (https://llm.sutyrin.pro/atoms/2026-01-30-test-verify/sketch.bundle.js:51515:15)"
+      ],
+      "status": "PARTIAL",
+      "notes": "Console errors: Error parsing code: SyntaxError: Unexpected token (1166:18)\n    at pp$4.raise (https://llm.sutyrin.pro/atoms/2026-01-30-test-verify/sketch.bundle.js:54280:13)\n    at pp$9.unexpected (https://llm.sutyrin.pro/atoms/2026-01-30-test-verify/sketch.bundle.js:51665:8)\n    at pp$9.expect (https://llm.sutyrin.pro/atoms/2026-01-30-test-verify/sketch.bundle.js:51662:27)\n    at pp$5.parseMethod (https://llm.sutyrin.pro/atoms/2026-01-30-test-verify/sketch.bundle.js:54075:8)\n    at pp$8.parseClassMethod (https://llm.sutyrin.pro/atoms/2026-01-30-test-verify/sketch.bundle.js:52449:35)\n    at pp$8.parseClassElement (https://llm.sutyrin.pro/atoms/2026-01-30-test-verify/sketch.bundle.js:52417:10)\n    at pp$8.parseClass (https://llm.sutyrin.pro/atoms/2026-01-30-test-verify/sketch.bundle.js:52340:25)\n    at pp$8.parseStatement (https://llm.sutyrin.pro/atoms/2026-01-30-test-verify/sketch.bundle.js:51837:19)\n    at pp$8.parseTopLevel (https://llm.sutyrin.pro/atoms/2026-01-30-test-verify/sketch.bundle.js:51719:21)\n    at Parser2.parse (https://llm.sutyrin.pro/atoms/2026-01-30-test-verify/sketch.bundle.js:51515:15)"
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "partial": 4,
+    "broken": 0,
+    "total": 6,
+    "critical_issues": []
+  }
+}
