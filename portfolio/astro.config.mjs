@@ -34,6 +34,7 @@ export default defineConfig({
       workbox: {
         navigateFallback: '/404',
         globPatterns: ['**/*.{css,js,html,svg,png,webp,woff,woff2}'],
+        maximumFileSizeToCacheInBytes: 5 * 1024 * 1024, // 5MB for bundled atoms
         runtimeCaching: [
           {
             // Atom code files - cache first (they rarely change)

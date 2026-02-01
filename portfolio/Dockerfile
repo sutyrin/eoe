@@ -8,8 +8,11 @@ COPY portfolio/package.json ./portfolio/
 # Copy atoms (needed by copy-atoms.js which references ../../atoms)
 COPY atoms/ ./atoms/
 
-# Install dependencies (workspace-aware)
-RUN npm ci --workspace=portfolio
+# Copy lib directory (needed by bundle-atoms.js for resolving lib/ imports)
+COPY lib/ ./lib/
+
+# Install dependencies (all workspaces to get p5, lil-gui, tone from root)
+RUN npm ci
 
 # Copy portfolio source
 COPY portfolio/ ./portfolio/

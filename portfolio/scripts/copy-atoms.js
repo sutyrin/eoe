@@ -1,6 +1,7 @@
 import fs from 'fs-extra';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { bundleAtoms } from './bundle-atoms.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const atomsSrc = path.resolve(__dirname, '../../atoms');
@@ -18,3 +19,6 @@ if (await fs.pathExists(atomsSrc)) {
   await fs.ensureDir(atomsDest);
   console.log('No atoms found, created empty atoms directory');
 }
+
+// Bundle atoms after copying
+await bundleAtoms();
