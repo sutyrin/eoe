@@ -1,0 +1,451 @@
+{
+  "executedAt": "2026-02-01T14:27:19.711Z",
+  "avSyncDebug": {
+    "url": "https://llm.sutyrin.pro/atom/2026-01-30-av-sync-debug/",
+    "label": "av-sync-debug",
+    "pageInfo": {
+      "title": "av-sync-debug - Engines of Experience",
+      "url": "https://llm.sutyrin.pro/atom/2026-01-30-av-sync-debug/",
+      "scripts": 0,
+      "styleSheets": 1
+    },
+    "consoleMessages": [
+      {
+        "type": "log",
+        "message": "%c * Tone.js v15.1.22 *  background: #000; color: #fff",
+        "location": {
+          "url": "https://llm.sutyrin.pro/atoms/2026-01-30-av-sync-debug/sketch.bundle.js",
+          "lineNumber": 8631,
+          "columnNumber": 10
+        }
+      },
+      {
+        "type": "warning",
+        "message": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "location": {
+          "url": "https://llm.sutyrin.pro/atoms/2026-01-30-av-sync-debug/sketch.bundle.js",
+          "lineNumber": 6639,
+          "columnNumber": 0
+        }
+      },
+      {
+        "type": "warning",
+        "message": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "location": {
+          "url": "https://llm.sutyrin.pro/atoms/2026-01-30-av-sync-debug/sketch.bundle.js",
+          "lineNumber": 2631,
+          "columnNumber": 0
+        }
+      }
+    ],
+    "pageErrors": [],
+    "canvasElements": [],
+    "canvasCount": 0,
+    "canvasVisible": false,
+    "p5Status": {
+      "hasWindow_p5": false,
+      "hasWindow_p5Instance": false,
+      "hasP5Container": false,
+      "hasP5Canvas": false,
+      "bodyInnerHTML_length": 798,
+      "allElementCount": 16
+    },
+    "buttonInfo": {
+      "count": 0,
+      "ids": []
+    },
+    "scripts": [],
+    "screenshotPath": "/home/pavel/dev/play/eoe/.planning/quick/020-debug-av-sync-missing-canvas/screenshots/av-sync-debug.png"
+  },
+  "av1Baseline": {
+    "url": "https://llm.sutyrin.pro/atom/2026-01-30-av1/",
+    "label": "av1-baseline",
+    "pageInfo": {
+      "title": "av1 - Engines of Experience",
+      "url": "https://llm.sutyrin.pro/atom/2026-01-30-av1/",
+      "scripts": 0,
+      "styleSheets": 1
+    },
+    "consoleMessages": [
+      {
+        "type": "log",
+        "message": "%c * Tone.js v15.1.22 *  background: #000; color: #fff",
+        "location": {
+          "url": "https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js",
+          "lineNumber": 88877,
+          "columnNumber": 10
+        }
+      },
+      {
+        "type": "warning",
+        "message": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "location": {
+          "url": "https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js",
+          "lineNumber": 86885,
+          "columnNumber": 0
+        }
+      },
+      {
+        "type": "warning",
+        "message": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "location": {
+          "url": "https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js",
+          "lineNumber": 82877,
+          "columnNumber": 0
+        }
+      },
+      {
+        "type": "error",
+        "message": "Error parsing code: SyntaxError: Unexpected token (1166:18)\n    at pp$4.raise (https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js:54280:13)\n    at pp$9.unexpected (https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js:51665:8)\n    at pp$9.expect (https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js:51662:27)\n    at pp$5.parseMethod (https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js:54075:8)\n    at pp$8.parseClassMethod (https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js:52449:35)\n    at pp$8.parseClassElement (https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js:52417:10)\n    at pp$8.parseClass (https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js:52340:25)\n    at pp$8.parseStatement (https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js:51837:19)\n    at pp$8.parseTopLevel (https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js:51719:21)\n    at Parser2.parse (https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js:51515:15)",
+        "location": {
+          "url": "https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js",
+          "lineNumber": 57065,
+          "columnNumber": 14
+        }
+      },
+      {
+        "type": "warning",
+        "message": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "location": {
+          "url": "https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js",
+          "lineNumber": 82877,
+          "columnNumber": 0
+        }
+      },
+      {
+        "type": "warning",
+        "message": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "location": {
+          "url": "https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js",
+          "lineNumber": 86853,
+          "columnNumber": 0
+        }
+      },
+      {
+        "type": "warning",
+        "message": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "location": {
+          "url": "https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js",
+          "lineNumber": 86855,
+          "columnNumber": 0
+        }
+      },
+      {
+        "type": "warning",
+        "message": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "location": {
+          "url": "https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js",
+          "lineNumber": 86866,
+          "columnNumber": 0
+        }
+      },
+      {
+        "type": "warning",
+        "message": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "location": {
+          "url": "https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js",
+          "lineNumber": 86874,
+          "columnNumber": 0
+        }
+      },
+      {
+        "type": "warning",
+        "message": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "location": {
+          "url": "https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js",
+          "lineNumber": 86895,
+          "columnNumber": 0
+        }
+      },
+      {
+        "type": "warning",
+        "message": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "location": {
+          "url": "https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js",
+          "lineNumber": 81009,
+          "columnNumber": 0
+        }
+      },
+      {
+        "type": "warning",
+        "message": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "location": {
+          "url": "https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js",
+          "lineNumber": 82837,
+          "columnNumber": 0
+        }
+      },
+      {
+        "type": "warning",
+        "message": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "location": {
+          "url": "https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js",
+          "lineNumber": 82877,
+          "columnNumber": 0
+        }
+      },
+      {
+        "type": "warning",
+        "message": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "location": {
+          "url": "https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js",
+          "lineNumber": 82877,
+          "columnNumber": 0
+        }
+      },
+      {
+        "type": "warning",
+        "message": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "location": {
+          "url": "https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js",
+          "lineNumber": 82877,
+          "columnNumber": 0
+        }
+      },
+      {
+        "type": "warning",
+        "message": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "location": {
+          "url": "https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js",
+          "lineNumber": 82877,
+          "columnNumber": 0
+        }
+      },
+      {
+        "type": "warning",
+        "message": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "location": {
+          "url": "https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js",
+          "lineNumber": 82877,
+          "columnNumber": 0
+        }
+      }
+    ],
+    "pageErrors": [],
+    "canvasElements": [],
+    "canvasCount": 0,
+    "canvasVisible": false,
+    "p5Status": {
+      "hasWindow_p5": false,
+      "hasWindow_p5Instance": false,
+      "hasP5Container": false,
+      "hasP5Canvas": false,
+      "bodyInnerHTML_length": 1715,
+      "allElementCount": 19
+    },
+    "buttonInfo": {
+      "count": 0,
+      "ids": []
+    },
+    "scripts": [],
+    "screenshotPath": "/home/pavel/dev/play/eoe/.planning/quick/020-debug-av-sync-missing-canvas/screenshots/av1-baseline.png"
+  },
+  "comparison": {
+    "avSyncDebug": {
+      "canvasFound": false,
+      "canvasVisible": false,
+      "consoleErrors": [],
+      "consoleWarnings": [
+        {
+          "type": "warning",
+          "message": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+          "location": {
+            "url": "https://llm.sutyrin.pro/atoms/2026-01-30-av-sync-debug/sketch.bundle.js",
+            "lineNumber": 6639,
+            "columnNumber": 0
+          }
+        },
+        {
+          "type": "warning",
+          "message": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+          "location": {
+            "url": "https://llm.sutyrin.pro/atoms/2026-01-30-av-sync-debug/sketch.bundle.js",
+            "lineNumber": 2631,
+            "columnNumber": 0
+          }
+        }
+      ],
+      "p5Loaded": false,
+      "buttonCount": 0
+    },
+    "av1Baseline": {
+      "canvasFound": false,
+      "canvasVisible": false,
+      "consoleErrors": [
+        {
+          "type": "error",
+          "message": "Error parsing code: SyntaxError: Unexpected token (1166:18)\n    at pp$4.raise (https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js:54280:13)\n    at pp$9.unexpected (https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js:51665:8)\n    at pp$9.expect (https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js:51662:27)\n    at pp$5.parseMethod (https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js:54075:8)\n    at pp$8.parseClassMethod (https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js:52449:35)\n    at pp$8.parseClassElement (https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js:52417:10)\n    at pp$8.parseClass (https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js:52340:25)\n    at pp$8.parseStatement (https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js:51837:19)\n    at pp$8.parseTopLevel (https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js:51719:21)\n    at Parser2.parse (https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js:51515:15)",
+          "location": {
+            "url": "https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js",
+            "lineNumber": 57065,
+            "columnNumber": 14
+          }
+        }
+      ],
+      "consoleWarnings": [
+        {
+          "type": "warning",
+          "message": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+          "location": {
+            "url": "https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js",
+            "lineNumber": 86885,
+            "columnNumber": 0
+          }
+        },
+        {
+          "type": "warning",
+          "message": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+          "location": {
+            "url": "https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js",
+            "lineNumber": 82877,
+            "columnNumber": 0
+          }
+        },
+        {
+          "type": "warning",
+          "message": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+          "location": {
+            "url": "https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js",
+            "lineNumber": 82877,
+            "columnNumber": 0
+          }
+        },
+        {
+          "type": "warning",
+          "message": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+          "location": {
+            "url": "https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js",
+            "lineNumber": 86853,
+            "columnNumber": 0
+          }
+        },
+        {
+          "type": "warning",
+          "message": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+          "location": {
+            "url": "https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js",
+            "lineNumber": 86855,
+            "columnNumber": 0
+          }
+        },
+        {
+          "type": "warning",
+          "message": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+          "location": {
+            "url": "https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js",
+            "lineNumber": 86866,
+            "columnNumber": 0
+          }
+        },
+        {
+          "type": "warning",
+          "message": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+          "location": {
+            "url": "https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js",
+            "lineNumber": 86874,
+            "columnNumber": 0
+          }
+        },
+        {
+          "type": "warning",
+          "message": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+          "location": {
+            "url": "https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js",
+            "lineNumber": 86895,
+            "columnNumber": 0
+          }
+        },
+        {
+          "type": "warning",
+          "message": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+          "location": {
+            "url": "https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js",
+            "lineNumber": 81009,
+            "columnNumber": 0
+          }
+        },
+        {
+          "type": "warning",
+          "message": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+          "location": {
+            "url": "https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js",
+            "lineNumber": 82837,
+            "columnNumber": 0
+          }
+        },
+        {
+          "type": "warning",
+          "message": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+          "location": {
+            "url": "https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js",
+            "lineNumber": 82877,
+            "columnNumber": 0
+          }
+        },
+        {
+          "type": "warning",
+          "message": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+          "location": {
+            "url": "https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js",
+            "lineNumber": 82877,
+            "columnNumber": 0
+          }
+        },
+        {
+          "type": "warning",
+          "message": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+          "location": {
+            "url": "https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js",
+            "lineNumber": 82877,
+            "columnNumber": 0
+          }
+        },
+        {
+          "type": "warning",
+          "message": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+          "location": {
+            "url": "https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js",
+            "lineNumber": 82877,
+            "columnNumber": 0
+          }
+        },
+        {
+          "type": "warning",
+          "message": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+          "location": {
+            "url": "https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js",
+            "lineNumber": 82877,
+            "columnNumber": 0
+          }
+        }
+      ],
+      "p5Loaded": false,
+      "buttonCount": 0
+    },
+    "difference": {
+      "canvasCount": 0,
+      "consoleErrorDifference": 1,
+      "canvasVisibilityDifference": false
+    }
+  },
+  "rootCauseAnalysis": {
+    "canvasElementsInAvSyncDebug": [],
+    "canvasElementsInAv1": [],
+    "p5StatusAvSyncDebug": {
+      "hasWindow_p5": false,
+      "hasWindow_p5Instance": false,
+      "hasP5Container": false,
+      "hasP5Canvas": false,
+      "bodyInnerHTML_length": 798,
+      "allElementCount": 16
+    },
+    "p5StatusAv1": {
+      "hasWindow_p5": false,
+      "hasWindow_p5Instance": false,
+      "hasP5Container": false,
+      "hasP5Canvas": false,
+      "bodyInnerHTML_length": 1715,
+      "allElementCount": 19
+    }
+  }
+}
