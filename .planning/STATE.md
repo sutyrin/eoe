@@ -28,7 +28,7 @@ Consistent output of creative atoms that compound into a body of work, tools, an
 - Goal: Enable real-time preview of compositions with parameter routing, save/load capability, and cloud backup
 - Requirements: COMP-04 (preview), COMP-05 (save/load), SYNC-01 (backup), SYNC-02 (status), SYNC-03 (restore)
 - Delivered: Preview engine, immutable composition snapshots, cloud backup with auto-backup on app close, backup status UI and management, shareable composition URLs
-- **Last activity:** 2026-02-01 - Quick task 012: Deployed v1.1 to https://llm.sutyrin.pro, verified all Phase 6 features via Playwright (6/6 pages pass)
+- **Last activity:** 2026-02-01 - Quick task 014: Fixed atom bundling for production, all 5 functional atoms working (canvas, GUI, audio controls)
 
 ### Status
 v1.0 COMPLETE (shipped 2026-01-30). v1.1 COMPLETE (shipped 2026-02-01). All 15 plans executed.
@@ -115,6 +115,8 @@ v1.0 COMPLETE (shipped 2026-01-30). v1.1 COMPLETE (shipped 2026-02-01). All 15 p
 | ConflictResolver ready but not triggered in v1.1 | v1.1 uses last-write-wins, defer conflict detection | UI complete, awaits enhanced sync in v1.2 | 06-04 |
 | Periodic pending count checks | Badge accuracy without continuous polling | Check every 60s after initial 1.5s delay | 06-04 |
 | Pre-bundle atoms for production | Bare ES module imports fail in static nginx context | Atoms must be bundled during build to resolve p5, lil-gui, tone from node_modules | quick-013 |
+| Vite bundler for atoms | Option A from quick-013: build-time bundling | Atoms bundled with Vite during build, all dependencies inlined | quick-014 |
+| HTTP/1.1 proxy for large responses | HTTP/2 frame limits cause errors on 3MB bundles | nginx reverse proxy uses HTTP/1.1 backend with increased buffers | quick-014 |
 
 ### Known Constraints
 - **Mobile:** 6" phone screen, touch interaction, battery/bandwidth limits, iOS PWA limitations
@@ -123,7 +125,7 @@ v1.0 COMPLETE (shipped 2026-01-30). v1.1 COMPLETE (shipped 2026-02-01). All 15 p
 - **Offline:** All v1.1 features work offline except cloud backup
 
 ### Known Blockers
-**Production atom pages broken:** Bare ES module imports (p5, lil-gui, tone) fail in nginx static context. Requires atom bundling implementation before atoms work in production. Quick task 013 diagnosed root cause, next quick task should implement Option A (pre-bundle atoms during build).
+None. All v1.1 features fully functional in production.
 
 ### Technical Debt
 None inherited from v1.0. v1.1 builds on proven v1.0 foundation (no refactoring needed).
@@ -132,6 +134,7 @@ None inherited from v1.0. v1.1 builds on proven v1.0 foundation (no refactoring 
 
 | # | Description | Date | Commit | Directory |
 |---|-------------|------|--------|-----------|
+| 014 | Fix atom bundling for production with Vite | 2026-02-01 | 7df1bfe | [014-fix-atom-bundling](./quick/014-fix-atom-bundling/) |
 | 013 | Debug production atom page issues with Playwright | 2026-02-01 | eaef3c7 | [013-debug-atom-page](./quick/013-debug-atom-page/) |
 | 012 | Deploy v1.1 and test Phase 6 features with Playwright | 2026-02-01 | 64f3ad8 | [012-deploy-test-phase6](./quick/012-deploy-test-phase6/) |
 | 011 | Deploy to fra server at https://llm.sutyrin.pro | 2026-01-31 | 4c5f0ba | [011-deployment-to-fra-server](./quick/011-deployment-to-fra-server/) |
@@ -166,15 +169,15 @@ None inherited from v1.0. v1.1 builds on proven v1.0 foundation (no refactoring 
 
 ### Context for Next Session
 **Last session:** 2026-02-01
-**Stopped at:** Completed Quick Task 013 - Debug Production Atom Page Issues (ROOT CAUSE IDENTIFIED)
+**Stopped at:** Completed Quick Task 014 - Fix Atom Bundling for Production (ALL ATOMS WORKING)
 **Resume file:** None
 
-**Production Issue Identified:**
-- Atom pages broken in production (no canvas, no interactivity)
-- Root cause: Bare ES module imports (p5, lil-gui, tone) fail without bundling
-- lib/ directory not copied to dist, breaking relative imports
-- Fix required: Pre-bundle atoms during build (Option A recommended)
-- Next quick task should implement atom bundling in copy-atoms.js
+**Production Status:**
+- ✅ All atom pages fully functional at https://llm.sutyrin.pro
+- ✅ Vite bundling resolves all bare imports (p5, lil-gui, tone)
+- ✅ nginx reverse proxy configured for large bundles (HTTP/1.1 backend)
+- ✅ 5/6 atoms verified with Playwright (av-sync-debug has no index.html)
+- Visual confirmation: canvases render, GUI panels visible, audio controls work
 
 **Phase 6 Status:**
 - ✓ Plan 01: Preview Engine complete (8 min execution)
