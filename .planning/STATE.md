@@ -114,6 +114,7 @@ v1.0 COMPLETE (shipped 2026-01-30). v1.1 COMPLETE (shipped 2026-02-01). All 15 p
 | Category-level restore checkboxes | v1.1 simplicity over per-item granularity | User selects atoms/compositions/snapshots categories | 06-04 |
 | ConflictResolver ready but not triggered in v1.1 | v1.1 uses last-write-wins, defer conflict detection | UI complete, awaits enhanced sync in v1.2 | 06-04 |
 | Periodic pending count checks | Badge accuracy without continuous polling | Check every 60s after initial 1.5s delay | 06-04 |
+| Pre-bundle atoms for production | Bare ES module imports fail in static nginx context | Atoms must be bundled during build to resolve p5, lil-gui, tone from node_modules | quick-013 |
 
 ### Known Constraints
 - **Mobile:** 6" phone screen, touch interaction, battery/bandwidth limits, iOS PWA limitations
@@ -122,7 +123,7 @@ v1.0 COMPLETE (shipped 2026-01-30). v1.1 COMPLETE (shipped 2026-02-01). All 15 p
 - **Offline:** All v1.1 features work offline except cloud backup
 
 ### Known Blockers
-None identified. All research complete, requirements clear, roadmap defined.
+**Production atom pages broken:** Bare ES module imports (p5, lil-gui, tone) fail in nginx static context. Requires atom bundling implementation before atoms work in production. Quick task 013 diagnosed root cause, next quick task should implement Option A (pre-bundle atoms during build).
 
 ### Technical Debt
 None inherited from v1.0. v1.1 builds on proven v1.0 foundation (no refactoring needed).
@@ -131,6 +132,7 @@ None inherited from v1.0. v1.1 builds on proven v1.0 foundation (no refactoring 
 
 | # | Description | Date | Commit | Directory |
 |---|-------------|------|--------|-----------|
+| 013 | Debug production atom page issues with Playwright | 2026-02-01 | eaef3c7 | [013-debug-atom-page](./quick/013-debug-atom-page/) |
 | 012 | Deploy v1.1 and test Phase 6 features with Playwright | 2026-02-01 | 64f3ad8 | [012-deploy-test-phase6](./quick/012-deploy-test-phase6/) |
 | 011 | Deploy to fra server at https://llm.sutyrin.pro | 2026-01-31 | 4c5f0ba | [011-deployment-to-fra-server](./quick/011-deployment-to-fra-server/) |
 
@@ -164,8 +166,15 @@ None inherited from v1.0. v1.1 builds on proven v1.0 foundation (no refactoring 
 
 ### Context for Next Session
 **Last session:** 2026-02-01
-**Stopped at:** Completed Quick Task 012 - Deploy v1.1 and Test Phase 6 Features (v1.1 VERIFIED IN PRODUCTION)
+**Stopped at:** Completed Quick Task 013 - Debug Production Atom Page Issues (ROOT CAUSE IDENTIFIED)
 **Resume file:** None
+
+**Production Issue Identified:**
+- Atom pages broken in production (no canvas, no interactivity)
+- Root cause: Bare ES module imports (p5, lil-gui, tone) fail without bundling
+- lib/ directory not copied to dist, breaking relative imports
+- Fix required: Pre-bundle atoms during build (Option A recommended)
+- Next quick task should implement atom bundling in copy-atoms.js
 
 **Phase 6 Status:**
 - ✓ Plan 01: Preview Engine complete (8 min execution)
