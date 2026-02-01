@@ -1,0 +1,27 @@
+log: %c * Tone.js v15.1.22 *  background: #000; color: #fff
+warning: The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio
+warning: The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio
+error: Error parsing code: SyntaxError: Unexpected token (1166:18)
+    at pp$4.raise (https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js:54280:13)
+    at pp$9.unexpected (https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js:51665:8)
+    at pp$9.expect (https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js:51662:27)
+    at pp$5.parseMethod (https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js:54075:8)
+    at pp$8.parseClassMethod (https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js:52449:35)
+    at pp$8.parseClassElement (https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js:52417:10)
+    at pp$8.parseClass (https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js:52340:25)
+    at pp$8.parseStatement (https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js:51837:19)
+    at pp$8.parseTopLevel (https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js:51719:21)
+    at Parser2.parse (https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js:51515:15)
+warning: The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio
+warning: The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio
+warning: The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio
+warning: The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio
+warning: The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio
+warning: The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio
+warning: The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio
+warning: The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio
+warning: The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio
+warning: The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio
+warning: The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio
+warning: The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio
+warning: The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio
