@@ -1,0 +1,132 @@
+{
+  "timestamp": "2026-02-01T05:43:41.985Z",
+  "baseUrl": "https://llm.sutyrin.pro",
+  "viewport": {
+    "width": 390,
+    "height": 844
+  },
+  "summary": {
+    "total": 6,
+    "passed": 6,
+    "failed": 0
+  },
+  "consoleErrors": [
+    {
+      "page": "Mobile Gallery",
+      "message": "TypeError: Failed to resolve module specifier \"p5\". Relative references must start with either \"/\", \"./\", or \"../\"."
+    },
+    {
+      "page": "Mobile Gallery",
+      "message": "TypeError: Failed to resolve module specifier \"tone\". Relative references must start with either \"/\", \"./\", or \"../\"."
+    },
+    {
+      "page": "",
+      "message": "Failed to load resource: the server responded with a status of 404 ()"
+    }
+  ],
+  "results": [
+    {
+      "name": "Homepage",
+      "url": "/",
+      "status": "PASS",
+      "checks": [
+        {
+          "description": "Page has title",
+          "status": "PASS",
+          "detail": "Gallery - Engines of Experience"
+        },
+        {
+          "description": "Body element exists",
+          "status": "PASS"
+        }
+      ],
+      "errors": [],
+      "screenshot": "homepage.png"
+    },
+    {
+      "name": "Mobile Gallery",
+      "url": "/mobile/gallery",
+      "status": "PASS",
+      "checks": [
+        {
+          "description": "Gallery page loaded",
+          "status": "PASS"
+        },
+        {
+          "description": "Gallery content exists",
+          "status": "PASS"
+        }
+      ],
+      "errors": [],
+      "screenshot": "mobile-gallery.png"
+    },
+    {
+      "name": "Composition Canvas",
+      "url": "/mobile/compose",
+      "status": "PASS",
+      "checks": [
+        {
+          "description": "Compose page loaded",
+          "status": "PASS"
+        },
+        {
+          "description": "Composition UI present",
+          "status": "PASS"
+        }
+      ],
+      "errors": [],
+      "screenshot": "composition-canvas.png"
+    },
+    {
+      "name": "Compositions List",
+      "url": "/mobile/compositions",
+      "status": "PASS",
+      "checks": [
+        {
+          "description": "Compositions page loaded",
+          "status": "PASS"
+        },
+        {
+          "description": "Compositions content present",
+          "status": "PASS"
+        }
+      ],
+      "errors": [],
+      "screenshot": "compositions-list.png"
+    },
+    {
+      "name": "Backup Management",
+      "url": "/mobile/backup",
+      "status": "PASS",
+      "checks": [
+        {
+          "description": "Backup page loaded",
+          "status": "PASS"
+        },
+        {
+          "description": "Backup UI present",
+          "status": "PASS"
+        }
+      ],
+      "errors": [],
+      "screenshot": "backup-management.png"
+    },
+    {
+      "name": "Shareable URL",
+      "url": "/c/?id=test",
+      "status": "PASS",
+      "checks": [
+        {
+          "description": "Shareable page loaded",
+          "status": "PASS"
+        },
+        {
+          "description": "Page loads without crash (graceful handling)",
+          "status": "PASS"
+        }
+      ],
+      "errors": [],
+      "screenshot": "shareable-url.png"
+    }
+  ]
+}
