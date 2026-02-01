@@ -1,0 +1,38 @@
+{
+  "timestamp": "2026-02-01T06:24:21.581Z",
+  "consoleErrors": [
+    {
+      "type": "pageerror",
+      "text": "Failed to resolve module specifier \"p5\". Relative references must start with either \"/\", \"./\", or \"../\".",
+      "stack": "",
+      "source": "main-page",
+      "timestamp": "2026-02-01T06:24:21.936Z"
+    }
+  ],
+  "networkFailures": [],
+  "domState": {
+    "hasCanvas": false,
+    "hasPlayBtn": false,
+    "hasStopBtn": false,
+    "hasGUI": false,
+    "iframeAccessible": true,
+    "bodySnippet": " <header style=\"padding: 2rem; border-bottom: 1px solid #222;\"> <a href=\"/\" style=\"font-size: 1.2rem; font-weight: bold; color: #fff;\">\nEngines of Experience\n</a> </header> <main style=\"padding: 2rem; max-width: 1200px; margin: 0 auto;\">  <div style=\"margin-bottom: 1rem;\"> <a href=\"/\" style=\"color: #666; font-size: 0.85rem;\">← Back to Gallery</a> </div> <h1 style=\"margin-bottom: 0.5rem; font-size: 1.5rem;\">av1</h1> <p style=\"color: #666; margin-bottom: 2rem; font-size: 0.85rem;\"> 2026-01-30 · idea </p> <div class=\"p5-container\" data-astro-cid-j7egel5z=\"\"> <iframe src=\"/atoms/2026-01-30-av1/index.html\" width=\"800\" height=\"800\" style=\"border: none; border-radius: 4px;\" loading=\"lazy\" title=\"2026-01-30-av1\" data-astro-cid-j7egel5z=\"\"></iframe> </div>  <details style=\"margin-top: 2rem;\"> <summary style=\"cursor: pointer; color: #888;\">Notes</summary> <pre style=\"margin-top: 1rem; padding: 1rem; background: #151515; border-radius: 8px; overflow-x: auto; font-size: 0.85rem; line-height: 1.5; white-space: pre-wrap;\"># av1\n\n**Created:** 2026-01-30\n**Stage:** idea\n**Type:** audio-visual\n\n## Intent\nWhat audio-visual relationship am I exploring? What should the viewer feel?\n\n## Audio Design\n- Synth type:\n- Key/scale:\n- Tempo:\n- Effects:\n\n## Visual Design\n- What shapes/patterns?\n- Color palette:\n- Movement style:\n\n## Audio-Visual Mapping\n- Bass drives:\n- Mids drive:\n- Treble drives:\n- Beat triggers:\n\n## Technical Decisions\n- Why these mappings?\n- Smoothing/easing choices:\n\n## Published\n- **YouTube:** https://www.youtube.com/watch?v=JD9yX-VWWxI (2026-01-30 12:59:26)\n\n## Session Log\n\n### 2026-01-30 14:05\n- Created audio-visual atom\n- Initial setup\n\n### 2026-01-30 11:05:29\n- \n</pre> </details> </main> "
+  },
+  "afterClickPlay": {},
+  "directUrlErrors": [
+    {
+      "type": "pageerror",
+      "text": "Failed to resolve module specifier \"p5\". Relative references must start with either \"/\", \"./\", or \"../\".",
+      "stack": "",
+      "timestamp": "2026-02-01T06:24:25.657Z"
+    }
+  ],
+  "directUrlNetwork": [],
+  "directUrlDom": {
+    "hasCanvas": false,
+    "hasPlayBtn": true,
+    "hasStopBtn": true,
+    "hasGUI": false,
+    "bodySnippet": "\n  <div class=\"transport\">\n    <button id=\"playBtn\">Play</button>\n    <button id=\"stopBtn\">Stop</button>\n  </div>\n  <script type=\"module\" src=\"./sketch.js\"></script>\n\n\n"
+  }
+}
