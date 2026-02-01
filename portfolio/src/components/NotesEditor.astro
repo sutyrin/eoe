@@ -164,11 +164,17 @@ const { atomSlug, initialNotes } = Astro.props;
     padding: 6px 14px;
     border: none;
     background: #1a1a1a;
-    color: #666;
+    color: #888;
     font-size: 0.8rem;
     font-weight: 600;
     cursor: pointer;
     min-height: 36px;
+    transition: all 0.2s;
+  }
+
+  .mode-btn:focus {
+    outline: 2px solid #6bb5ff;
+    outline-offset: -2px;
   }
 
   .mode-btn.active {
@@ -178,6 +184,12 @@ const { atomSlug, initialNotes } = Astro.props;
 
   .mode-btn:active {
     background: #222;
+  }
+
+  .mode-btn:disabled {
+    opacity: 0.5;
+    color: #555;
+    cursor: not-allowed;
   }
 
   .notes-content {
@@ -213,11 +225,17 @@ const { atomSlug, initialNotes } = Astro.props;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     line-height: 1.6;
     min-height: 200px;
+    transition: border-color 0.2s;
+  }
+
+  .notes-textarea::placeholder {
+    color: #555;
   }
 
   .notes-textarea:focus {
     border-color: #6bb5ff;
-    outline: none;
+    outline: 2px solid rgba(107, 181, 255, 0.3);
+    outline-offset: -1px;
   }
 
   .notes-edit-actions {

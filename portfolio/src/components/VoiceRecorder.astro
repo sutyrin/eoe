@@ -211,8 +211,21 @@ const { atomSlug } = Astro.props;
     transition: all 0.2s;
   }
 
+  .record-btn:focus {
+    outline: 2px solid #6bb5ff;
+    outline-offset: -2px;
+    border-color: #6bb5ff;
+  }
+
   .record-btn:active {
     background: #222;
+  }
+
+  .record-btn:disabled {
+    opacity: 0.5;
+    background: #222;
+    color: #666;
+    cursor: not-allowed;
   }
 
   .record-btn.recording {
@@ -316,11 +329,17 @@ const { atomSlug } = Astro.props;
     resize: vertical;
     font-family: -apple-system, BlinkMacSystemFont, sans-serif;
     line-height: 1.5;
+    transition: border-color 0.2s;
+  }
+
+  .transcript-textarea::placeholder {
+    color: #555;
   }
 
   .transcript-textarea:focus {
     border-color: #6bb5ff;
-    outline: none;
+    outline: 2px solid rgba(107, 181, 255, 0.3);
+    outline-offset: -1px;
   }
 
   .transcript-actions {
@@ -345,6 +364,11 @@ const { atomSlug } = Astro.props;
     color: #000;
   }
 
+  .btn-primary:focus {
+    outline: 2px solid #5aa5ef;
+    outline-offset: 2px;
+  }
+
   .btn-primary:active {
     background: #5aa5ef;
   }
@@ -352,6 +376,11 @@ const { atomSlug } = Astro.props;
   .btn-secondary {
     background: #333;
     color: #e0e0e0;
+  }
+
+  .btn-secondary:focus {
+    outline: 2px solid #6bb5ff;
+    outline-offset: 2px;
   }
 
   .btn-secondary:active {

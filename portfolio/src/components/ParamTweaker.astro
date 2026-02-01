@@ -234,6 +234,12 @@ const { atomSlug, configJson } = Astro.props;
     background: #6bb5ff;
     cursor: pointer;
     margin-top: -12px;
+    box-shadow: 0 0 0 2px transparent;
+    transition: box-shadow 0.2s;
+  }
+
+  .param-slider:focus::-webkit-slider-thumb {
+    box-shadow: 0 0 0 4px rgba(107, 181, 255, 0.3);
   }
 
   .param-slider::-webkit-slider-runnable-track {
@@ -249,12 +255,19 @@ const { atomSlug, configJson } = Astro.props;
     background: #6bb5ff;
     cursor: pointer;
     border: none;
+    box-shadow: 0 0 0 2px transparent;
+    transition: box-shadow 0.2s;
+  }
+
+  .param-slider:focus::-moz-range-thumb {
+    box-shadow: 0 0 0 4px rgba(107, 181, 255, 0.3);
   }
 
   .param-slider::-moz-range-track {
     height: 4px;
     background: #333;
     border-radius: 2px;
+    border: none;
   }
 
   .param-number {
@@ -267,11 +280,28 @@ const { atomSlug, configJson } = Astro.props;
     color: #e0e0e0;
     font-family: 'SF Mono', monospace;
     text-align: right;
+    transition: border-color 0.2s;
+  }
+
+  .param-number::placeholder {
+    color: #555;
   }
 
   .param-number:focus {
     border-color: #6bb5ff;
-    outline: none;
+    outline: 2px solid rgba(107, 181, 255, 0.3);
+    outline-offset: -1px;
+  }
+
+  /* Number input spinner buttons styling */
+  .param-number::-webkit-outer-spin-button,
+  .param-number::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  .param-number[type=number] {
+    -moz-appearance: textfield;
   }
 
   .param-actions {

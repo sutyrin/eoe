@@ -49,10 +49,16 @@ html {
   border-radius: 8px;
   color: #e0e0e0;
   outline: none;
+  transition: border-color 0.2s;
+}
+
+.search-bar::placeholder {
+  color: #555;
 }
 
 .search-bar:focus {
   border-color: #6bb5ff;
+  outline: none;
 }
 
 /* List item for gallery */
@@ -84,6 +90,7 @@ html {
   align-items: center;
   justify-content: center;
   gap: 8px;
+  transition: all 0.2s;
 }
 
 .btn-primary {
@@ -91,9 +98,19 @@ html {
   color: #0a0a0a;
 }
 
+.btn-primary:focus {
+  outline: 2px solid #5aa5ef;
+  outline-offset: 2px;
+}
+
 .btn-secondary {
   background: #333;
   color: #e0e0e0;
+}
+
+.btn-secondary:focus {
+  outline: 2px solid #6bb5ff;
+  outline-offset: 2px;
 }
 
 .btn-danger {
@@ -101,8 +118,20 @@ html {
   color: #fff;
 }
 
+.btn-danger:focus {
+  outline: 2px solid #ee3333;
+  outline-offset: 2px;
+}
+
 .btn:active {
   opacity: 0.8;
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  background: #222;
+  color: #666;
+  cursor: not-allowed;
 }
 
 /* Slider control for parameters */
@@ -116,6 +145,8 @@ html {
   height: 44px; /* Touch-friendly */
   -webkit-appearance: none;
   background: transparent;
+  cursor: pointer;
+  transition: outline 0.2s;
 }
 
 .slider-control input[type="range"]::-webkit-slider-thumb {
@@ -125,10 +156,39 @@ html {
   border-radius: 50%;
   background: #6bb5ff;
   cursor: pointer;
+  box-shadow: 0 0 0 2px transparent;
+  transition: box-shadow 0.2s;
+}
+
+.slider-control input[type="range"]:focus::-webkit-slider-thumb {
+  box-shadow: 0 0 0 4px rgba(107, 181, 255, 0.3);
 }
 
 .slider-control input[type="range"]::-webkit-slider-runnable-track {
   height: 4px;
   background: #333;
   border-radius: 2px;
+}
+
+/* Firefox slider styling */
+.slider-control input[type="range"]::-moz-range-thumb {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #6bb5ff;
+  cursor: pointer;
+  border: none;
+  outline: none;
+  transition: box-shadow 0.2s;
+}
+
+.slider-control input[type="range"]:focus::-moz-range-thumb {
+  box-shadow: 0 0 0 4px rgba(107, 181, 255, 0.3);
+}
+
+.slider-control input[type="range"]::-moz-range-track {
+  height: 4px;
+  background: #333;
+  border-radius: 2px;
+  border: none;
 }
