@@ -102,6 +102,14 @@ const { title, showBack = false, backHref = '/' } = Astro.props;
       max-width: 600px;
       margin: 0 auto;
     }
+
+    @media (min-width: 1000px) {
+      .mobile-main {
+        max-width: none;
+        padding-left: calc(16px + env(safe-area-inset-left, 0));
+        padding-right: calc(16px + env(safe-area-inset-right, 0));
+      }
+    }
   </style>
 </body>
 </html>
