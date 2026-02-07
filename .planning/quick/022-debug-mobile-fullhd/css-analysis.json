@@ -1455,6 +1455,81 @@
             "offscreen": true
           },
           {
+            "text": "Restore",
+            "visible": true,
+            "position": {
+              "x": 32,
+              "y": 1002,
+              "width": 51,
+              "height": 19
+            },
+            "css": {
+              "display": "inline-block",
+              "position": "static",
+              "visibility": "visible",
+              "width": "50.6719px",
+              "height": "19px",
+              "overflow": "visible"
+            },
+            "parent_css": {
+              "display": "block",
+              "overflow": "visible",
+              "width": "326px",
+              "maxWidth": "none"
+            },
+            "offscreen": true
+          },
+          {
+            "text": "Restore",
+            "visible": true,
+            "position": {
+              "x": 32,
+              "y": 1082,
+              "width": 51,
+              "height": 19
+            },
+            "css": {
+              "display": "inline-block",
+              "position": "static",
+              "visibility": "visible",
+              "width": "50.6719px",
+              "height": "19px",
+              "overflow": "visible"
+            },
+            "parent_css": {
+              "display": "block",
+              "overflow": "visible",
+              "width": "326px",
+              "maxWidth": "none"
+            },
+            "offscreen": true
+          },
+          {
+            "text": "Restore",
+            "visible": true,
+            "position": {
+              "x": 32,
+              "y": 1162,
+              "width": 51,
+              "height": 19
+            },
+            "css": {
+              "display": "inline-block",
+              "position": "static",
+              "visibility": "visible",
+              "width": "50.6719px",
+              "height": "19px",
+              "overflow": "visible"
+            },
+            "parent_css": {
+              "display": "block",
+              "overflow": "visible",
+              "width": "326px",
+              "maxWidth": "none"
+            },
+            "offscreen": true
+          },
+          {
             "text": "×",
             "visible": true,
             "position": {
@@ -1536,9 +1611,9 @@
             "found": true,
             "dimensions": {
               "width": 390,
-              "height": 999,
+              "height": 1239,
               "offsetWidth": 390,
-              "offsetHeight": 999
+              "offsetHeight": 1239
             },
             "css": {
               "display": "block",
@@ -1554,9 +1629,9 @@
             "found": true,
             "dimensions": {
               "width": 390,
-              "height": 930,
+              "height": 1170,
               "offsetWidth": 390,
-              "offsetHeight": 930
+              "offsetHeight": 1170
             },
             "css": {
               "display": "block",
@@ -1573,10 +1648,10 @@
           "External: https://llm.sutyrin.pro/_astro/backup.jZW2Ecjw.css"
         ],
         "visibleButtonCount": 12,
-        "offscreenButtons": 1,
+        "offscreenButtons": 4,
         "hiddenButtons": 0,
         "issues": [
-          "1 button(s) positioned off-screen"
+          "4 button(s) positioned off-screen"
         ]
       },
       "fullhd": {
@@ -1837,6 +1912,106 @@
             "offscreen": false
           },
           {
+            "text": "Restore",
+            "visible": true,
+            "position": {
+              "x": 272,
+              "y": 1002,
+              "width": 51,
+              "height": 19
+            },
+            "css": {
+              "display": "inline-block",
+              "position": "static",
+              "visibility": "visible",
+              "width": "50.6719px",
+              "height": "19px",
+              "overflow": "visible"
+            },
+            "parent_css": {
+              "display": "block",
+              "overflow": "visible",
+              "width": "536px",
+              "maxWidth": "none"
+            },
+            "offscreen": false
+          },
+          {
+            "text": "Restore",
+            "visible": true,
+            "position": {
+              "x": 272,
+              "y": 1082,
+              "width": 51,
+              "height": 19
+            },
+            "css": {
+              "display": "inline-block",
+              "position": "static",
+              "visibility": "visible",
+              "width": "50.6719px",
+              "height": "19px",
+              "overflow": "visible"
+            },
+            "parent_css": {
+              "display": "block",
+              "overflow": "visible",
+              "width": "536px",
+              "maxWidth": "none"
+            },
+            "offscreen": false
+          },
+          {
+            "text": "Restore",
+            "visible": true,
+            "position": {
+              "x": 272,
+              "y": 1162,
+              "width": 51,
+              "height": 19
+            },
+            "css": {
+              "display": "inline-block",
+              "position": "static",
+              "visibility": "visible",
+              "width": "50.6719px",
+              "height": "19px",
+              "overflow": "visible"
+            },
+            "parent_css": {
+              "display": "block",
+              "overflow": "visible",
+              "width": "536px",
+              "maxWidth": "none"
+            },
+            "offscreen": false
+          },
+          {
+            "text": "Restore",
+            "visible": true,
+            "position": {
+              "x": 272,
+              "y": 1242,
+              "width": 51,
+              "height": 19
+            },
+            "css": {
+              "display": "inline-block",
+              "position": "static",
+              "visibility": "visible",
+              "width": "50.6719px",
+              "height": "19px",
+              "overflow": "visible"
+            },
+            "parent_css": {
+              "display": "block",
+              "overflow": "visible",
+              "width": "536px",
+              "maxWidth": "none"
+            },
+            "offscreen": false
+          },
+          {
             "text": "×",
             "visible": true,
             "position": {
@@ -1936,9 +2111,9 @@
             "found": true,
             "dimensions": {
               "width": 600,
-              "height": 930,
+              "height": 1250,
               "offsetWidth": 600,
-              "offsetHeight": 930
+              "offsetHeight": 1250
             },
             "css": {
               "display": "block",
@@ -1954,7 +2129,7 @@
           "External: https://llm.sutyrin.pro/_astro/index.DMOABKrp.css",
           "External: https://llm.sutyrin.pro/_astro/backup.jZW2Ecjw.css"
         ],
-        "visibleButtonCount": 13,
+        "visibleButtonCount": 17,
         "offscreenButtons": 0,
         "hiddenButtons": 0,
         "issues": [

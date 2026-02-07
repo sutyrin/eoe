@@ -1,0 +1,835 @@
+[
+  {
+    "scenario": "Desktop Atom Canvas View",
+    "url": "https://llm.sutyrin.pro/atom/2026-01-30-au1",
+    "viewport": {
+      "width": 1280,
+      "height": 800
+    },
+    "pageTitle": "au1 - Engines of Experience",
+    "pageUrl": "https://llm.sutyrin.pro/atom/2026-01-30-au1/",
+    "errors": [],
+    "consoleMessages": [
+      {
+        "type": "log",
+        "text": "%c * Tone.js v15.1.22 *  background: #000; color: #fff",
+        "args": 2
+      },
+      {
+        "type": "warning",
+        "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "args": 0
+      },
+      {
+        "type": "warning",
+        "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "args": 0
+      },
+      {
+        "type": "warning",
+        "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "args": 0
+      },
+      {
+        "type": "warning",
+        "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "args": 0
+      },
+      {
+        "type": "warning",
+        "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "args": 0
+      },
+      {
+        "type": "warning",
+        "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "args": 0
+      },
+      {
+        "type": "warning",
+        "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "args": 0
+      },
+      {
+        "type": "warning",
+        "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "args": 0
+      },
+      {
+        "type": "warning",
+        "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "args": 0
+      },
+      {
+        "type": "warning",
+        "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "args": 0
+      },
+      {
+        "type": "warning",
+        "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "args": 0
+      },
+      {
+        "type": "warning",
+        "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "args": 0
+      },
+      {
+        "type": "warning",
+        "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "args": 0
+      },
+      {
+        "type": "warning",
+        "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "args": 0
+      },
+      {
+        "type": "warning",
+        "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "args": 0
+      }
+    ],
+    "responseErrors": false,
+    "checks": [
+      {
+        "selector": "canvas",
+        "description": "Canvas element should exist",
+        "expected": true,
+        "found": false,
+        "passed": false
+      },
+      {
+        "selector": "button:has-text(\"play\")",
+        "description": "Play button should exist (case-insensitive)",
+        "expected": true,
+        "found": false,
+        "passed": false
+      },
+      {
+        "selector": "a[href*=\"/mobile\"]",
+        "description": "Mobile gallery link should NOT be visible",
+        "expected": false,
+        "found": false,
+        "passed": true
+      },
+      {
+        "selector": "li.atom-item",
+        "description": "Gallery items should NOT appear",
+        "expected": false,
+        "found": false,
+        "passed": true
+      }
+    ],
+    "screenshot": "/home/pavel/dev/play/eoe/.planning/quick/015-debug-atom-page/screenshots/desktop-atom-canvas-view.png",
+    "dom": {
+      "title": "au1 - Engines of Experience",
+      "url": "https://llm.sutyrin.pro/atom/2026-01-30-au1/",
+      "head": "<head><meta charset=\"UTF-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><title>au1 - Engines of Experience</title><style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:SF Mono,Fira Code,monospace;background:#0a0a0a;color:#e0e0e0;min-height:100vh}a{color:#6bb5ff;text-decoration:none}a:hover{text-decoration:underline}\n.p5-container[data-astro-cid-j7egel5z]{display:flex;justify-content:center;margin:1rem 0}iframe[data-astro-cid-j7egel5z]{max-width:100%}\n</style></head>...",
+      "bodyPreview": "<body> <header style=\"padding: 2rem; border-bottom: 1px solid #222;\"> <a href=\"/\" style=\"font-size: 1.2rem; font-weight: bold; color: #fff;\">\nEngines of Experience\n</a> </header> <main style=\"padding: 2rem; max-width: 1200px; margin: 0 auto;\">  <div style=\"margin-bottom: 1rem;\"> <a href=\"/\" style=\"color: #666; font-size: 0.85rem;\">← Back to Gallery</a> </div> <h1 style=\"margin-bottom: 0.5rem; font-size: 1.5rem;\">au1</h1> <p style=\"color: #666; margin-bottom: 2rem; font-size: 0.85rem;\"> 2026-01-30 · idea </p> <div class=\"p5-container\" data-astro-cid-j7egel5z=\"\"> <iframe src=\"/atoms/2026-01-30-au1/index.html\" width=\"800\" height=\"800\" style=\"border: none; border-radius: 4px;\" loading=\"lazy\" title=\"2026-01-30-au1\" data-astro-cid-j7egel5z=\"\"></iframe> </div>  <details style=\"margin-top: 2rem;\"> <summary style=\"cursor: pointer; color: #888;\">Notes</summary> <pre style=\"margin-top: 1rem; padding: 1rem; background: #151515; border-radius: 8px; overflow-x: auto; font-size: 0.85rem; line-height: 1.5; white-space: pre-wrap;\"># au1\n\n**Created:** 2026-01-30\n**Stage:** idea\n**Type:** audio\n\n## Intent\nWhat am I exploring with this audio atom? What mood or texture?\n\n## Sound Design\n- Synth type:\n- Key/scale:\n- Tempo:\n- Effects chain:\n\n## Technical Decisions\n- Why this approach?\n- What synthesis techniques?\n\n## Session Log\n\n### 2026-01-30 14:03\n- Created audio atom\n- Initial setup\n\n### 2026-01-30 11:03:53\n- \n</pre> </details> </main> </body>...",
+      "bodyLength": 1448
+    },
+    "interactiveElements": {
+      "canvasCount": 0,
+      "buttonCount": 0,
+      "tabCount": 0,
+      "formInputs": 0,
+      "videoElements": 0,
+      "audioElements": 0,
+      "iframes": 1
+    }
+  },
+  {
+    "scenario": "Mobile Detail View (Reported Issue)",
+    "url": "https://llm.sutyrin.pro/mobile/au1",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "pageTitle": "Gallery - Engines of Experience",
+    "pageUrl": "https://llm.sutyrin.pro/mobile/au1",
+    "errors": [
+      "Console Error: Error parsing code: SyntaxError: Unexpected token (1166:18)\n    at pp$4.raise (https://llm.sutyrin.pro/atoms/2026-01-30-my-first-sketch/sketch.bundle.js:54280:13)\n    at pp$9.unexpected (https://llm.sutyrin.pro/atoms/2026-01-30-my-first-sketch/sketch.bundle.js:51665:8)\n    at pp$9.expect (https://llm.sutyrin.pro/atoms/2026-01-30-my-first-sketch/sketch.bundle.js:51662:27)\n    at pp$5.parseMethod (https://llm.sutyrin.pro/atoms/2026-01-30-my-first-sketch/sketch.bundle.js:54075:8)\n    at pp$8.parseClassMethod (https://llm.sutyrin.pro/atoms/2026-01-30-my-first-sketch/sketch.bundle.js:52449:35)\n    at pp$8.parseClassElement (https://llm.sutyrin.pro/atoms/2026-01-30-my-first-sketch/sketch.bundle.js:52417:10)\n    at pp$8.parseClass (https://llm.sutyrin.pro/atoms/2026-01-30-my-first-sketch/sketch.bundle.js:52340:25)\n    at pp$8.parseStatement (https://llm.sutyrin.pro/atoms/2026-01-30-my-first-sketch/sketch.bundle.js:51837:19)\n    at pp$8.parseTopLevel (https://llm.sutyrin.pro/atoms/2026-01-30-my-first-sketch/sketch.bundle.js:51719:21)\n    at Parser2.parse (https://llm.sutyrin.pro/atoms/2026-01-30-my-first-sketch/sketch.bundle.js:51515:15)",
+      "Console Error: Error parsing code: SyntaxError: Unexpected token (1166:18)\n    at pp$4.raise (https://llm.sutyrin.pro/atoms/2026-01-30-my-first-sketch/sketch.bundle.js:54280:13)\n    at pp$9.unexpected (https://llm.sutyrin.pro/atoms/2026-01-30-my-first-sketch/sketch.bundle.js:51665:8)\n    at pp$9.expect (https://llm.sutyrin.pro/atoms/2026-01-30-my-first-sketch/sketch.bundle.js:51662:27)\n    at pp$5.parseMethod (https://llm.sutyrin.pro/atoms/2026-01-30-my-first-sketch/sketch.bundle.js:54075:8)\n    at pp$8.parseClassMethod (https://llm.sutyrin.pro/atoms/2026-01-30-my-first-sketch/sketch.bundle.js:52449:35)\n    at pp$8.parseClassElement (https://llm.sutyrin.pro/atoms/2026-01-30-my-first-sketch/sketch.bundle.js:52417:10)\n    at pp$8.parseClass (https://llm.sutyrin.pro/atoms/2026-01-30-my-first-sketch/sketch.bundle.js:52340:25)\n    at pp$8.parseStatement (https://llm.sutyrin.pro/atoms/2026-01-30-my-first-sketch/sketch.bundle.js:51837:19)\n    at pp$8.parseTopLevel (https://llm.sutyrin.pro/atoms/2026-01-30-my-first-sketch/sketch.bundle.js:51719:21)\n    at Parser2.parse (https://llm.sutyrin.pro/atoms/2026-01-30-my-first-sketch/sketch.bundle.js:51515:15)",
+      "Console Error: Error parsing code: SyntaxError: Unexpected token (1166:18)\n    at pp$4.raise (https://llm.sutyrin.pro/atoms/2026-01-30-my-first-sketch/sketch.bundle.js:54280:13)\n    at pp$9.unexpected (https://llm.sutyrin.pro/atoms/2026-01-30-my-first-sketch/sketch.bundle.js:51665:8)\n    at pp$9.expect (https://llm.sutyrin.pro/atoms/2026-01-30-my-first-sketch/sketch.bundle.js:51662:27)\n    at pp$5.parseMethod (https://llm.sutyrin.pro/atoms/2026-01-30-my-first-sketch/sketch.bundle.js:54075:8)\n    at pp$8.parseClassMethod (https://llm.sutyrin.pro/atoms/2026-01-30-my-first-sketch/sketch.bundle.js:52449:35)\n    at pp$8.parseClassElement (https://llm.sutyrin.pro/atoms/2026-01-30-my-first-sketch/sketch.bundle.js:52417:10)\n    at pp$8.parseClass (https://llm.sutyrin.pro/atoms/2026-01-30-my-first-sketch/sketch.bundle.js:52340:25)\n    at pp$8.parseStatement (https://llm.sutyrin.pro/atoms/2026-01-30-my-first-sketch/sketch.bundle.js:51837:19)\n    at pp$8.parseTopLevel (https://llm.sutyrin.pro/atoms/2026-01-30-my-first-sketch/sketch.bundle.js:51719:21)\n    at Parser2.parse (https://llm.sutyrin.pro/atoms/2026-01-30-my-first-sketch/sketch.bundle.js:51515:15)",
+      "Console Error: Error parsing code: SyntaxError: Unexpected token (1166:18)\n    at pp$4.raise (https://llm.sutyrin.pro/atoms/2026-01-29-workflow-test/sketch.bundle.js:54280:13)\n    at pp$9.unexpected (https://llm.sutyrin.pro/atoms/2026-01-29-workflow-test/sketch.bundle.js:51665:8)\n    at pp$9.expect (https://llm.sutyrin.pro/atoms/2026-01-29-workflow-test/sketch.bundle.js:51662:27)\n    at pp$5.parseMethod (https://llm.sutyrin.pro/atoms/2026-01-29-workflow-test/sketch.bundle.js:54075:8)\n    at pp$8.parseClassMethod (https://llm.sutyrin.pro/atoms/2026-01-29-workflow-test/sketch.bundle.js:52449:35)\n    at pp$8.parseClassElement (https://llm.sutyrin.pro/atoms/2026-01-29-workflow-test/sketch.bundle.js:52417:10)\n    at pp$8.parseClass (https://llm.sutyrin.pro/atoms/2026-01-29-workflow-test/sketch.bundle.js:52340:25)\n    at pp$8.parseStatement (https://llm.sutyrin.pro/atoms/2026-01-29-workflow-test/sketch.bundle.js:51837:19)\n    at pp$8.parseTopLevel (https://llm.sutyrin.pro/atoms/2026-01-29-workflow-test/sketch.bundle.js:51719:21)\n    at Parser2.parse (https://llm.sutyrin.pro/atoms/2026-01-29-workflow-test/sketch.bundle.js:51515:15)",
+      "Console Error: Error parsing code: SyntaxError: Unexpected token (1166:18)\n    at pp$4.raise (https://llm.sutyrin.pro/atoms/2026-01-29-workflow-test/sketch.bundle.js:54280:13)\n    at pp$9.unexpected (https://llm.sutyrin.pro/atoms/2026-01-29-workflow-test/sketch.bundle.js:51665:8)\n    at pp$9.expect (https://llm.sutyrin.pro/atoms/2026-01-29-workflow-test/sketch.bundle.js:51662:27)\n    at pp$5.parseMethod (https://llm.sutyrin.pro/atoms/2026-01-29-workflow-test/sketch.bundle.js:54075:8)\n    at pp$8.parseClassMethod (https://llm.sutyrin.pro/atoms/2026-01-29-workflow-test/sketch.bundle.js:52449:35)\n    at pp$8.parseClassElement (https://llm.sutyrin.pro/atoms/2026-01-29-workflow-test/sketch.bundle.js:52417:10)\n    at pp$8.parseClass (https://llm.sutyrin.pro/atoms/2026-01-29-workflow-test/sketch.bundle.js:52340:25)\n    at pp$8.parseStatement (https://llm.sutyrin.pro/atoms/2026-01-29-workflow-test/sketch.bundle.js:51837:19)\n    at pp$8.parseTopLevel (https://llm.sutyrin.pro/atoms/2026-01-29-workflow-test/sketch.bundle.js:51719:21)\n    at Parser2.parse (https://llm.sutyrin.pro/atoms/2026-01-29-workflow-test/sketch.bundle.js:51515:15)",
+      "Console Error: Error parsing code: SyntaxError: Unexpected token (1166:18)\n    at pp$4.raise (https://llm.sutyrin.pro/atoms/2026-01-29-workflow-test/sketch.bundle.js:54280:13)\n    at pp$9.unexpected (https://llm.sutyrin.pro/atoms/2026-01-29-workflow-test/sketch.bundle.js:51665:8)\n    at pp$9.expect (https://llm.sutyrin.pro/atoms/2026-01-29-workflow-test/sketch.bundle.js:51662:27)\n    at pp$5.parseMethod (https://llm.sutyrin.pro/atoms/2026-01-29-workflow-test/sketch.bundle.js:54075:8)\n    at pp$8.parseClassMethod (https://llm.sutyrin.pro/atoms/2026-01-29-workflow-test/sketch.bundle.js:52449:35)\n    at pp$8.parseClassElement (https://llm.sutyrin.pro/atoms/2026-01-29-workflow-test/sketch.bundle.js:52417:10)\n    at pp$8.parseClass (https://llm.sutyrin.pro/atoms/2026-01-29-workflow-test/sketch.bundle.js:52340:25)\n    at pp$8.parseStatement (https://llm.sutyrin.pro/atoms/2026-01-29-workflow-test/sketch.bundle.js:51837:19)\n    at pp$8.parseTopLevel (https://llm.sutyrin.pro/atoms/2026-01-29-workflow-test/sketch.bundle.js:51719:21)\n    at Parser2.parse (https://llm.sutyrin.pro/atoms/2026-01-29-workflow-test/sketch.bundle.js:51515:15)",
+      "Console Error: Error parsing code: SyntaxError: Unexpected token (1166:18)\n    at pp$4.raise (https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js:54280:13)\n    at pp$9.unexpected (https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js:51665:8)\n    at pp$9.expect (https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js:51662:27)\n    at pp$5.parseMethod (https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js:54075:8)\n    at pp$8.parseClassMethod (https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js:52449:35)\n    at pp$8.parseClassElement (https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js:52417:10)\n    at pp$8.parseClass (https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js:52340:25)\n    at pp$8.parseStatement (https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js:51837:19)\n    at pp$8.parseTopLevel (https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js:51719:21)\n    at Parser2.parse (https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js:51515:15)",
+      "Console Error: Error parsing code: SyntaxError: Unexpected token (1166:18)\n    at pp$4.raise (https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js:54280:13)\n    at pp$9.unexpected (https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js:51665:8)\n    at pp$9.expect (https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js:51662:27)\n    at pp$5.parseMethod (https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js:54075:8)\n    at pp$8.parseClassMethod (https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js:52449:35)\n    at pp$8.parseClassElement (https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js:52417:10)\n    at pp$8.parseClass (https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js:52340:25)\n    at pp$8.parseStatement (https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js:51837:19)\n    at pp$8.parseTopLevel (https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js:51719:21)\n    at Parser2.parse (https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js:51515:15)",
+      "Console Error: Error parsing code: SyntaxError: Unexpected token (1166:18)\n    at pp$4.raise (https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js:54280:13)\n    at pp$9.unexpected (https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js:51665:8)\n    at pp$9.expect (https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js:51662:27)\n    at pp$5.parseMethod (https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js:54075:8)\n    at pp$8.parseClassMethod (https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js:52449:35)\n    at pp$8.parseClassElement (https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js:52417:10)\n    at pp$8.parseClass (https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js:52340:25)\n    at pp$8.parseStatement (https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js:51837:19)\n    at pp$8.parseTopLevel (https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js:51719:21)\n    at Parser2.parse (https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js:51515:15)",
+      "Console Error: Error parsing code: SyntaxError: Unexpected token (1166:18)\n    at pp$4.raise (https://llm.sutyrin.pro/atoms/2026-01-30-test-verify/sketch.bundle.js:54280:13)\n    at pp$9.unexpected (https://llm.sutyrin.pro/atoms/2026-01-30-test-verify/sketch.bundle.js:51665:8)\n    at pp$9.expect (https://llm.sutyrin.pro/atoms/2026-01-30-test-verify/sketch.bundle.js:51662:27)\n    at pp$5.parseMethod (https://llm.sutyrin.pro/atoms/2026-01-30-test-verify/sketch.bundle.js:54075:8)\n    at pp$8.parseClassMethod (https://llm.sutyrin.pro/atoms/2026-01-30-test-verify/sketch.bundle.js:52449:35)\n    at pp$8.parseClassElement (https://llm.sutyrin.pro/atoms/2026-01-30-test-verify/sketch.bundle.js:52417:10)\n    at pp$8.parseClass (https://llm.sutyrin.pro/atoms/2026-01-30-test-verify/sketch.bundle.js:52340:25)\n    at pp$8.parseStatement (https://llm.sutyrin.pro/atoms/2026-01-30-test-verify/sketch.bundle.js:51837:19)\n    at pp$8.parseTopLevel (https://llm.sutyrin.pro/atoms/2026-01-30-test-verify/sketch.bundle.js:51719:21)\n    at Parser2.parse (https://llm.sutyrin.pro/atoms/2026-01-30-test-verify/sketch.bundle.js:51515:15)",
+      "Console Error: Error parsing code: SyntaxError: Unexpected token (1166:18)\n    at pp$4.raise (https://llm.sutyrin.pro/atoms/2026-01-30-test-verify/sketch.bundle.js:54280:13)\n    at pp$9.unexpected (https://llm.sutyrin.pro/atoms/2026-01-30-test-verify/sketch.bundle.js:51665:8)\n    at pp$9.expect (https://llm.sutyrin.pro/atoms/2026-01-30-test-verify/sketch.bundle.js:51662:27)\n    at pp$5.parseMethod (https://llm.sutyrin.pro/atoms/2026-01-30-test-verify/sketch.bundle.js:54075:8)\n    at pp$8.parseClassMethod (https://llm.sutyrin.pro/atoms/2026-01-30-test-verify/sketch.bundle.js:52449:35)\n    at pp$8.parseClassElement (https://llm.sutyrin.pro/atoms/2026-01-30-test-verify/sketch.bundle.js:52417:10)\n    at pp$8.parseClass (https://llm.sutyrin.pro/atoms/2026-01-30-test-verify/sketch.bundle.js:52340:25)\n    at pp$8.parseStatement (https://llm.sutyrin.pro/atoms/2026-01-30-test-verify/sketch.bundle.js:51837:19)\n    at pp$8.parseTopLevel (https://llm.sutyrin.pro/atoms/2026-01-30-test-verify/sketch.bundle.js:51719:21)\n    at Parser2.parse (https://llm.sutyrin.pro/atoms/2026-01-30-test-verify/sketch.bundle.js:51515:15)",
+      "Console Error: Error parsing code: SyntaxError: Unexpected token (1166:18)\n    at pp$4.raise (https://llm.sutyrin.pro/atoms/2026-01-30-test-verify/sketch.bundle.js:54280:13)\n    at pp$9.unexpected (https://llm.sutyrin.pro/atoms/2026-01-30-test-verify/sketch.bundle.js:51665:8)\n    at pp$9.expect (https://llm.sutyrin.pro/atoms/2026-01-30-test-verify/sketch.bundle.js:51662:27)\n    at pp$5.parseMethod (https://llm.sutyrin.pro/atoms/2026-01-30-test-verify/sketch.bundle.js:54075:8)\n    at pp$8.parseClassMethod (https://llm.sutyrin.pro/atoms/2026-01-30-test-verify/sketch.bundle.js:52449:35)\n    at pp$8.parseClassElement (https://llm.sutyrin.pro/atoms/2026-01-30-test-verify/sketch.bundle.js:52417:10)\n    at pp$8.parseClass (https://llm.sutyrin.pro/atoms/2026-01-30-test-verify/sketch.bundle.js:52340:25)\n    at pp$8.parseStatement (https://llm.sutyrin.pro/atoms/2026-01-30-test-verify/sketch.bundle.js:51837:19)\n    at pp$8.parseTopLevel (https://llm.sutyrin.pro/atoms/2026-01-30-test-verify/sketch.bundle.js:51719:21)\n    at Parser2.parse (https://llm.sutyrin.pro/atoms/2026-01-30-test-verify/sketch.bundle.js:51515:15)"
+    ],
+    "consoleMessages": [
+      {
+        "type": "log",
+        "text": "%c * Tone.js v15.1.22 *  background: #000; color: #fff",
+        "args": 2
+      },
+      {
+        "type": "warning",
+        "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "args": 0
+      },
+      {
+        "type": "warning",
+        "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "args": 0
+      },
+      {
+        "type": "log",
+        "text": "%c * Tone.js v15.1.22 *  background: #000; color: #fff",
+        "args": 2
+      },
+      {
+        "type": "warning",
+        "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "args": 0
+      },
+      {
+        "type": "warning",
+        "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "args": 0
+      },
+      {
+        "type": "log",
+        "text": "%c * Tone.js v15.1.22 *  background: #000; color: #fff",
+        "args": 2
+      },
+      {
+        "type": "warning",
+        "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "args": 0
+      },
+      {
+        "type": "warning",
+        "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "args": 0
+      },
+      {
+        "type": "warning",
+        "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "args": 0
+      },
+      {
+        "type": "warning",
+        "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "args": 0
+      },
+      {
+        "type": "warning",
+        "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "args": 0
+      },
+      {
+        "type": "warning",
+        "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "args": 0
+      },
+      {
+        "type": "warning",
+        "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "args": 0
+      },
+      {
+        "type": "warning",
+        "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "args": 0
+      },
+      {
+        "type": "warning",
+        "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "args": 0
+      },
+      {
+        "type": "warning",
+        "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "args": 0
+      },
+      {
+        "type": "warning",
+        "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "args": 0
+      },
+      {
+        "type": "warning",
+        "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "args": 0
+      },
+      {
+        "type": "warning",
+        "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "args": 0
+      },
+      {
+        "type": "warning",
+        "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "args": 0
+      },
+      {
+        "type": "warning",
+        "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "args": 0
+      },
+      {
+        "type": "warning",
+        "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "args": 0
+      },
+      {
+        "type": "warning",
+        "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "args": 0
+      },
+      {
+        "type": "warning",
+        "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "args": 0
+      },
+      {
+        "type": "warning",
+        "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "args": 0
+      },
+      {
+        "type": "warning",
+        "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "args": 0
+      },
+      {
+        "type": "warning",
+        "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "args": 0
+      },
+      {
+        "type": "warning",
+        "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "args": 0
+      },
+      {
+        "type": "warning",
+        "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "args": 0
+      },
+      {
+        "type": "warning",
+        "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "args": 0
+      },
+      {
+        "type": "warning",
+        "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "args": 0
+      },
+      {
+        "type": "warning",
+        "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "args": 0
+      },
+      {
+        "type": "warning",
+        "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "args": 0
+      },
+      {
+        "type": "warning",
+        "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "args": 0
+      },
+      {
+        "type": "warning",
+        "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "args": 0
+      },
+      {
+        "type": "warning",
+        "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "args": 0
+      },
+      {
+        "type": "warning",
+        "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "args": 0
+      },
+      {
+        "type": "warning",
+        "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "args": 0
+      },
+      {
+        "type": "warning",
+        "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "args": 0
+      },
+      {
+        "type": "warning",
+        "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "args": 0
+      },
+      {
+        "type": "warning",
+        "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "args": 0
+      },
+      {
+        "type": "warning",
+        "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "args": 0
+      },
+      {
+        "type": "warning",
+        "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "args": 0
+      },
+      {
+        "type": "warning",
+        "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "args": 0
+      },
+      {
+        "type": "warning",
+        "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "args": 0
+      },
+      {
+        "type": "warning",
+        "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "args": 0
+      },
+      {
+        "type": "warning",
+        "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "args": 0
+      },
+      {
+        "type": "error",
+        "text": "Error parsing code: SyntaxError: Unexpected token (1166:18)\n    at pp$4.raise (https://llm.sutyrin.pro/atoms/2026-01-30-my-first-sketch/sketch.bundle.js:54280:13)\n    at pp$9.unexpected (https://llm.sutyrin.pro/atoms/2026-01-30-my-first-sketch/sketch.bundle.js:51665:8)\n    at pp$9.expect (https://llm.sutyrin.pro/atoms/2026-01-30-my-first-sketch/sketch.bundle.js:51662:27)\n    at pp$5.parseMethod (https://llm.sutyrin.pro/atoms/2026-01-30-my-first-sketch/sketch.bundle.js:54075:8)\n    at pp$8.parseClassMethod (https://llm.sutyrin.pro/atoms/2026-01-30-my-first-sketch/sketch.bundle.js:52449:35)\n    at pp$8.parseClassElement (https://llm.sutyrin.pro/atoms/2026-01-30-my-first-sketch/sketch.bundle.js:52417:10)\n    at pp$8.parseClass (https://llm.sutyrin.pro/atoms/2026-01-30-my-first-sketch/sketch.bundle.js:52340:25)\n    at pp$8.parseStatement (https://llm.sutyrin.pro/atoms/2026-01-30-my-first-sketch/sketch.bundle.js:51837:19)\n    at pp$8.parseTopLevel (https://llm.sutyrin.pro/atoms/2026-01-30-my-first-sketch/sketch.bundle.js:51719:21)\n    at Parser2.parse (https://llm.sutyrin.pro/atoms/2026-01-30-my-first-sketch/sketch.bundle.js:51515:15)",
+        "args": 2
+      },
+      {
+        "type": "error",
+        "text": "Error parsing code: SyntaxError: Unexpected token (1166:18)\n    at pp$4.raise (https://llm.sutyrin.pro/atoms/2026-01-30-my-first-sketch/sketch.bundle.js:54280:13)\n    at pp$9.unexpected (https://llm.sutyrin.pro/atoms/2026-01-30-my-first-sketch/sketch.bundle.js:51665:8)\n    at pp$9.expect (https://llm.sutyrin.pro/atoms/2026-01-30-my-first-sketch/sketch.bundle.js:51662:27)\n    at pp$5.parseMethod (https://llm.sutyrin.pro/atoms/2026-01-30-my-first-sketch/sketch.bundle.js:54075:8)\n    at pp$8.parseClassMethod (https://llm.sutyrin.pro/atoms/2026-01-30-my-first-sketch/sketch.bundle.js:52449:35)\n    at pp$8.parseClassElement (https://llm.sutyrin.pro/atoms/2026-01-30-my-first-sketch/sketch.bundle.js:52417:10)\n    at pp$8.parseClass (https://llm.sutyrin.pro/atoms/2026-01-30-my-first-sketch/sketch.bundle.js:52340:25)\n    at pp$8.parseStatement (https://llm.sutyrin.pro/atoms/2026-01-30-my-first-sketch/sketch.bundle.js:51837:19)\n    at pp$8.parseTopLevel (https://llm.sutyrin.pro/atoms/2026-01-30-my-first-sketch/sketch.bundle.js:51719:21)\n    at Parser2.parse (https://llm.sutyrin.pro/atoms/2026-01-30-my-first-sketch/sketch.bundle.js:51515:15)",
+        "args": 2
+      },
+      {
+        "type": "error",
+        "text": "Error parsing code: SyntaxError: Unexpected token (1166:18)\n    at pp$4.raise (https://llm.sutyrin.pro/atoms/2026-01-30-my-first-sketch/sketch.bundle.js:54280:13)\n    at pp$9.unexpected (https://llm.sutyrin.pro/atoms/2026-01-30-my-first-sketch/sketch.bundle.js:51665:8)\n    at pp$9.expect (https://llm.sutyrin.pro/atoms/2026-01-30-my-first-sketch/sketch.bundle.js:51662:27)\n    at pp$5.parseMethod (https://llm.sutyrin.pro/atoms/2026-01-30-my-first-sketch/sketch.bundle.js:54075:8)\n    at pp$8.parseClassMethod (https://llm.sutyrin.pro/atoms/2026-01-30-my-first-sketch/sketch.bundle.js:52449:35)\n    at pp$8.parseClassElement (https://llm.sutyrin.pro/atoms/2026-01-30-my-first-sketch/sketch.bundle.js:52417:10)\n    at pp$8.parseClass (https://llm.sutyrin.pro/atoms/2026-01-30-my-first-sketch/sketch.bundle.js:52340:25)\n    at pp$8.parseStatement (https://llm.sutyrin.pro/atoms/2026-01-30-my-first-sketch/sketch.bundle.js:51837:19)\n    at pp$8.parseTopLevel (https://llm.sutyrin.pro/atoms/2026-01-30-my-first-sketch/sketch.bundle.js:51719:21)\n    at Parser2.parse (https://llm.sutyrin.pro/atoms/2026-01-30-my-first-sketch/sketch.bundle.js:51515:15)",
+        "args": 2
+      },
+      {
+        "type": "error",
+        "text": "Error parsing code: SyntaxError: Unexpected token (1166:18)\n    at pp$4.raise (https://llm.sutyrin.pro/atoms/2026-01-29-workflow-test/sketch.bundle.js:54280:13)\n    at pp$9.unexpected (https://llm.sutyrin.pro/atoms/2026-01-29-workflow-test/sketch.bundle.js:51665:8)\n    at pp$9.expect (https://llm.sutyrin.pro/atoms/2026-01-29-workflow-test/sketch.bundle.js:51662:27)\n    at pp$5.parseMethod (https://llm.sutyrin.pro/atoms/2026-01-29-workflow-test/sketch.bundle.js:54075:8)\n    at pp$8.parseClassMethod (https://llm.sutyrin.pro/atoms/2026-01-29-workflow-test/sketch.bundle.js:52449:35)\n    at pp$8.parseClassElement (https://llm.sutyrin.pro/atoms/2026-01-29-workflow-test/sketch.bundle.js:52417:10)\n    at pp$8.parseClass (https://llm.sutyrin.pro/atoms/2026-01-29-workflow-test/sketch.bundle.js:52340:25)\n    at pp$8.parseStatement (https://llm.sutyrin.pro/atoms/2026-01-29-workflow-test/sketch.bundle.js:51837:19)\n    at pp$8.parseTopLevel (https://llm.sutyrin.pro/atoms/2026-01-29-workflow-test/sketch.bundle.js:51719:21)\n    at Parser2.parse (https://llm.sutyrin.pro/atoms/2026-01-29-workflow-test/sketch.bundle.js:51515:15)",
+        "args": 2
+      },
+      {
+        "type": "error",
+        "text": "Error parsing code: SyntaxError: Unexpected token (1166:18)\n    at pp$4.raise (https://llm.sutyrin.pro/atoms/2026-01-29-workflow-test/sketch.bundle.js:54280:13)\n    at pp$9.unexpected (https://llm.sutyrin.pro/atoms/2026-01-29-workflow-test/sketch.bundle.js:51665:8)\n    at pp$9.expect (https://llm.sutyrin.pro/atoms/2026-01-29-workflow-test/sketch.bundle.js:51662:27)\n    at pp$5.parseMethod (https://llm.sutyrin.pro/atoms/2026-01-29-workflow-test/sketch.bundle.js:54075:8)\n    at pp$8.parseClassMethod (https://llm.sutyrin.pro/atoms/2026-01-29-workflow-test/sketch.bundle.js:52449:35)\n    at pp$8.parseClassElement (https://llm.sutyrin.pro/atoms/2026-01-29-workflow-test/sketch.bundle.js:52417:10)\n    at pp$8.parseClass (https://llm.sutyrin.pro/atoms/2026-01-29-workflow-test/sketch.bundle.js:52340:25)\n    at pp$8.parseStatement (https://llm.sutyrin.pro/atoms/2026-01-29-workflow-test/sketch.bundle.js:51837:19)\n    at pp$8.parseTopLevel (https://llm.sutyrin.pro/atoms/2026-01-29-workflow-test/sketch.bundle.js:51719:21)\n    at Parser2.parse (https://llm.sutyrin.pro/atoms/2026-01-29-workflow-test/sketch.bundle.js:51515:15)",
+        "args": 2
+      },
+      {
+        "type": "error",
+        "text": "Error parsing code: SyntaxError: Unexpected token (1166:18)\n    at pp$4.raise (https://llm.sutyrin.pro/atoms/2026-01-29-workflow-test/sketch.bundle.js:54280:13)\n    at pp$9.unexpected (https://llm.sutyrin.pro/atoms/2026-01-29-workflow-test/sketch.bundle.js:51665:8)\n    at pp$9.expect (https://llm.sutyrin.pro/atoms/2026-01-29-workflow-test/sketch.bundle.js:51662:27)\n    at pp$5.parseMethod (https://llm.sutyrin.pro/atoms/2026-01-29-workflow-test/sketch.bundle.js:54075:8)\n    at pp$8.parseClassMethod (https://llm.sutyrin.pro/atoms/2026-01-29-workflow-test/sketch.bundle.js:52449:35)\n    at pp$8.parseClassElement (https://llm.sutyrin.pro/atoms/2026-01-29-workflow-test/sketch.bundle.js:52417:10)\n    at pp$8.parseClass (https://llm.sutyrin.pro/atoms/2026-01-29-workflow-test/sketch.bundle.js:52340:25)\n    at pp$8.parseStatement (https://llm.sutyrin.pro/atoms/2026-01-29-workflow-test/sketch.bundle.js:51837:19)\n    at pp$8.parseTopLevel (https://llm.sutyrin.pro/atoms/2026-01-29-workflow-test/sketch.bundle.js:51719:21)\n    at Parser2.parse (https://llm.sutyrin.pro/atoms/2026-01-29-workflow-test/sketch.bundle.js:51515:15)",
+        "args": 2
+      },
+      {
+        "type": "log",
+        "text": "%c * Tone.js v15.1.22 *  background: #000; color: #fff",
+        "args": 2
+      },
+      {
+        "type": "warning",
+        "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "args": 0
+      },
+      {
+        "type": "warning",
+        "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "args": 0
+      },
+      {
+        "type": "log",
+        "text": "%c * Tone.js v15.1.22 *  background: #000; color: #fff",
+        "args": 2
+      },
+      {
+        "type": "warning",
+        "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "args": 0
+      },
+      {
+        "type": "warning",
+        "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "args": 0
+      },
+      {
+        "type": "log",
+        "text": "%c * Tone.js v15.1.22 *  background: #000; color: #fff",
+        "args": 2
+      },
+      {
+        "type": "warning",
+        "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "args": 0
+      },
+      {
+        "type": "warning",
+        "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "args": 0
+      },
+      {
+        "type": "warning",
+        "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "args": 0
+      },
+      {
+        "type": "warning",
+        "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "args": 0
+      },
+      {
+        "type": "warning",
+        "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "args": 0
+      },
+      {
+        "type": "warning",
+        "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "args": 0
+      },
+      {
+        "type": "warning",
+        "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "args": 0
+      },
+      {
+        "type": "warning",
+        "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "args": 0
+      },
+      {
+        "type": "warning",
+        "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "args": 0
+      },
+      {
+        "type": "warning",
+        "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "args": 0
+      },
+      {
+        "type": "warning",
+        "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "args": 0
+      },
+      {
+        "type": "warning",
+        "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "args": 0
+      },
+      {
+        "type": "warning",
+        "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "args": 0
+      },
+      {
+        "type": "warning",
+        "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "args": 0
+      },
+      {
+        "type": "warning",
+        "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "args": 0
+      },
+      {
+        "type": "warning",
+        "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "args": 0
+      },
+      {
+        "type": "warning",
+        "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "args": 0
+      },
+      {
+        "type": "warning",
+        "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "args": 0
+      },
+      {
+        "type": "warning",
+        "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "args": 0
+      },
+      {
+        "type": "warning",
+        "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "args": 0
+      },
+      {
+        "type": "warning",
+        "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "args": 0
+      },
+      {
+        "type": "warning",
+        "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "args": 0
+      },
+      {
+        "type": "warning",
+        "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "args": 0
+      },
+      {
+        "type": "warning",
+        "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "args": 0
+      },
+      {
+        "type": "warning",
+        "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "args": 0
+      },
+      {
+        "type": "warning",
+        "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "args": 0
+      },
+      {
+        "type": "warning",
+        "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "args": 0
+      },
+      {
+        "type": "warning",
+        "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "args": 0
+      },
+      {
+        "type": "warning",
+        "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "args": 0
+      },
+      {
+        "type": "warning",
+        "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "args": 0
+      },
+      {
+        "type": "warning",
+        "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "args": 0
+      },
+      {
+        "type": "warning",
+        "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "args": 0
+      },
+      {
+        "type": "warning",
+        "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "args": 0
+      },
+      {
+        "type": "warning",
+        "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "args": 0
+      },
+      {
+        "type": "warning",
+        "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "args": 0
+      },
+      {
+        "type": "warning",
+        "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "args": 0
+      },
+      {
+        "type": "warning",
+        "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "args": 0
+      },
+      {
+        "type": "warning",
+        "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "args": 0
+      },
+      {
+        "type": "warning",
+        "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "args": 0
+      },
+      {
+        "type": "warning",
+        "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "args": 0
+      },
+      {
+        "type": "warning",
+        "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+        "args": 0
+      },
+      {
+        "type": "error",
+        "text": "Error parsing code: SyntaxError: Unexpected token (1166:18)\n    at pp$4.raise (https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js:54280:13)\n    at pp$9.unexpected (https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js:51665:8)\n    at pp$9.expect (https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js:51662:27)\n    at pp$5.parseMethod (https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js:54075:8)\n    at pp$8.parseClassMethod (https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js:52449:35)\n    at pp$8.parseClassElement (https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js:52417:10)\n    at pp$8.parseClass (https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js:52340:25)\n    at pp$8.parseStatement (https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js:51837:19)\n    at pp$8.parseTopLevel (https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js:51719:21)\n    at Parser2.parse (https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js:51515:15)",
+        "args": 2
+      },
+      {
+        "type": "error",
+        "text": "Error parsing code: SyntaxError: Unexpected token (1166:18)\n    at pp$4.raise (https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js:54280:13)\n    at pp$9.unexpected (https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js:51665:8)\n    at pp$9.expect (https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js:51662:27)\n    at pp$5.parseMethod (https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js:54075:8)\n    at pp$8.parseClassMethod (https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js:52449:35)\n    at pp$8.parseClassElement (https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js:52417:10)\n    at pp$8.parseClass (https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js:52340:25)\n    at pp$8.parseStatement (https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js:51837:19)\n    at pp$8.parseTopLevel (https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js:51719:21)\n    at Parser2.parse (https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js:51515:15)",
+        "args": 2
+      },
+      {
+        "type": "error",
+        "text": "Error parsing code: SyntaxError: Unexpected token (1166:18)\n    at pp$4.raise (https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js:54280:13)\n    at pp$9.unexpected (https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js:51665:8)\n    at pp$9.expect (https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js:51662:27)\n    at pp$5.parseMethod (https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js:54075:8)\n    at pp$8.parseClassMethod (https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js:52449:35)\n    at pp$8.parseClassElement (https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js:52417:10)\n    at pp$8.parseClass (https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js:52340:25)\n    at pp$8.parseStatement (https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js:51837:19)\n    at pp$8.parseTopLevel (https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js:51719:21)\n    at Parser2.parse (https://llm.sutyrin.pro/atoms/2026-01-30-av1/sketch.bundle.js:51515:15)",
+        "args": 2
+      },
+      {
+        "type": "error",
+        "text": "Error parsing code: SyntaxError: Unexpected token (1166:18)\n    at pp$4.raise (https://llm.sutyrin.pro/atoms/2026-01-30-test-verify/sketch.bundle.js:54280:13)\n    at pp$9.unexpected (https://llm.sutyrin.pro/atoms/2026-01-30-test-verify/sketch.bundle.js:51665:8)\n    at pp$9.expect (https://llm.sutyrin.pro/atoms/2026-01-30-test-verify/sketch.bundle.js:51662:27)\n    at pp$5.parseMethod (https://llm.sutyrin.pro/atoms/2026-01-30-test-verify/sketch.bundle.js:54075:8)\n    at pp$8.parseClassMethod (https://llm.sutyrin.pro/atoms/2026-01-30-test-verify/sketch.bundle.js:52449:35)\n    at pp$8.parseClassElement (https://llm.sutyrin.pro/atoms/2026-01-30-test-verify/sketch.bundle.js:52417:10)\n    at pp$8.parseClass (https://llm.sutyrin.pro/atoms/2026-01-30-test-verify/sketch.bundle.js:52340:25)\n    at pp$8.parseStatement (https://llm.sutyrin.pro/atoms/2026-01-30-test-verify/sketch.bundle.js:51837:19)\n    at pp$8.parseTopLevel (https://llm.sutyrin.pro/atoms/2026-01-30-test-verify/sketch.bundle.js:51719:21)\n    at Parser2.parse (https://llm.sutyrin.pro/atoms/2026-01-30-test-verify/sketch.bundle.js:51515:15)",
+        "args": 2
+      },
+      {
+        "type": "error",
+        "text": "Error parsing code: SyntaxError: Unexpected token (1166:18)\n    at pp$4.raise (https://llm.sutyrin.pro/atoms/2026-01-30-test-verify/sketch.bundle.js:54280:13)\n    at pp$9.unexpected (https://llm.sutyrin.pro/atoms/2026-01-30-test-verify/sketch.bundle.js:51665:8)\n    at pp$9.expect (https://llm.sutyrin.pro/atoms/2026-01-30-test-verify/sketch.bundle.js:51662:27)\n    at pp$5.parseMethod (https://llm.sutyrin.pro/atoms/2026-01-30-test-verify/sketch.bundle.js:54075:8)\n    at pp$8.parseClassMethod (https://llm.sutyrin.pro/atoms/2026-01-30-test-verify/sketch.bundle.js:52449:35)\n    at pp$8.parseClassElement (https://llm.sutyrin.pro/atoms/2026-01-30-test-verify/sketch.bundle.js:52417:10)\n    at pp$8.parseClass (https://llm.sutyrin.pro/atoms/2026-01-30-test-verify/sketch.bundle.js:52340:25)\n    at pp$8.parseStatement (https://llm.sutyrin.pro/atoms/2026-01-30-test-verify/sketch.bundle.js:51837:19)\n    at pp$8.parseTopLevel (https://llm.sutyrin.pro/atoms/2026-01-30-test-verify/sketch.bundle.js:51719:21)\n    at Parser2.parse (https://llm.sutyrin.pro/atoms/2026-01-30-test-verify/sketch.bundle.js:51515:15)",
+        "args": 2
+      },
+      {
+        "type": "error",
+        "text": "Error parsing code: SyntaxError: Unexpected token (1166:18)\n    at pp$4.raise (https://llm.sutyrin.pro/atoms/2026-01-30-test-verify/sketch.bundle.js:54280:13)\n    at pp$9.unexpected (https://llm.sutyrin.pro/atoms/2026-01-30-test-verify/sketch.bundle.js:51665:8)\n    at pp$9.expect (https://llm.sutyrin.pro/atoms/2026-01-30-test-verify/sketch.bundle.js:51662:27)\n    at pp$5.parseMethod (https://llm.sutyrin.pro/atoms/2026-01-30-test-verify/sketch.bundle.js:54075:8)\n    at pp$8.parseClassMethod (https://llm.sutyrin.pro/atoms/2026-01-30-test-verify/sketch.bundle.js:52449:35)\n    at pp$8.parseClassElement (https://llm.sutyrin.pro/atoms/2026-01-30-test-verify/sketch.bundle.js:52417:10)\n    at pp$8.parseClass (https://llm.sutyrin.pro/atoms/2026-01-30-test-verify/sketch.bundle.js:52340:25)\n    at pp$8.parseStatement (https://llm.sutyrin.pro/atoms/2026-01-30-test-verify/sketch.bundle.js:51837:19)\n    at pp$8.parseTopLevel (https://llm.sutyrin.pro/atoms/2026-01-30-test-verify/sketch.bundle.js:51719:21)\n    at Parser2.parse (https://llm.sutyrin.pro/atoms/2026-01-30-test-verify/sketch.bundle.js:51515:15)",
+        "args": 2
+      }
+    ],
+    "responseErrors": false,
+    "checks": [
+      {
+        "selector": "header",
+        "description": "Header should exist",
+        "expected": true,
+        "found": true,
+        "passed": true
+      },
+      {
+        "selector": "button[aria-label*=\"back\"]",
+        "description": "Back button should exist",
+        "expected": true,
+        "found": false,
+        "passed": false
+      },
+      {
+        "selector": "[role=\"tablist\"]",
+        "description": "Tab navigation should exist",
+        "expected": true,
+        "found": false,
+        "passed": false
+      },
+      {
+        "selector": "canvas",
+        "description": "Canvas should NOT appear in detail view",
+        "expected": false,
+        "found": false,
+        "passed": true
+      },
+      {
+        "selector": "li.atom-item",
+        "description": "Gallery list should NOT appear",
+        "expected": false,
+        "found": false,
+        "passed": true
+      },
+      {
+        "selector": ".gallery-container",
+        "description": "Gallery container should NOT appear",
+        "expected": false,
+        "found": false,
+        "passed": true
+      }
+    ],
+    "screenshot": "/home/pavel/dev/play/eoe/.planning/quick/015-debug-atom-page/screenshots/mobile-detail-view-(reported-issue).png",
+    "dom": {
+      "title": "Gallery - Engines of Experience",
+      "url": "https://llm.sutyrin.pro/mobile/au1",
+      "head": "<head><meta charset=\"UTF-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><title>Gallery - Engines of Experience</title><style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:SF Mono,Fira Code,monospace;background:#0a0a0a;color:#e0e0e0;min-height:100vh}a{color:#6bb5ff;text-decoration:none}a:hover{text-decoration:underline}\n.atom-grid[data-astro-cid-j7pv25f6]{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1.5rem}.atom-card[data-astro-cid-j7pv25f6]{background:#151515;border:1px solid #222;border-radius:8px;overflow:hidden;text-decoration:none;transition:border-color .2s}.atom-card[data-astro-cid-j7pv25f6]:hover{border-color:#444;text-decoration:none}.atom-preview[data-astro-cid-j7pv25f6]{width:100%;height:200px;overflow:hidden;background:#0a0a0a}.atom-info[data-astro-cid-j7pv25f6]{padding:.75rem 1rem;display:flex;flex-direction:column;gap:.25rem}.atom-name[data-astro-cid-j7pv25f6]{color:#fff;font-weight:600;font-size:.95rem}.atom-meta[data-astro-cid-j7pv25f6]{color:#666;font-size:.8rem}\n</style></head>...",
+      "bodyPreview": "<body> <header style=\"padding: 2rem; border-bottom: 1px solid #222;\"> <a href=\"/\" style=\"font-size: 1.2rem; font-weight: bold; color: #fff;\">\nEngines of Experience\n</a> </header> <main style=\"padding: 2rem; max-width: 1200px; margin: 0 auto;\">  <h1 style=\"margin-bottom: 1.5rem; font-size: 1.5rem;\" data-astro-cid-j7pv25f6=\"\">Gallery</h1> <div class=\"atom-grid\" data-astro-cid-j7pv25f6=\"\"> <a href=\"/atom/2026-01-30-au1\" class=\"atom-card\" data-astro-cid-j7pv25f6=\"\"> <div class=\"atom-preview\" data-astro-cid-j7pv25f6=\"\"> <iframe src=\"/atoms/2026-01-30-au1/index.html\" width=\"400\" height=\"400\" style=\"border: none; pointer-events: none; transform: scale(0.5); transform-origin: top left;\" loading=\"lazy\" title=\"au1\" data-astro-cid-j7pv25f6=\"\"></iframe> </div> <div class=\"atom-info\" data-astro-cid-j7pv25f6=\"\"> <span class=\"atom-name\" data-astro-cid-j7pv25f6=\"\">au1</span> <span class=\"atom-meta\" data-astro-cid-j7pv25f6=\"\">2026-01-30 · idea</span> </div> </a><a href=\"/atom/2026-01-30-av-sync-debug\" class=\"atom-card\" data-astro-cid-j7pv25f6=\"\"> <div class=\"atom-preview\" data-astro-cid-j7pv25f6=\"\"> <iframe src=\"/atoms/2026-01-30-av-sync-debug/index.html\" width=\"400\" height=\"400\" style=\"border: none; pointer-events: none; transform: scale(0.5); transform-origin: top left;\" loading=\"lazy\" title=\"av-sync-debug\" data-astro-cid-j7pv25f6=\"\"></iframe> </div> <div class=\"atom-info\" data-astro-cid-j7pv25f6=\"\"> <span class=\"atom-name\" data-astro-cid-j7pv25f6=\"\">av-sync-debug</span> <span class=\"atom-meta\" data-astro-cid-j7pv25f6=\"\">2026-01-30 · idea</span> </div> </a><a href=\"/atom/2026-01-30-av1\" class=\"atom-card\" data-astro-cid-j7pv25f6=\"\"> <div class=\"atom-preview\" data-astro-cid-j7pv25f6=\"\"> <iframe src=\"/atoms/2026-01-30-av1/index.html\" width=\"400\" height=\"400\" style=\"border: none; pointer-events: none; transform: scale(0.5); transform-origin: top left;\" loading=\"lazy\" title=\"av1\" data-astro-cid-j7pv25f6=\"\"></iframe> </div> <div class=\"atom-info\" data-astro-cid-j7pv25f6=\"\"> <span class=\"atom-name\" data-astro-cid-j7pv25f6=\"\">av1</span> <span class=\"atom-meta\" data-astro-cid-j7pv25f6=\"\">2026-01-30 · idea</span> </div> </a><a href=\"/atom/2026-01-30-my-first-sketch\" class=\"atom-card\" data-astro-cid-j7pv25f6=\"\"> <div class=\"atom-preview\" data-astro-cid-j7pv25f6=\"\"> <iframe src=\"/atoms/2026-01-30-my-first-sketch/index.html\" width=\"400\" height=\"400\" style=\"border: none; pointer-events: none; transform: scale(0.5); transform-origin: top left;\" loading=\"lazy\" title=\"my-first-sketch\" data-astro-cid-j7pv25f6=\"\"></iframe> </div> <div class=\"atom-info\" data-astro-cid-j7pv25f6=\"\"> <span class=\"atom-name\" data-astro-cid-j7pv25f6=\"\">my-first-sketch</span> <span class=\"atom-meta\" data-astro-cid-j7pv25f6=\"\">2026-01-30 · idea</span> </div> </a><a href=\"/atom/2026-01-30-test-verify\" class=\"atom-card\" data-astro-cid-j7pv25f6=\"\"> <div class=\"atom-preview\" data-astro-cid-j7pv25f6=\"\"> <iframe src=\"/atoms/2026-01-30-test-verify/index.html\" width=\"400\" height=\"400\" style=\"border: none; pointe...",
+      "bodyLength": 3989
+    },
+    "interactiveElements": {
+      "canvasCount": 0,
+      "buttonCount": 0,
+      "tabCount": 0,
+      "formInputs": 0,
+      "videoElements": 0,
+      "audioElements": 0,
+      "iframes": 6
+    }
+  },
+  {
+    "scenario": "Mobile Gallery View",
+    "url": "https://llm.sutyrin.pro/mobile/gallery",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "pageTitle": "Gallery - EOE",
+    "pageUrl": "https://llm.sutyrin.pro/mobile/gallery/",
+    "errors": [],
+    "consoleMessages": [
+      {
+        "type": "log",
+        "text": "[sync] Auto-backup enabled",
+        "args": 1
+      },
+      {
+        "type": "log",
+        "text": "[gallery] Cached 6 atoms to IndexedDB",
+        "args": 1
+      }
+    ],
+    "responseErrors": false,
+    "checks": [
+      {
+        "selector": "input[type=\"search\"]",
+        "description": "Search input should exist",
+        "expected": true,
+        "found": true,
+        "passed": true
+      },
+      {
+        "selector": "li.atom-item",
+        "description": "Gallery items should appear",
+        "expected": true,
+        "found": false,
+        "passed": false
+      },
+      {
+        "selector": "[role=\"tablist\"]",
+        "description": "Tab navigation should NOT appear (this is list view)",
+        "expected": false,
+        "found": false,
+        "passed": true
+      }
+    ],
+    "screenshot": "/home/pavel/dev/play/eoe/.planning/quick/015-debug-atom-page/screenshots/mobile-gallery-view.png",
+    "dom": {
+      "title": "Gallery - EOE",
+      "url": "https://llm.sutyrin.pro/mobile/gallery/",
+      "head": "<head><meta charset=\"UTF-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, viewport-fit=cover\"><meta name=\"apple-mobile-web-app-capable\" content=\"yes\"><meta name=\"apple-mobile-web-app-status-bar-style\" content=\"black-translucent\"><meta name=\"theme-color\" content=\"#0a0a0a\"><title>Gallery - EOE</title><link rel=\"stylesheet\" href=\"/_astro/index.Cf19uJTh.css\">\n<style>.atom-list-item[data-astro-cid-2nlrtm2v]{display:flex;align-items:center;gap:12px;padding:12px 16px;min-height:64px;border-bottom:1px solid #1a1a1a;text-decoration:none;color:inherit}.atom-list-item[data-astro-cid-2nlrtm2v]:active{background:#1a1a1a}.atom-thumb[data-astro-cid-2nlrtm2v]{width:48px;height:48px;border-radius:8px;background:#151515;border:2px solid #333;display:flex;align-items:center;justify-content:center;flex-shrink:0}.atom-type-icon[data-astro-cid-2nlrtm2v]{font-size:.75rem;font-weight:700;color:#888}.atom-info[data-astro-cid-2nlrtm2v]{display:flex;flex-direction:column;gap:4px;min-width:0}.atom-title[data-astro-cid-2nlrtm2v]{color:#fff;font-weight:600;font-size:.95rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.atom-meta[data-astro-cid-2nlrtm2v]{color:#666;font-size:.8rem;display:flex;gap:8px;align-items:center}.atom-type-badge[data-astro-cid-2nlrtm2v]{font-weight:600;font-size:.7rem;text-transform:uppercase}.atom-stage[data-astro-cid-2nlrtm2v]{color:#555;font-size:.7rem}.search-container[data-astro-cid-mjrxwznw]{padding:0 0 16px}.bottom-nav[data-astro-cid-txbljlvu]{position:fixed;bottom:0;left:0;right:0;display:flex;background:#111;border-top:1px solid #222;padding-bottom:env(safe-area-inset-bottom,0);z-index:100}.bottom-nav-item[data-astro-cid-txbljlvu]{flex:1;padding:12px;text-align:center;color:#666;font-size:.85rem;font-weight:600;text-decoration:none;min-height:48px;display:flex;align-items:center;justify-content:center}.bottom-nav-item[data-astro-cid-txbljlvu].active{color:#6bb5ff}.bottom-nav-item[data-astro-cid-txbljlvu]:active{background:#1a1a...",
+      "bodyPreview": "<body class=\"mobile-body\" data-astro-cid-qc2bqmod=\"\"> <div id=\"offline-indicator\" class=\"offline-indicator\" style=\"display: none;\" data-astro-cid-wdgqrhze=\"\"> <span class=\"offline-dot\" data-astro-cid-wdgqrhze=\"\"></span> <span class=\"offline-text\" data-astro-cid-wdgqrhze=\"\">Offline</span> </div> <div id=\"storage-warning\" class=\"storage-warning\" style=\"display: none;\" data-astro-cid-wdgqrhze=\"\"> <span class=\"storage-text\" data-astro-cid-wdgqrhze=\"\">Storage: 0MB / 1932MB</span> </div> <div id=\"sync-status\" class=\"sync-status\" style=\"display: none;\" data-astro-cid-wdgqrhze=\"\"> <span class=\"sync-dot\" data-astro-cid-wdgqrhze=\"\"></span> <span class=\"sync-text\" data-astro-cid-wdgqrhze=\"\"></span> </div> <script type=\"module\" src=\"/_astro/OfflineIndicator.astro_astro_type_script_index_0_lang.CU1U4I0I.js\"></script>  <header class=\"mobile-header\" data-astro-cid-qc2bqmod=\"\">  <span class=\"header-title\" data-astro-cid-qc2bqmod=\"\">Gallery</span> <div class=\"header-right\" data-astro-cid-qc2bqmod=\"\"> <a href=\"/mobile/backup\" id=\"backup-badge\" class=\"backup-badge\" title=\"Backup status\" data-astro-cid-67o3dws7=\"\"> <span id=\"badge-icon\" class=\"badge-icon badge-icon-synced\" data-astro-cid-67o3dws7=\"\"> <!-- Synced: checkmark --> <svg id=\"icon-synced\" width=\"14\" height=\"14\" viewBox=\"0 0 14 14\" fill=\"currentColor\" style=\"display: block;\" data-astro-cid-67o3dws7=\"\"> <path d=\"M11.5 3.5l-6 6L2.5 6.5\" stroke=\"currentColor\" stroke-width=\"2\" fill=\"none\" stroke-linecap=\"round\" stroke-linejoin=\"round\" data-astro-cid-67o3dws7=\"\"></path> </svg> <!-- Pending: count --> <span id=\"icon-pending\" class=\"badge-count\" style=\"display: none;\" data-astro-cid-67o3dws7=\"\">0</span> <!-- Backing up: spinner --> <span id=\"icon-backing-up\" class=\"badge-spinner\" style=\"display: none;\" data-astro-cid-67o3dws7=\"\"></span> <!-- Error: exclamation --> <span id=\"icon-error\" style=\"display: none;\" data-astro-cid-67o3dws7=\"\">!</span> </span> </a> <script type=\"module\" src=\"/_astro/BackupStatusBadge.astro_astro_type_script_index_0_lang.B3mpGW-_.js\"></script>  </div> </header> <main class=\"mobile-main mobile-container scroll-container\" data-astro-cid-qc2bqmod=\"\">  <div class=\"search-container\" data-astro-cid-mjrxwznw=\"\"> <input type=\"search\" id=\"atom-search\" class=\"search-bar\" placeholder=\"Search atoms...\" autocomplete=\"off\" autocapitalize=\"none\" spellcheck=\"false\" data-astro-cid-mjrxwznw=\"\" style=\"\"> </div> <script type=\"module\">const e=document.getElementById(\"atom-search\");e&&e.addEventListener(\"input\",()=>{window.dispatchEvent(new CustomEvent(\"eoe:search\",{detail:{query:e.value.trim()}}))});</script>  <div id=\"atom-list\" data-astro-cid-txbljlvu=\"\">  <a href=\"/mobile/2026-01-30-au1\" class=\"list-item atom-list-item\" data-slug=\"2026-01-30-au1\" data-title=\"au1\" data-astro-cid-2nlrtm2v=\"\"> <div class=\"atom-thumb\" style=\"border-color: #ff6b9d\" data-astro-cid-2nlrtm2v=\"\"> <span class=\"atom-type-icon\" data-astro-cid-2nlrtm2v=\"\">A</span> </div> <div class=\"atom-info\" data-astro-cid-2nlrtm2v=\"\"> <span class=\"ato...",
+      "bodyLength": 7338
+    },
+    "interactiveElements": {
+      "canvasCount": 0,
+      "buttonCount": 0,
+      "tabCount": 0,
+      "formInputs": 1,
+      "videoElements": 0,
+      "audioElements": 0,
+      "iframes": 0
+    }
+  }
+]
