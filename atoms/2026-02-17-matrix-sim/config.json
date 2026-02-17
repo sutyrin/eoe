@@ -1,0 +1,10 @@
+{
+  "controllers": {
+    "stress": 55,
+    "zionEnabled": true,
+    "simSpeed": 1,
+    "rainOpacity": 0.6,
+    "gridCols": 40,
+    "gridRows": 20
+  }
+}
