@@ -15,6 +15,9 @@ import sys
 from collections import Counter
 from datetime import datetime
 
+sys.stdout.reconfigure(line_buffering=True)
+sys.stderr.reconfigure(line_buffering=True)
+
 
 # Project name cleaning: strip common prefixes, collapse variants
 PROJECT_PREFIX_STRIPS = [

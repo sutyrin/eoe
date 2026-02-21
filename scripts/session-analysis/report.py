@@ -4,15 +4,122 @@ Macro Report Aggregator
 Aggregates batch analysis results into a comprehensive Markdown report.
 
 Usage:
-    python3 report.py [--analysis-dir DIR] [--output FILE]
+    python3 report.py [--analysis-dir DIR] [--output FILE] [--no-llm] [--model MODEL]
 """
 
 import argparse
 import json
 import os
+import subprocess
 import sys
+import tempfile
+import time
 from collections import Counter, defaultdict
 from datetime import datetime
+
+sys.stdout.reconfigure(line_buffering=True)
+sys.stderr.reconfigure(line_buffering=True)
+
+
+def find_claude_cli() -> str:
+    """Find claude CLI binary, resolving full path to avoid PATH issues in subprocess."""
+    import shutil
+    path = shutil.which("claude")
+    if path:
+        return path
+    for candidate in [
+        os.path.expanduser("~/.nvm/versions/node/v23.11.0/bin/claude"),
+        "/usr/local/bin/claude",
+        "/usr/bin/claude",
+    ]:
+        if os.path.isfile(candidate):
+            return candidate
+    return "claude"
+
+
+CLAUDE_BIN = find_claude_cli()
+
+
+def call_claude_cli(model: str, prompt: str, timeout: int = 300, max_retries: int = 2) -> dict | None:
+    """Call claude -p CLI. Returns parsed JSON dict or None on failure."""
+    with tempfile.NamedTemporaryFile(mode="w", suffix=".txt", delete=False, encoding="utf-8") as f:
+        f.write(prompt)
+        prompt_file = f.name
+
+    try:
+        for attempt in range(max_retries):
+            env = {k: v for k, v in os.environ.items() if k != "CLAUDECODE"}
+
+            cmd = [
+                CLAUDE_BIN, "-p",
+                "--model", model,
+                "--output-format", "text",
+                "--no-session-persistence",
+            ]
+
+            try:
+                result = subprocess.run(
+                    cmd,
+                    stdin=open(prompt_file, "r", encoding="utf-8"),
+                    capture_output=True,
+                    text=True,
+                    timeout=timeout,
+                    env=env,
+                )
+            except subprocess.TimeoutExpired:
+                print(f"    Timeout after {timeout}s (attempt {attempt + 1}/{max_retries})")
+                if attempt < max_retries - 1:
+                    time.sleep(2 ** attempt)
+                    continue
+                return None
+
+            text = result.stderr.strip() or result.stdout.strip()
+
+            if result.returncode != 0 and not text:
+                print(f"    CLI error (exit {result.returncode}): {result.stderr[:200]}", file=sys.stderr)
+                if attempt < max_retries - 1:
+                    time.sleep(2 ** attempt)
+                    continue
+                return None
+
+            if not text:
+                print(f"    Empty response from CLI", file=sys.stderr)
+                return None
+
+            # Extract JSON from response
+            json_text = text
+            if "```json" in json_text:
+                json_text = json_text.split("```json")[1].split("```")[0]
+            elif "```" in json_text:
+                parts = json_text.split("```")
+                if len(parts) >= 3:
+                    json_text = parts[1]
+
+            try:
+                return json.loads(json_text.strip())
+            except json.JSONDecodeError:
+                start = text.find("{")
+                end = text.rfind("}") + 1
+                if start >= 0 and end > start:
+                    try:
+                        return json.loads(text[start:end])
+                    except json.JSONDecodeError:
+                        pass
+                print(f"    Failed to parse JSON from response ({len(text)} chars)", file=sys.stderr)
+                print(f"    First 200 chars: {text[:200]}", file=sys.stderr)
+                return None
+
+        return None
+    finally:
+        os.unlink(prompt_file)
+
+
+def safe_int(val, default=0) -> int:
+    """Convert to int, returning default for non-numeric values."""
+    try:
+        return int(val)
+    except (ValueError, TypeError):
+        return default
 
 
 def load_batch_files(analysis_dir: str) -> list[dict]:
@@ -128,7 +235,8 @@ def section_intent_distribution(sessions: list[dict]) -> str:
 
 def section_prompt_quality(sessions: list[dict]) -> str:
     """Section 3: Prompt Quality Analysis."""
-    scores = [(s.get("prompt_quality", 0), s) for s in sessions if s.get("prompt_quality")]
+    scores = [(safe_int(s.get("prompt_quality", 0)), s) for s in sessions
+              if safe_int(s.get("prompt_quality", 0))]
     if not scores:
         return "## 3. Prompt Quality Analysis\n\nNo prompt quality data available.\n"
 
@@ -265,8 +373,8 @@ def section_workflow_patterns(sessions: list[dict]) -> str:
 
 def section_delegation_effectiveness(sessions: list[dict]) -> str:
     """Section 5: Delegation Effectiveness."""
-    scores = [(s.get("delegation_effectiveness", 0), s) for s in sessions
-              if s.get("delegation_effectiveness")]
+    scores = [(safe_int(s.get("delegation_effectiveness", 0)), s) for s in sessions
+              if safe_int(s.get("delegation_effectiveness", 0))]
     if not scores:
         return "## 5. Delegation Effectiveness\n\nNo delegation data available.\n"
 
@@ -281,8 +389,8 @@ def section_delegation_effectiveness(sessions: list[dict]) -> str:
     # Correlation with prompt quality
     pq_de_pairs = []
     for s in sessions:
-        pq = s.get("prompt_quality", 0)
-        de = s.get("delegation_effectiveness", 0)
+        pq = safe_int(s.get("prompt_quality", 0))
+        de = safe_int(s.get("delegation_effectiveness", 0))
         if pq and de:
             pq_de_pairs.append((pq, de))
 
@@ -354,22 +462,8 @@ def section_delegation_effectiveness(sessions: list[dict]) -> str:
     return "\n".join(lines)
 
 
-def section_anti_pattern_catalog(sessions: list[dict]) -> str:
-    """Section 6: Anti-Pattern Catalog."""
-    all_patterns = []
-    for s in sessions:
-        patterns = s.get("notable_patterns", [])
-        if isinstance(patterns, list):
-            all_patterns.extend(patterns)
-        elif isinstance(patterns, str):
-            all_patterns.append(patterns)
-
-    if not all_patterns:
-        return "## 6. Anti-Pattern Catalog\n\nNo patterns recorded.\n"
-
-    pattern_counts = Counter(all_patterns)
-
-    # Heuristic: patterns with "good", "clear", "effective", "strong" are positive
+def section_anti_pattern_catalog_heuristic(pattern_counts: Counter) -> str:
+    """Section 6 fallback: keyword-based heuristic classification."""
     positive_keywords = {"good", "clear", "effective", "strong", "well", "concise", "specific", "thorough", "excellent"}
     negative_keywords = {"over", "vague", "dump", "missing", "lack", "poor", "unclear", "premature", "excessive"}
 
@@ -387,7 +481,7 @@ def section_anti_pattern_catalog(sessions: list[dict]) -> str:
         else:
             neutral.append((pattern, count))
 
-    lines = ["## 6. Anti-Pattern Catalog", ""]
+    lines = ["## 6. Anti-Pattern Catalog", "", "*Classified via keyword heuristics.*", ""]
 
     if negative or neutral:
         lines.append("### Things to Stop Doing")
@@ -414,6 +508,102 @@ def section_anti_pattern_catalog(sessions: list[dict]) -> str:
     return "\n".join(lines)
 
 
+def section_anti_pattern_catalog(sessions: list[dict], use_llm: bool = False, model: str = "sonnet") -> str:
+    """Section 6: Anti-Pattern Catalog."""
+    all_patterns = []
+    for s in sessions:
+        patterns = s.get("notable_patterns", [])
+        if isinstance(patterns, list):
+            all_patterns.extend(patterns)
+        elif isinstance(patterns, str):
+            all_patterns.append(patterns)
+
+    if not all_patterns:
+        return "## 6. Anti-Pattern Catalog\n\nNo patterns recorded.\n"
+
+    pattern_counts = Counter(all_patterns)
+
+    if not use_llm:
+        return section_anti_pattern_catalog_heuristic(pattern_counts)
+
+    # Build LLM prompt — filter to patterns with count >= 2, cap at 200
+    frequent = [(p, c) for p, c in pattern_counts.most_common(200) if c >= 2]
+    if not frequent:
+        # All patterns are singletons, LLM can't group meaningfully
+        return section_anti_pattern_catalog_heuristic(pattern_counts)
+
+    patterns_list = "\n".join(f"- \"{p}\" (count: {c})" for p, c in frequent)
+    prompt = f"""You are analyzing patterns observed across {len(all_patterns)} observations from Claude Code sessions.
+
+Here are the distinct patterns with their occurrence counts:
+
+{patterns_list}
+
+Tasks:
+1. Group semantically similar patterns (e.g. "add more context" and "provide more context" are the same)
+2. Classify each group as positive (keep doing) or negative (stop doing)
+3. For each group, pick a clear representative label
+
+Return JSON with this exact structure:
+{{
+  "keep_doing": [
+    {{"group": "Clear representative label", "patterns": ["original-pattern-1", "original-pattern-2"], "total_count": 5}}
+  ],
+  "stop_doing": [
+    {{"group": "Clear representative label", "patterns": ["original-pattern-1"], "total_count": 3}}
+  ]
+}}
+
+Sort each list by total_count descending. Merge aggressively — prefer fewer groups with higher counts."""
+
+    print(f"  Section 6: calling LLM for semantic pattern grouping ({len(frequent)} patterns)...")
+    t0 = time.time()
+    result = call_claude_cli(model, prompt)
+    elapsed = time.time() - t0
+
+    if result is None:
+        print(f"  Section 6: LLM failed after {elapsed:.1f}s, falling back to heuristics")
+        return section_anti_pattern_catalog_heuristic(pattern_counts)
+
+    print(f"  Section 6: LLM responded in {elapsed:.1f}s")
+
+    lines = ["## 6. Anti-Pattern Catalog", "", "*Classified via LLM semantic grouping.*", ""]
+
+    stop_doing = result.get("stop_doing", [])
+    keep_doing = result.get("keep_doing", [])
+
+    if stop_doing:
+        lines.append("### Things to Stop Doing")
+        lines.append("")
+        lines.append("| Pattern Group | Occurrences | Examples |")
+        lines.append("|---------------|------------:|---------|")
+        for group in sorted(stop_doing, key=lambda x: -x.get("total_count", 0)):
+            label = group.get("group", "?")
+            count = group.get("total_count", 0)
+            examples = ", ".join(group.get("patterns", [])[:3])
+            lines.append(f"| {label} | {count} | {examples} |")
+        lines.append("")
+
+    if keep_doing:
+        lines.append("### Things to Keep Doing")
+        lines.append("")
+        lines.append("| Pattern Group | Occurrences | Examples |")
+        lines.append("|---------------|------------:|---------|")
+        for group in sorted(keep_doing, key=lambda x: -x.get("total_count", 0)):
+            label = group.get("group", "?")
+            count = group.get("total_count", 0)
+            examples = ", ".join(group.get("patterns", [])[:3])
+            lines.append(f"| {label} | {count} | {examples} |")
+        lines.append("")
+
+    if not stop_doing and not keep_doing:
+        lines.append("LLM returned no groups. Raw pattern counts:")
+        lines.append("")
+        return "\n".join(lines) + "\n" + section_anti_pattern_catalog_heuristic(pattern_counts)
+
+    return "\n".join(lines)
+
+
 def section_project_profiles(sessions: list[dict]) -> str:
     """Section 7: Project Profiles."""
     by_project = defaultdict(list)
@@ -426,8 +616,8 @@ def section_project_profiles(sessions: list[dict]) -> str:
         proj_sessions = by_project[proj]
         count = len(proj_sessions)
 
-        pq_scores = [s.get("prompt_quality", 0) for s in proj_sessions if s.get("prompt_quality")]
-        de_scores = [s.get("delegation_effectiveness", 0) for s in proj_sessions if s.get("delegation_effectiveness")]
+        pq_scores = [safe_int(s.get("prompt_quality", 0)) for s in proj_sessions if safe_int(s.get("prompt_quality", 0))]
+        de_scores = [safe_int(s.get("delegation_effectiveness", 0)) for s in proj_sessions if safe_int(s.get("delegation_effectiveness", 0))]
         avg_pq = sum(pq_scores) / len(pq_scores) if pq_scores else 0
         avg_de = sum(de_scores) / len(de_scores) if de_scores else 0
 
@@ -449,7 +639,7 @@ def section_project_profiles(sessions: list[dict]) -> str:
     # Best/worst
     project_quality = {}
     for proj, sess_list in by_project.items():
-        pqs = [s.get("prompt_quality", 0) for s in sess_list if s.get("prompt_quality")]
+        pqs = [safe_int(s.get("prompt_quality", 0)) for s in sess_list if safe_int(s.get("prompt_quality", 0))]
         if pqs:
             project_quality[proj] = sum(pqs) / len(pqs)
 
@@ -505,8 +695,8 @@ def section_temporal_patterns(sessions: list[dict], batches: list[dict]) -> str:
     lines.append("|-------|--------:|---------:|---------:|")
     for month in months:
         sess_list = by_month[month]
-        pqs = [s.get("prompt_quality", 0) for s in sess_list if s.get("prompt_quality")]
-        des = [s.get("delegation_effectiveness", 0) for s in sess_list if s.get("delegation_effectiveness")]
+        pqs = [safe_int(s.get("prompt_quality", 0)) for s in sess_list if safe_int(s.get("prompt_quality", 0))]
+        des = [safe_int(s.get("delegation_effectiveness", 0)) for s in sess_list if safe_int(s.get("delegation_effectiveness", 0))]
         avg_pq = sum(pqs) / len(pqs) if pqs else 0
         avg_de = sum(des) / len(des) if des else 0
         lines.append(f"| {month} | {len(sess_list)} | {avg_pq:.1f} | {avg_de:.1f} |")
@@ -515,24 +705,11 @@ def section_temporal_patterns(sessions: list[dict], batches: list[dict]) -> str:
     return "\n".join(lines)
 
 
-def section_recommendations(batches: list[dict]) -> str:
-    """Section 9: Recommendations (aggregated from batch summaries)."""
-    all_improvements = []
-    all_strengths = []
-    all_anti_patterns = []
-    all_common_patterns = []
+def section_recommendations_heuristic(all_improvements: list[str], all_strengths: list[str],
+                                      all_anti_patterns: list[str]) -> str:
+    """Section 9 fallback: raw Counter dedup."""
+    lines = ["## 9. Recommendations", "", "*Aggregated via frequency counting.*", ""]
 
-    for batch in batches:
-        summary = batch.get("batch_summary", {})
-        if isinstance(summary, dict):
-            all_improvements.extend(summary.get("improvements", []))
-            all_strengths.extend(summary.get("strengths", []))
-            all_anti_patterns.extend(summary.get("anti_patterns", []))
-            all_common_patterns.extend(summary.get("common_patterns", []))
-
-    lines = ["## 9. Recommendations", ""]
-
-    # Top improvements (by frequency)
     if all_improvements:
         improvement_counts = Counter(all_improvements)
         lines.append("### Top Things to Improve")
@@ -542,7 +719,6 @@ def section_recommendations(batches: list[dict]) -> str:
             lines.append(f"1. {imp}{freq}")
         lines.append("")
 
-    # Top strengths
     if all_strengths:
         strength_counts = Counter(all_strengths)
         lines.append("### Top Strengths to Maintain")
@@ -552,7 +728,6 @@ def section_recommendations(batches: list[dict]) -> str:
             lines.append(f"1. {strength}{freq}")
         lines.append("")
 
-    # Actionable changes
     if all_anti_patterns:
         lines.append("### Specific Actionable Changes")
         lines.append("")
@@ -569,7 +744,99 @@ def section_recommendations(batches: list[dict]) -> str:
     return "\n".join(lines)
 
 
-def generate_report(batches: list[dict]) -> str:
+def section_recommendations(batches: list[dict], use_llm: bool = False, model: str = "sonnet") -> str:
+    """Section 9: Recommendations (aggregated from batch summaries)."""
+    all_improvements = []
+    all_strengths = []
+    all_anti_patterns = []
+    all_common_patterns = []
+
+    for batch in batches:
+        summary = batch.get("batch_summary", {})
+        if isinstance(summary, dict):
+            all_improvements.extend(summary.get("improvements", []))
+            all_strengths.extend(summary.get("strengths", []))
+            all_anti_patterns.extend(summary.get("anti_patterns", []))
+            all_common_patterns.extend(summary.get("common_patterns", []))
+
+    if not all_improvements and not all_strengths and not all_anti_patterns:
+        return "## 9. Recommendations\n\nNo batch-level recommendations available yet.\n"
+
+    if not use_llm:
+        return section_recommendations_heuristic(all_improvements, all_strengths, all_anti_patterns)
+
+    # Build LLM prompt
+    data = {
+        "improvements": all_improvements,
+        "strengths": all_strengths,
+        "anti_patterns": all_anti_patterns,
+        "common_patterns": all_common_patterns,
+    }
+    prompt = f"""You are synthesizing recommendations from {len(batches)} batch analyses of Claude Code sessions.
+
+Here are all raw items collected across batches (many are near-duplicates):
+
+{json.dumps(data, indent=2)}
+
+Tasks:
+1. Deduplicate semantically similar items (e.g. "provide more context in prompts" and "add context to prompts" are the same)
+2. Rank by frequency and impact
+3. Produce exactly:
+   - top 5 improvements (things to do better)
+   - top 5 strengths (things already done well)
+   - top 5 actionable changes (concrete, specific actions to take)
+
+Each item should be a clear, specific, actionable sentence — not just repeating a raw string.
+
+Return JSON with this exact structure:
+{{
+  "improvements": ["Specific improvement 1", "Specific improvement 2", ...],
+  "strengths": ["Specific strength 1", ...],
+  "actionable": ["Do X instead of Y", ...]
+}}"""
+
+    print("  Section 9: calling LLM for recommendation synthesis...")
+    t0 = time.time()
+    result = call_claude_cli(model, prompt)
+    elapsed = time.time() - t0
+
+    if result is None:
+        print(f"  Section 9: LLM failed after {elapsed:.1f}s, falling back to frequency counting")
+        return section_recommendations_heuristic(all_improvements, all_strengths, all_anti_patterns)
+
+    print(f"  Section 9: LLM responded in {elapsed:.1f}s")
+
+    lines = ["## 9. Recommendations", "", "*Synthesized via LLM analysis.*", ""]
+
+    improvements = result.get("improvements", [])
+    strengths = result.get("strengths", [])
+    actionable = result.get("actionable", [])
+
+    if improvements:
+        lines.append("### Top Things to Improve")
+        lines.append("")
+        for i, imp in enumerate(improvements[:5], 1):
+            lines.append(f"{i}. {imp}")
+        lines.append("")
+
+    if strengths:
+        lines.append("### Top Strengths to Maintain")
+        lines.append("")
+        for i, s in enumerate(strengths[:5], 1):
+            lines.append(f"{i}. {s}")
+        lines.append("")
+
+    if actionable:
+        lines.append("### Specific Actionable Changes")
+        lines.append("")
+        for action in actionable[:5]:
+            lines.append(f"- {action}")
+        lines.append("")
+
+    return "\n".join(lines)
+
+
+def generate_report(batches: list[dict], use_llm: bool = False, model: str = "sonnet") -> str:
     """Generate the full Markdown report."""
     sessions = extract_all_sessions(batches)
 
@@ -583,10 +850,10 @@ def generate_report(batches: list[dict]) -> str:
         section_prompt_quality(sessions),
         section_workflow_patterns(sessions),
         section_delegation_effectiveness(sessions),
-        section_anti_pattern_catalog(sessions),
+        section_anti_pattern_catalog(sessions, use_llm=use_llm, model=model),
         section_project_profiles(sessions),
         section_temporal_patterns(sessions, batches),
-        section_recommendations(batches),
+        section_recommendations(batches, use_llm=use_llm, model=model),
         "---",
         "",
         "*Report generated by scripts/session-analysis/report.py*",
@@ -601,7 +868,13 @@ def main():
                         help="Directory containing batch analysis JSON files")
     parser.add_argument("--output", default="/mnt/db/claude/sessions/ANALYSIS-REPORT.md",
                         help="Output report file path")
+    parser.add_argument("--no-llm", action="store_true",
+                        help="Skip LLM calls, use pure heuristics (for offline/fast runs)")
+    parser.add_argument("--model", default="sonnet",
+                        help="Model for LLM sections (default: sonnet)")
     args = parser.parse_args()
+
+    use_llm = not args.no_llm
 
     batches = load_batch_files(args.analysis_dir)
     if not batches:
@@ -609,8 +882,12 @@ def main():
         sys.exit(1)
 
     print(f"Loaded {len(batches)} batch files")
+    if use_llm:
+        print(f"LLM enabled (model: {args.model}) for sections 6 and 9")
+    else:
+        print("LLM disabled — using heuristic fallbacks")
 
-    report = generate_report(batches)
+    report = generate_report(batches, use_llm=use_llm, model=args.model)
 
     # Ensure output directory exists
     os.makedirs(os.path.dirname(os.path.abspath(args.output)), exist_ok=True)

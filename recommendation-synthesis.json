@@ -1,0 +1,23 @@
+{
+  "improvements": [
+    "Start every session with an explicit statement of acceptance criteria and expected output before writing any code — the most pervasive issue across all 264 analyses is vague initial prompts that require mid-session clarification and rework.",
+    "Break work sessions exceeding 60–90 minutes into smaller, checkpoint-based tasks with intermediate commits — marathon sessions (often 4–20+ hours) consistently lead to context loss, token exhaustion, and lost work.",
+    "Provide concrete, structured bug reports with observed vs. expected behavior, relevant error messages, and file paths — terse Russian one-liners force expensive exploratory investigation that delays root-cause resolution.",
+    "Consolidate repetitive similar sessions into batch operations or parameterized templates rather than running 8–10 nearly-identical sessions — this pattern wastes context budget and produces no cumulative learning.",
+    "Use English consistently for technical prompts and specifications to reduce ambiguity — mixed Russian/English mid-session switching is the second most cited source of confusion after vague initial prompts."
+  ],
+  "strengths": [
+    "Systematic debugging methodology: consistently investigates root causes through logs, grep, and code tracing before applying fixes, rather than applying band-aids to symptoms.",
+    "Test-driven discipline: reliably writes tests alongside or before implementation, runs the full test suite before committing, and adds regression tests after bug fixes.",
+    "Effective GSD workflow adoption: correctly orchestrates the discuss → plan → execute → verify cycle with parallel wave execution and appropriate delegation to specialized subagents.",
+    "Comprehensive MCP/bot integration testing: validates features against real Telegram bot interactions using mcp-telegram-bot-tester rather than relying solely on unit tests.",
+    "Strong git hygiene: maintains atomic commits with clear messages, uses git worktrees for branch isolation, and pushes after every significant milestone."
+  ],
+  "actionable": [
+    "Before opening a new session, write a one-paragraph brief containing: the goal, the acceptance criteria (what 'done' looks like), relevant file paths, and any constraints — paste this as the first message instead of a one-liner.",
+    "Set a personal rule: if a session exceeds 90 minutes or 150 turns, pause, commit progress, write a handoff note to STATE.md, and start a fresh session with full context rather than continuing in an overloaded context window.",
+    "When reporting a bug, always include the triple: (1) exact error message or observed behavior, (2) expected behavior, (3) steps to reproduce or the relevant file:line — never send just a symptom like 'it fails' or a single Russian word.",
+    "Replace 10 near-identical extraction or verification sessions with a single session that processes all inputs in one batch, or write a reusable Python/shell script so Claude executes once and the template is reused.",
+    "When switching languages mid-prompt, add an explicit English summary sentence at the end — e.g. append 'TL;DR in English: fix the address parser to handle federal city abbreviations' — so downstream agents and future sessions can parse intent without ambiguity."
+  ]
+}

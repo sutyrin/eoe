@@ -1,22 +1,28 @@
 #!/usr/bin/env python3
 """
 LLM Batch Analyzer
-Feeds session digests to Claude API for structured analysis.
+Feeds session digests to Claude CLI for structured analysis.
 
 Usage:
     python3 analyze-batch.py [--digests-dir DIR] [--output-dir DIR] [--batch-size N]
                              [--project FILTER] [--limit N] [--model MODEL] [--dry-run]
 
-Requires: ANTHROPIC_API_KEY environment variable
+Uses `claude -p` CLI (no API key needed — uses Claude Code's own auth).
 """
 
 import argparse
 import csv
 import json
 import os
+import subprocess
 import sys
+import tempfile
 import time
 from collections import defaultdict
+
+# Ensure output is not buffered (critical when running as subprocess)
+sys.stdout.reconfigure(line_buffering=True)
+sys.stderr.reconfigure(line_buffering=True)
 
 
 ANALYSIS_PROMPT = """You are analyzing Claude Code session transcripts for a solo developer.
@@ -155,57 +161,102 @@ def group_into_batches(index_rows: list[dict], digests_dir: str,
     return batches
 
 
-def call_api(client, model: str, prompt: str, max_retries: int = 3) -> tuple[dict | None, dict]:
-    """Call Claude API with retry on rate limit. Returns (response_dict, usage_dict)."""
-    for attempt in range(max_retries):
-        try:
-            response = client.messages.create(
-                model=model,
-                max_tokens=4096,
-                messages=[{"role": "user", "content": prompt}],
-            )
+def find_claude_cli() -> str:
+    """Find claude CLI binary, resolving full path to avoid PATH issues in subprocess."""
+    import shutil
+    path = shutil.which("claude")
+    if path:
+        return path
+    # Common locations
+    for candidate in [
+        os.path.expanduser("~/.nvm/versions/node/v23.11.0/bin/claude"),
+        "/usr/local/bin/claude",
+        "/usr/bin/claude",
+    ]:
+        if os.path.isfile(candidate):
+            return candidate
+    return "claude"  # fallback, hope PATH works
 
-            # Extract text content
-            text = ""
-            for block in response.content:
-                if block.type == "text":
-                    text += block.text
 
-            # Parse JSON from response
-            # Try to find JSON in the response (may be wrapped in markdown code blocks)
+CLAUDE_BIN = find_claude_cli()
+
+
+def call_claude_cli(model: str, prompt: str, timeout: int = 120, max_retries: int = 3) -> dict | None:
+    """Call claude -p CLI. Returns parsed JSON dict or None on failure."""
+    # Write prompt to temp file to avoid shell escaping issues
+    with tempfile.NamedTemporaryFile(mode="w", suffix=".txt", delete=False, encoding="utf-8") as f:
+        f.write(prompt)
+        prompt_file = f.name
+
+    try:
+        for attempt in range(max_retries):
+            # Build env without CLAUDECODE to allow nested invocation
+            env = {k: v for k, v in os.environ.items() if k != "CLAUDECODE"}
+
+            cmd = [
+                CLAUDE_BIN, "-p",
+                "--model", model,
+                "--output-format", "text",
+                "--no-session-persistence",
+            ]
+
+            try:
+                result = subprocess.run(
+                    cmd,
+                    stdin=open(prompt_file, "r", encoding="utf-8"),
+                    capture_output=True,
+                    text=True,
+                    timeout=timeout,
+                    env=env,
+                )
+            except subprocess.TimeoutExpired:
+                print(f"    Timeout after {timeout}s (attempt {attempt + 1}/{max_retries})")
+                if attempt < max_retries - 1:
+                    time.sleep(2 ** attempt)
+                    continue
+                return None
+
+            # claude -p writes response to stderr (not stdout)
+            text = result.stderr.strip() or result.stdout.strip()
+
+            if result.returncode != 0 and not text:
+                print(f"    CLI error (exit {result.returncode}): {result.stderr[:200]}", file=sys.stderr)
+                if attempt < max_retries - 1:
+                    time.sleep(2 ** attempt)
+                    continue
+                return None
+
+            if not text:
+                print(f"    Empty response from CLI", file=sys.stderr)
+                return None
+
+            # Extract JSON from response
             json_text = text
             if "```json" in json_text:
                 json_text = json_text.split("```json")[1].split("```")[0]
             elif "```" in json_text:
-                json_text = json_text.split("```")[1].split("```")[0]
+                parts = json_text.split("```")
+                if len(parts) >= 3:
+                    json_text = parts[1]
 
-            result = json.loads(json_text.strip())
+            try:
+                return json.loads(json_text.strip())
+            except json.JSONDecodeError:
+                # Try to find JSON object in the text
+                start = text.find("{")
+                end = text.rfind("}") + 1
+                if start >= 0 and end > start:
+                    try:
+                        return json.loads(text[start:end])
+                    except json.JSONDecodeError:
+                        pass
+                print(f"    Failed to parse JSON from response ({len(text)} chars)", file=sys.stderr)
+                print(f"    First 200 chars: {text[:200]}", file=sys.stderr)
+                return None
 
-            usage = {
-                "input_tokens": response.usage.input_tokens,
-                "output_tokens": response.usage.output_tokens,
-            }
-
-            return result, usage
-
-        except Exception as e:
-            error_str = str(e)
-            if "429" in error_str or "rate" in error_str.lower():
-                wait = (2 ** attempt) * 1
-                print(f"    Rate limited, waiting {wait}s (attempt {attempt + 1}/{max_retries})")
-                time.sleep(wait)
-                continue
-            elif "overloaded" in error_str.lower():
-                wait = (2 ** attempt) * 2
-                print(f"    API overloaded, waiting {wait}s (attempt {attempt + 1}/{max_retries})")
-                time.sleep(wait)
-                continue
-            else:
-                print(f"    API error: {e}", file=sys.stderr)
-                return None, {"input_tokens": 0, "output_tokens": 0}
-
-    print(f"    Max retries exceeded", file=sys.stderr)
-    return None, {"input_tokens": 0, "output_tokens": 0}
+        return None
+    finally:
+        os.unlink(prompt_file)
 
 
 def main():
@@ -224,6 +275,10 @@ def main():
                         help="Model to use for analysis")
     parser.add_argument("--dry-run", action="store_true",
                         help="Show batch plan without calling API")
+    parser.add_argument("--skip-existing", action="store_true",
+                        help="Skip batches whose output file already exists")
+    parser.add_argument("--start-batch", type=int, default=1,
+                        help="Start from batch N (1-indexed, for resuming)")
     args = parser.parse_args()
 
     # Load index
@@ -263,30 +318,21 @@ def main():
         print("\n[DRY RUN] No API calls made.")
         return
 
-    # Check for API key
-    api_key = os.environ.get("ANTHROPIC_API_KEY")
-    if not api_key:
-        print("\nError: ANTHROPIC_API_KEY environment variable not set", file=sys.stderr)
-        sys.exit(1)
-
-    # Import anthropic (only when actually needed)
+    # Verify claude CLI is available
     try:
-        import anthropic
-    except ImportError:
-        print("Error: anthropic package not installed. Run: pip install anthropic", file=sys.stderr)
+        subprocess.run([CLAUDE_BIN, "--version"], capture_output=True, timeout=5)
+    except FileNotFoundError:
+        print(f"Error: claude CLI not found at '{CLAUDE_BIN}'. Install Claude Code first.", file=sys.stderr)
         sys.exit(1)
-
-    client = anthropic.Anthropic(api_key=api_key)
+    print(f"Using claude CLI: {CLAUDE_BIN}")
 
     # Create output directory
     os.makedirs(args.output_dir, exist_ok=True)
 
     # Process batches
-    total_input_tokens = 0
-    total_output_tokens = 0
     successful_batches = 0
 
-    print(f"\nProcessing {len(batches)} batches with model {args.model}...")
+    print(f"\nProcessing {len(batches)} batches with model {args.model} via claude CLI...")
     print()
 
     for i, batch in enumerate(batches):
@@ -294,6 +340,10 @@ def main():
         sessions = batch["sessions"]
         dates = [s["row"].get("date", "?") for s in sessions]
         date_range = f"{min(dates)} to {max(dates)}" if dates else "?"
+
+        # Skip batches before start-batch
+        if i + 1 < args.start_batch:
+            continue
 
         print(f"Batch {i+1}/{len(batches)}: project={project}, sessions={len(sessions)}, tokens=~{batch['estimated_tokens']:,}")
 
@@ -313,14 +363,13 @@ def main():
         prompt_tokens = estimate_tokens(prompt)
         print(f"  Prompt tokens: ~{prompt_tokens:,}")
 
-        # Call API
-        result, usage = call_api(client, args.model, prompt)
-
-        total_input_tokens += usage.get("input_tokens", 0)
-        total_output_tokens += usage.get("output_tokens", 0)
+        # Call claude CLI
+        t0 = time.time()
+        result = call_claude_cli(args.model, prompt)
+        elapsed = time.time() - t0
 
         if result is None:
-            print(f"  FAILED - skipping batch")
+            print(f"  FAILED after {elapsed:.1f}s - skipping batch")
             continue
 
         # Build batch output
@@ -333,7 +382,6 @@ def main():
             "model_used": args.model,
             "sessions": result.get("sessions", []),
             "batch_summary": result.get("batch_summary", {}),
-            "usage": usage,
         }
 
         # Save immediately
@@ -348,26 +396,18 @@ def main():
             json.dump(batch_output, f, indent=2, ensure_ascii=False)
 
         successful_batches += 1
-        input_cost = usage.get("input_tokens", 0) * 3 / 1_000_000
-        output_cost = usage.get("output_tokens", 0) * 15 / 1_000_000
-        print(f"  Done: {len(result.get('sessions', []))} sessions analyzed, "
-              f"cost: ${input_cost + output_cost:.4f} "
-              f"({usage.get('input_tokens', 0)} in / {usage.get('output_tokens', 0)} out)")
+        print(f"  Done: {len(result.get('sessions', []))} sessions analyzed in {elapsed:.1f}s")
         print(f"  Saved: {output_path}")
 
-        # Brief pause between batches to avoid rate limits
+        # Brief pause between batches
         if i < len(batches) - 1:
             time.sleep(1)
 
     # Final stats
-    total_cost = (total_input_tokens * 3 + total_output_tokens * 15) / 1_000_000
     print(f"\n{'='*60}")
     print(f"Analysis complete")
     print(f"{'='*60}")
     print(f"Batches: {successful_batches}/{len(batches)} successful")
-    print(f"Total input tokens:  {total_input_tokens:>10,}")
-    print(f"Total output tokens: {total_output_tokens:>10,}")
-    print(f"Estimated cost:      ${total_cost:.4f}")
     print(f"Output directory:    {args.output_dir}")
 
 
