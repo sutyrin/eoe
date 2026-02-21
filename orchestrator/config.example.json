@@ -1,0 +1,19 @@
+{
+  "workflowy": {
+    "api_key": "YOUR_WORKFLOWY_API_KEY",
+    "backlog_node_id": "UUID_OF_YOUR_BACKLOG_NODE",
+    "review_node_id": "UUID_OF_YOUR_REVIEW_NODE",
+    "digest_node_id": "UUID_OF_YOUR_DIGEST_NODE"
+  },
+  "llm": {
+    "claude_api_key": "sk-ant-YOUR_KEY",
+    "claude_model": "claude-sonnet-4-20250514",
+    "system_prompt": "Ты агент-разработчик. Выполняй задачи кратко и конкретно. Если нужно уточнение — задай один вопрос.",
+    "yandex_api_key": "",
+    "yandex_folder_id": "",
+    "yandex_model": "yandexgpt-lite"
+  },
+  "poll_interval_seconds": 300,
+  "dialog_depth": 5,
+  "stale_hours": 24
+}
